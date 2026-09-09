@@ -26,18 +26,22 @@
       "id": "S3",
       "stage": "ideation",
       "title": "重写威胁模型与问题形式化",
-      "status": "in_progress",
+      "status": "completed",
       "detail": "界定保护对象、攻击者能力边界、检测器可观测量",
       "createdAt": "2026-09-09",
-      "startedAt": "2026-09-09"
+      "startedAt": "2026-09-09",
+      "completedAt": "2026-09-09",
+      "result": "产出 .pipeline/docs/threat_model.md：保护对象重定义为 k-引导轨迹分布（修正度量/主张错位）、攻击者能力边界、持钥检测器模型、P0-P7 攻击分级、与 BadChain 的形式化分野、H0/H1 陈述"
     },
     {
       "id": "S4",
       "stage": "ideation",
       "title": "推导检测保证以替换描述性 Theorem 1",
-      "status": "pending",
-      "detail": "目标：δ 的集中不等式或 TPR/FPR 界",
-      "createdAt": "2026-09-09"
+      "status": "in_progress",
+      "detail": "目标：共形有效的 Type I 控制 + 多跳可检测性定理 N*(n)=Θ(log n)",
+      "createdAt": "2026-09-09",
+      "startedAt": "2026-09-09",
+      "note": "主定理已推导（theory_draft.md），[存疑]系数核算为 q/2 且成立。剩余三个开口：Tr-GoF 移植到共形 p 值的额外条件、区制参数 q 在无 token 概率下的操作化、A3 步间弱相关的处理"
     },
     {
       "id": "S5",
@@ -46,6 +50,15 @@
       "status": "pending",
       "detail": "多智能体 prompt-chaining + trigger 注入 + Sentence-BERT 检测",
       "createdAt": "2026-09-09"
+    },
+    {
+      "id": "S6",
+      "stage": "ideation",
+      "title": "解决区制参数 q 的操作化缺口",
+      "status": "pending",
+      "detail": "Tr-GoF 的 q 由 NTP 分布定义（1-max_w P_t,w ≍ n^-q），黑盒语义场景无 token 概率。需重新定义区制参数或改用其他稀疏性刻画",
+      "createdAt": "2026-09-09",
+      "priority": "high"
     }
   ]
 }
