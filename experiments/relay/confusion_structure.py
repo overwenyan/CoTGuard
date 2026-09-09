@@ -108,7 +108,15 @@ def main():
         print(f"\n=== {mname} ===")
         print(f"  top-1 = {np.mean(accs):.4f} ± {np.std(accs):.4f}  (随机 {1/K:.4f}, 5 seeds)")
         print(f"  混淆率 vs pattern 语义相似度: Pearson r={r:+.3f}  Spearman={rs:+.3f}")
-        print("  -> r 显著为正 = 语义上更近的密钥更易混淆 = 密钥身份是语义编码的")
+        # n_pairs = K(K-1)/2 很小(K=8 时仅 28), 功效低. 只在 |r| 足够大时才下结论.
+        crit = 2.0 / np.sqrt(max(len(conf) - 1, 2))  # 约 95% 显著的粗略门槛
+        if abs(r) < crit:
+            print(f"  -> |r|={abs(r):.3f} < 门槛 {crit:.3f}, **无结论**"
+                  f" (n_pairs={len(conf)} 功效不足)")
+        elif r > 0:
+            print("  -> r 显著为正: 语义上更近的密钥更易混淆, 支持密钥身份为语义编码")
+        else:
+            print("  -> r 显著为负: 与语义编码假设相悖, 需进一步查因")
 
     (run / f"confusion_{args.space}.json").write_text(json.dumps(out, indent=2))
     print(f"\n[done] {run}/confusion_{args.space}.json")
