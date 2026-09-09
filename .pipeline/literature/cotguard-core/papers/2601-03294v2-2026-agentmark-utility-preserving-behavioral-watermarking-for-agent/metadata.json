@@ -1,0 +1,26 @@
+{
+  "source": "arxiv",
+  "title": "AgentMark: Utility-Preserving Behavioral Watermarking for Agents",
+  "authors": [
+    "Kaibo Huang",
+    "Jin Tan",
+    "Yukun Wei",
+    "Wanling Li",
+    "Zipei Zhang",
+    "Hui Tian",
+    "Zhongliang Yang",
+    "Linna Zhou"
+  ],
+  "abstract": "LLM-based agents are increasingly deployed to autonomously solve complex tasks, raising urgent needs for IP protection and regulatory provenance. While content watermarking effectively attributes LLM-generated outputs, it fails to directly identify the high-level planning behaviors (e.g., tool and subgoal choices) that govern multi-step execution. Critically, watermarking at the planning-behavior layer faces unique challenges: minor distributional deviations in decision-making can compound during long-term agent operation, degrading utility, and many agents operate as black boxes that are difficult to intervene in directly. To bridge this gap, we propose AgentMark, a behavioral watermarking framework that embeds multi-bit identifiers into planning decisions while preserving utility. It operates by eliciting an explicit behavior distribution from the agent and applying distribution-preserving conditional sampling, enabling deployment under black-box APIs while remaining compatible with action-layer content watermarking. Experiments across embodied, tool-use, and social environments demonstrate practical multi-bit capacity, robust recovery from partial logs, and utility preservation. The code is available at https://github.com/Tooooa/AgentMark.",
+  "year": 2026,
+  "published": "2026-01-05T15:42:18Z",
+  "landing_page": "https://arxiv.org/abs/2601.03294v2",
+  "pdf_url": "https://arxiv.org/pdf/2601.03294v2.pdf",
+  "doi": null,
+  "arxiv_id": "2601.03294v2",
+  "venue": "arXiv",
+  "rank": 1,
+  "paper_slug": "2601-03294v2-2026-agentmark-utility-preserving-behavioral-watermarking-for-agent",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2601-03294v2-2026-agentmark-utility-preserving-behavioral-watermarking-for-agent/paper.pdf",
+  "pdf_status": "downloaded"
+}

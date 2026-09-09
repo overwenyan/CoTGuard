@@ -1,0 +1,27 @@
+{
+  "source": "arxiv",
+  "title": "Watermarking LLM Agent Trajectories",
+  "authors": [
+    "Wenlong Meng",
+    "Chen Gong",
+    "Terry Yue Zhuo",
+    "Fan Zhang",
+    "Kecen Li",
+    "Zheng Liu",
+    "Zhou Yang",
+    "Chengkun Wei",
+    "Wenzhi Chen"
+  ],
+  "abstract": "LLM agents rely heavily on high-quality trajectory data to guide their problem-solving behaviors, yet producing such data requires substantial task design, high-capacity model generation, and manual filtering. Despite the high cost of creating these datasets, existing literature has overlooked copyright protection for LLM agent trajectories. This gap leaves creators vulnerable to data theft and makes it difficult to trace misuse or enforce ownership rights. This paper introduces ActHook, the first watermarking method tailored for agent trajectory datasets. Inspired by hook mechanisms in software engineering, ActHook embeds hook actions that are activated by a secret input key and do not alter the original task outcome. Like software execution, LLM agents operate sequentially, allowing hook actions to be inserted at decision points without disrupting task flow. When the activation key is present, an LLM agent trained on watermarked trajectories can produce these hook actions at a significantly higher rate, enabling reliable black-box detection. Experiments on mathematical reasoning, web searching, and software engineering agents show that ActHook achieves an average detection AUC of 94.3 on Qwen-2.5-Coder-7B while incurring negligible performance degradation.",
+  "year": 2026,
+  "published": "2026-02-21T03:12:29Z",
+  "landing_page": "https://arxiv.org/abs/2602.18700v2",
+  "pdf_url": "https://arxiv.org/pdf/2602.18700v2.pdf",
+  "doi": null,
+  "arxiv_id": "2602.18700v2",
+  "venue": "arXiv",
+  "rank": 1,
+  "paper_slug": "2602-18700v2-2026-watermarking-llm-agent-trajectories",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2602-18700v2-2026-watermarking-llm-agent-trajectories/paper.pdf",
+  "pdf_status": "downloaded"
+}

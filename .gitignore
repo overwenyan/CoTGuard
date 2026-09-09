@@ -14,3 +14,6 @@ __pycache__/
 
 # 仅保留最后一次检索的临时结果，无长期价值
 .pipeline/literature/**/search_results.json
+
+# 实验结果 JSON 保留, 但排除大文件
+experiments/results/*_quick.json

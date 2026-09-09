@@ -1,0 +1,22 @@
+{
+  "source": "arxiv",
+  "title": "Sequential Behavioral Watermarking for LLM Agents",
+  "authors": [
+    "Hyeseon An",
+    "Shinwoo Park",
+    "Dongsu Kim",
+    "Yo-Sub Han"
+  ],
+  "abstract": "LLM-based agents act through sequences of executable decisions, but their trajectories provide little evidence of which agent or policy produced them, making provenance, ownership, and unauthorized reuse difficult to establish from observed behavior alone. This motivates watermarking signals embedded directly into agent behavior rather than only into generated text, since text watermarking cannot capture the action-level decisions that define agent execution. Recent agent watermarking methods address this gap by moving the watermark from generated text to behavioral choices. However, by treating each action step as an independent trial, they overlook trajectory structure and become fragile when trajectories are perturbed, truncated, or observed without reliable alignment. We propose SeqWM, a sequential behavioral watermarking framework that embeds signals into history-conditioned transition patterns and verifies trajectories position-agnostically against random-key baselines. Experiments across diverse agent benchmarks and LLM backbones show that SeqWM consistently achieves reliable detection while preserving agent utility, and remains robust under trajectory corruption where round-indexed behavioral watermarks collapse.",
+  "year": 2026,
+  "published": "2026-05-11T02:28:34Z",
+  "landing_page": "https://arxiv.org/abs/2605.11036v1",
+  "pdf_url": "https://arxiv.org/pdf/2605.11036v1.pdf",
+  "doi": null,
+  "arxiv_id": "2605.11036v1",
+  "venue": "arXiv",
+  "rank": 2,
+  "paper_slug": "2605-11036v1-2026-sequential-behavioral-watermarking-for-llm-agents",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2605-11036v1-2026-sequential-behavioral-watermarking-for-llm-agents/paper.pdf",
+  "pdf_status": "downloaded"
+}
