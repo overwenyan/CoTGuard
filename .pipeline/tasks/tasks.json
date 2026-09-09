@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "tasks": [
     {
       "id": "S1",
@@ -18,7 +18,6 @@
       "status": "completed",
       "detail": "约束：不推翻现有方法框架、紧扣 CoT/safety/agent、可承载理论分析",
       "createdAt": "2026-09-09",
-      "startedAt": "2026-09-09",
       "completedAt": "2026-09-09",
       "result": "采纳 I1 主体 + I2/I3/I4/I5 部件；理论定位选定共形有效的来源检测"
     },
@@ -29,47 +28,93 @@
       "status": "completed",
       "detail": "界定保护对象、攻击者能力边界、检测器可观测量",
       "createdAt": "2026-09-09",
-      "startedAt": "2026-09-09",
       "completedAt": "2026-09-09",
-      "result": "产出 .pipeline/docs/threat_model.md：保护对象重定义为 k-引导轨迹分布（修正度量/主张错位）、攻击者能力边界、持钥检测器模型、P0-P7 攻击分级、与 BadChain 的形式化分野、H0/H1 陈述"
+      "result": "产出 threat_model.md：保护对象重定义为 k-引导轨迹分布、攻击者能力边界、持钥检测器模型、与 BadChain 的形式化分野"
     },
     {
       "id": "S4",
       "stage": "ideation",
-      "title": "推导检测保证以替换描述性 Theorem 1",
-      "status": "on_hold",
-      "detail": "目标：共形有效的 Type I 控制 + 多跳可检测性定理 N*(n)=Θ(log n)",
+      "title": "[已废弃] 推导共形有效检测保证 N*(n)=Θ(log n)",
+      "status": "superseded",
+      "detail": "原定目标：共形有效 Type I 控制 + 多跳可检测性定理",
       "createdAt": "2026-09-09",
-      "startedAt": "2026-09-09",
-      "note": "主定理已推导（theory_draft.md），[存疑]系数核算为 q/2 且成立。剩余三个开口：Tr-GoF 移植到共形 p 值的额外条件、区制参数 q 在无 token 概率下的操作化、A3 步间弱相关的处理 [2026-09-09 竞品评估后暂停：贡献2被SeqWM占据、贡献3在现实尺度失效、Chainwash覆盖多跳实证并挑战A2几何衰减假设。退回 ideation 重新定位。]"
+      "supersededAt": "2026-09-09",
+      "supersededBy": "S8",
+      "result": "被竞品与实验证伪：贡献2（共形校准）被 SeqWM 占据；贡献3（Tr-GoF 聚合）在现实短轨迹尺度上失效（EXP-004，实为 Zhang-Jin-Wu 2017 已知结果）；Chainwash 已覆盖多跳实证且挑战几何衰减假设。理论已被更根本的问题（detection/attribution 分离）取代。"
     },
     {
       "id": "S5",
       "stage": "experiment",
-      "title": "搭建真实实验管线并重跑主表",
-      "status": "on_hold",
-      "detail": "多智能体 prompt-chaining + trigger 注入 + Sentence-BERT 检测",
+      "title": "[已废弃] 搭建真实实验管线并重跑预印本主表",
+      "status": "superseded",
+      "detail": "原定目标：多智能体 prompt-chaining + trigger 注入 + Sentence-BERT 检测，重跑 LDR 主表",
       "createdAt": "2026-09-09",
-      "note": " [2026-09-09 竞品评估后暂停：贡献2被SeqWM占据、贡献3在现实尺度失效、Chainwash覆盖多跳实证并挑战A2几何衰减假设。退回 ideation 重新定位。]"
+      "supersededAt": "2026-09-09",
+      "supersededBy": "S8",
+      "result": "被 EXP-R0 取代：预印本检测器（trigger 文本相似度）在控制长度混淆后 AUROC=0.543，等同随机，不值得重跑原主表。转向诊断为何失效。"
     },
     {
       "id": "S6",
       "stage": "ideation",
-      "title": "解决区制参数 q 的操作化缺口",
-      "status": "on_hold",
-      "detail": "Tr-GoF 的 q 由 NTP 分布定义（1-max_w P_t,w ≍ n^-q），黑盒语义场景无 token 概率。需重新定义区制参数或改用其他稀疏性刻画",
+      "title": "[已废弃] 解决区制参数 q 的操作化缺口",
+      "status": "superseded",
+      "detail": "Tr-GoF 的 q 由 NTP 分布定义，黑盒语义场景无 token 概率",
       "createdAt": "2026-09-09",
-      "priority": "high",
-      "note": " [2026-09-09 竞品评估后暂停：贡献2被SeqWM占据、贡献3在现实尺度失效、Chainwash覆盖多跳实证并挑战A2几何衰减假设。退回 ideation 重新定位。]"
+      "supersededAt": "2026-09-09",
+      "supersededBy": "S8",
+      "result": "依附于 S4 的理论路线一并废弃。"
     },
     {
       "id": "S7",
       "stage": "ideation",
-      "title": "重新定位：基于本轮实验证据寻找新角度",
+      "title": "重新定位：基于实验证据寻找新角度",
+      "status": "completed",
+      "detail": "竞品格局收窄后退回 ideation，候选方向须先做深度竞品核实再投入",
+      "createdAt": "2026-09-09",
+      "completedAt": "2026-09-09",
+      "result": "确立新定位：detection vs attribution 分离。语义 CoT trigger 支持检测(用了某个trigger吗)但不支持基于文本相似度的归因(是哪个密钥)；学习式读出可恢复信号但表现为per-key特异签名。见 story_line.md"
+    },
+    {
+      "id": "S8",
+      "stage": "experiment",
+      "title": "detection/attribution 分离：建立排除性证据链",
+      "status": "completed",
+      "detail": "EXP-R0~R1d：证明预印本检测器控制长度后失效、trigger文本相似度归因失效、可分离密钥空间不改善(排除密钥空间设计问题)、学习式读出达3.8x随机且跨embedding稳健、留出密钥泛化失败且排除容量问题",
+      "createdAt": "2026-09-09",
+      "completedAt": "2026-09-09",
+      "result": "五环证据链完整：①长度混淆 AUROC 0.543 ②文本相似度归因 top-1 0.127≈随机 ③可分离密钥空间(max sim 0.897→0.329)归因仍0.127 ④学习式读出 top-1 0.475(3.8x随机)，两个embedding稳健(0.4475/0.4242) ⑤留出密钥泛化失败(0.28-0.33≈随机)，容量对照排除欠拟合(训练集可达0.90)。结论：密钥信息编码在轨迹中但为per-key特异签名，非通用语义映射"
+    },
+    {
+      "id": "S9",
+      "stage": "experiment",
+      "title": "跨模型迁移检验（EXP-R2）",
       "status": "in_progress",
+      "detail": "用 Qwen3-14B 作第二生成模型家族：(a) 补齐3模型经验门槛 (b) 检验特异签名是否跨模型可迁移(在Tulu上学、在Qwen3上测)",
+      "createdAt": "2026-09-09",
       "startedAt": "2026-09-09",
-      "detail": "竞品格局收窄后退回 ideation。候选方向须先做深度竞品核实再投入（前两轮浅层检索均误判空白）",
-      "createdAt": "2026-09-09"
+      "jobId": "20023848",
+      "note": "GPU作业运行中，约40分钟已过，预计还需~1h"
+    },
+    {
+      "id": "S10",
+      "stage": "experiment",
+      "title": "多跳改写鲁棒性（EXP-R3）—— 决定论文前提是否成立",
+      "status": "in_progress",
+      "detail": "已生成的8密钥轨迹逐跳改写(paraphrase + guard_lexicon对抗性规避)，中继方用DeepSeek-R1-Qwen3-8B(不知道密钥)，每跳重测密钥可恢复性(学习式读出top-1)。判据：signature是否撑过改写、在第几跳衰减到随机",
+      "createdAt": "2026-09-09",
+      "startedAt": "2026-09-09",
+      "jobId": "20025264",
+      "priority": "critical",
+      "note": "关键阻塞任务。三种可能结果已预案：撑过4跳→前提成立可补经验门槛；第1跳即失效→核心命题不成立需重估方向；中间衰减→给出n*(α)视界曲线，本身即为主结果"
+    },
+    {
+      "id": "S11",
+      "stage": "experiment",
+      "title": "补齐经验门槛：第二数据集、utility不掉点、鲁棒性网格",
+      "status": "pending",
+      "detail": "按竞品(AgentMark/SeqWM/ActHook)经验门槛：3数据集(当前1/3)、3模型(S9完成后2/3)、2-4 baseline(当前0)、utility主表(未测)。取决于S10结果再决定投入规模",
+      "createdAt": "2026-09-09",
+      "blockedBy": "S10"
     }
   ]
 }
