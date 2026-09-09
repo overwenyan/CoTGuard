@@ -1,0 +1,513 @@
+{
+  "config": {
+    "alpha": 0.01,
+    "n_trials": 4000,
+    "n_keys": 999
+  },
+  "rows": [
+    {
+      "setting": "k2_strong",
+      "n": 5,
+      "eps": 0.4,
+      "mu": 2.5,
+      "results": {
+        "oracle_lr": 0.60625,
+        "exact:fisher": 0.60075,
+        "exact:stouffer": 0.453,
+        "exact:minp": 0.537,
+        "exact:simes": 0.54175,
+        "exact:hc": 0.5675,
+        "wrongkey:fisher": 0.55525,
+        "wrongkey:stouffer": 0.419,
+        "wrongkey:minp": 0.5105,
+        "wrongkey:simes": 0.5185,
+        "wrongkey:hc": 0.54475
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.005499999999999949
+    },
+    {
+      "setting": "k2_strong",
+      "n": 10,
+      "eps": 0.2,
+      "mu": 2.5,
+      "results": {
+        "oracle_lr": 0.52675,
+        "exact:fisher": 0.4905,
+        "exact:stouffer": 0.303,
+        "exact:minp": 0.421,
+        "exact:simes": 0.428,
+        "exact:hc": 0.452,
+        "wrongkey:fisher": 0.4295,
+        "wrongkey:stouffer": 0.267,
+        "wrongkey:minp": 0.50075,
+        "wrongkey:simes": 0.5125,
+        "wrongkey:hc": 0.47125
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.03625000000000006
+    },
+    {
+      "setting": "k2_strong",
+      "n": 20,
+      "eps": 0.1,
+      "mu": 2.5,
+      "results": {
+        "oracle_lr": 0.43225,
+        "exact:fisher": 0.33825,
+        "exact:stouffer": 0.174,
+        "exact:minp": 0.34975,
+        "exact:simes": 0.3565,
+        "exact:hc": 0.375,
+        "wrongkey:fisher": 0.26225,
+        "wrongkey:stouffer": 0.14875,
+        "wrongkey:minp": 0.38275,
+        "wrongkey:simes": 0.394,
+        "wrongkey:hc": 0.42325
+      },
+      "best_exact": "hc",
+      "gap_to_oracle": 0.05725000000000002
+    },
+    {
+      "setting": "k2_strong",
+      "n": 30,
+      "eps": 0.06666666666666667,
+      "mu": 2.5,
+      "results": {
+        "oracle_lr": 0.34725,
+        "exact:fisher": 0.2645,
+        "exact:stouffer": 0.1155,
+        "exact:minp": 0.2775,
+        "exact:simes": 0.2815,
+        "exact:hc": 0.299,
+        "wrongkey:fisher": 0.209,
+        "wrongkey:stouffer": 0.0985,
+        "wrongkey:minp": 0.39525,
+        "wrongkey:simes": 0.41025,
+        "wrongkey:hc": 0.4475
+      },
+      "best_exact": "hc",
+      "gap_to_oracle": 0.048250000000000015
+    },
+    {
+      "setting": "k2_strong",
+      "n": 50,
+      "eps": 0.04,
+      "mu": 2.5,
+      "results": {
+        "oracle_lr": 0.34675,
+        "exact:fisher": 0.17975,
+        "exact:stouffer": 0.07125,
+        "exact:minp": 0.27675,
+        "exact:simes": 0.27975,
+        "exact:hc": 0.29225,
+        "wrongkey:fisher": 0.11775,
+        "wrongkey:stouffer": 0.06025,
+        "wrongkey:minp": 0.41725,
+        "wrongkey:simes": 0.43275,
+        "wrongkey:hc": 0.24075
+      },
+      "best_exact": "hc",
+      "gap_to_oracle": 0.05449999999999999
+    },
+    {
+      "setting": "k2_strong",
+      "n": 100,
+      "eps": 0.02,
+      "mu": 2.5,
+      "results": {
+        "oracle_lr": 0.25475,
+        "exact:fisher": 0.11,
+        "exact:stouffer": 0.036,
+        "exact:minp": 0.2295,
+        "exact:simes": 0.23175,
+        "exact:hc": 0.2395,
+        "wrongkey:fisher": 0.0745,
+        "wrongkey:stouffer": 0.0345,
+        "wrongkey:minp": 0.4505,
+        "wrongkey:simes": 0.47325,
+        "wrongkey:hc": 0.18
+      },
+      "best_exact": "hc",
+      "gap_to_oracle": 0.015249999999999986
+    },
+    {
+      "setting": "k2_strong",
+      "n": 200,
+      "eps": 0.01,
+      "mu": 2.5,
+      "results": {
+        "oracle_lr": 0.20975,
+        "exact:fisher": 0.06225,
+        "exact:stouffer": 0.03325,
+        "exact:minp": 0.16425,
+        "exact:simes": 0.166,
+        "exact:hc": 0.172,
+        "wrongkey:fisher": 0.04425,
+        "wrongkey:stouffer": 0.03025,
+        "wrongkey:minp": 0.5025,
+        "wrongkey:simes": 0.15675,
+        "wrongkey:hc": 0.11875
+      },
+      "best_exact": "hc",
+      "gap_to_oracle": 0.037750000000000006
+    },
+    {
+      "setting": "k2_strong",
+      "n": 500,
+      "eps": 0.004,
+      "mu": 2.5,
+      "results": {
+        "oracle_lr": 0.1275,
+        "exact:fisher": 0.0335,
+        "exact:stouffer": 0.01825,
+        "exact:minp": 0.104,
+        "exact:simes": 0.1035,
+        "exact:hc": 0.10125,
+        "wrongkey:fisher": 0.02625,
+        "wrongkey:stouffer": 0.017,
+        "wrongkey:minp": 0.619,
+        "wrongkey:simes": 0.083,
+        "wrongkey:hc": 0.053
+      },
+      "best_exact": "minp",
+      "gap_to_oracle": 0.023500000000000007
+    },
+    {
+      "setting": "k2_mid",
+      "n": 5,
+      "eps": 0.4,
+      "mu": 1.5,
+      "results": {
+        "oracle_lr": 0.21125,
+        "exact:fisher": 0.225,
+        "exact:stouffer": 0.19975,
+        "exact:minp": 0.1555,
+        "exact:simes": 0.15775,
+        "exact:hc": 0.1705,
+        "wrongkey:fisher": 0.2145,
+        "wrongkey:stouffer": 0.19175,
+        "wrongkey:minp": 0.15575,
+        "wrongkey:simes": 0.16075,
+        "wrongkey:hc": 0.169
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": -0.013750000000000012
+    },
+    {
+      "setting": "k2_mid",
+      "n": 10,
+      "eps": 0.2,
+      "mu": 1.5,
+      "results": {
+        "oracle_lr": 0.174,
+        "exact:fisher": 0.18275,
+        "exact:stouffer": 0.121,
+        "exact:minp": 0.1045,
+        "exact:simes": 0.1055,
+        "exact:hc": 0.11275,
+        "wrongkey:fisher": 0.1655,
+        "wrongkey:stouffer": 0.1125,
+        "wrongkey:minp": 0.164,
+        "wrongkey:simes": 0.1665,
+        "wrongkey:hc": 0.127
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": -0.008750000000000008
+    },
+    {
+      "setting": "k2_mid",
+      "n": 20,
+      "eps": 0.1,
+      "mu": 1.5,
+      "results": {
+        "oracle_lr": 0.1185,
+        "exact:fisher": 0.11025,
+        "exact:stouffer": 0.06775,
+        "exact:minp": 0.0855,
+        "exact:simes": 0.08675,
+        "exact:hc": 0.08975,
+        "wrongkey:fisher": 0.09675,
+        "wrongkey:stouffer": 0.067,
+        "wrongkey:minp": 0.105,
+        "wrongkey:simes": 0.1075,
+        "wrongkey:hc": 0.11975
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.008249999999999993
+    },
+    {
+      "setting": "k2_mid",
+      "n": 30,
+      "eps": 0.06666666666666667,
+      "mu": 1.5,
+      "results": {
+        "oracle_lr": 0.08975,
+        "exact:fisher": 0.08325,
+        "exact:stouffer": 0.04925,
+        "exact:minp": 0.06325,
+        "exact:simes": 0.064,
+        "exact:hc": 0.06875,
+        "wrongkey:fisher": 0.0705,
+        "wrongkey:stouffer": 0.047,
+        "wrongkey:minp": 0.11625,
+        "wrongkey:simes": 0.11975,
+        "wrongkey:hc": 0.13875
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.006499999999999992
+    },
+    {
+      "setting": "k2_mid",
+      "n": 50,
+      "eps": 0.04,
+      "mu": 1.5,
+      "results": {
+        "oracle_lr": 0.0825,
+        "exact:fisher": 0.04675,
+        "exact:stouffer": 0.02925,
+        "exact:minp": 0.05775,
+        "exact:simes": 0.0595,
+        "exact:hc": 0.06175,
+        "wrongkey:fisher": 0.043,
+        "wrongkey:stouffer": 0.02825,
+        "wrongkey:minp": 0.1385,
+        "wrongkey:simes": 0.14275,
+        "wrongkey:hc": 0.0625
+      },
+      "best_exact": "hc",
+      "gap_to_oracle": 0.020750000000000005
+    },
+    {
+      "setting": "k2_mid",
+      "n": 100,
+      "eps": 0.02,
+      "mu": 1.5,
+      "results": {
+        "oracle_lr": 0.049,
+        "exact:fisher": 0.04,
+        "exact:stouffer": 0.02425,
+        "exact:minp": 0.02675,
+        "exact:simes": 0.02675,
+        "exact:hc": 0.02725,
+        "wrongkey:fisher": 0.03575,
+        "wrongkey:stouffer": 0.0245,
+        "wrongkey:minp": 0.1745,
+        "wrongkey:simes": 0.1845,
+        "wrongkey:hc": 0.0345
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.009000000000000001
+    },
+    {
+      "setting": "k2_mid",
+      "n": 200,
+      "eps": 0.01,
+      "mu": 1.5,
+      "results": {
+        "oracle_lr": 0.02975,
+        "exact:fisher": 0.02375,
+        "exact:stouffer": 0.0195,
+        "exact:minp": 0.02725,
+        "exact:simes": 0.02675,
+        "exact:hc": 0.0245,
+        "wrongkey:fisher": 0.022,
+        "wrongkey:stouffer": 0.01875,
+        "wrongkey:minp": 0.2505,
+        "wrongkey:simes": 0.03475,
+        "wrongkey:hc": 0.02575
+      },
+      "best_exact": "minp",
+      "gap_to_oracle": 0.0024999999999999988
+    },
+    {
+      "setting": "k2_mid",
+      "n": 500,
+      "eps": 0.004,
+      "mu": 1.5,
+      "results": {
+        "oracle_lr": 0.027,
+        "exact:fisher": 0.01825,
+        "exact:stouffer": 0.01625,
+        "exact:minp": 0.02075,
+        "exact:simes": 0.02075,
+        "exact:hc": 0.02125,
+        "wrongkey:fisher": 0.01775,
+        "wrongkey:stouffer": 0.01525,
+        "wrongkey:minp": 0.4475,
+        "wrongkey:simes": 0.02225,
+        "wrongkey:hc": 0.0175
+      },
+      "best_exact": "hc",
+      "gap_to_oracle": 0.005749999999999998
+    },
+    {
+      "setting": "dense_weak",
+      "n": 5,
+      "eps": 0.2,
+      "mu": 1.0,
+      "results": {
+        "oracle_lr": 0.05,
+        "exact:fisher": 0.0485,
+        "exact:stouffer": 0.05025,
+        "exact:minp": 0.03525,
+        "exact:simes": 0.035,
+        "exact:hc": 0.037,
+        "wrongkey:fisher": 0.0535,
+        "wrongkey:stouffer": 0.04825,
+        "wrongkey:minp": 0.04725,
+        "wrongkey:simes": 0.0475,
+        "wrongkey:hc": 0.036
+      },
+      "best_exact": "stouffer",
+      "gap_to_oracle": -0.0002500000000000002
+    },
+    {
+      "setting": "dense_weak",
+      "n": 10,
+      "eps": 0.2,
+      "mu": 1.0,
+      "results": {
+        "oracle_lr": 0.06075,
+        "exact:fisher": 0.059,
+        "exact:stouffer": 0.049,
+        "exact:minp": 0.0455,
+        "exact:simes": 0.0455,
+        "exact:hc": 0.04625,
+        "wrongkey:fisher": 0.05425,
+        "wrongkey:stouffer": 0.04925,
+        "wrongkey:minp": 0.03975,
+        "wrongkey:simes": 0.04,
+        "wrongkey:hc": 0.0415
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.0017500000000000016
+    },
+    {
+      "setting": "dense_weak",
+      "n": 20,
+      "eps": 0.2,
+      "mu": 1.0,
+      "results": {
+        "oracle_lr": 0.11775,
+        "exact:fisher": 0.1085,
+        "exact:stouffer": 0.09425,
+        "exact:minp": 0.06425,
+        "exact:simes": 0.065,
+        "exact:hc": 0.07175,
+        "wrongkey:fisher": 0.103,
+        "wrongkey:stouffer": 0.093,
+        "wrongkey:minp": 0.08925,
+        "wrongkey:simes": 0.09025,
+        "wrongkey:hc": 0.10175
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.009249999999999994
+    },
+    {
+      "setting": "dense_weak",
+      "n": 30,
+      "eps": 0.2,
+      "mu": 1.0,
+      "results": {
+        "oracle_lr": 0.18,
+        "exact:fisher": 0.18,
+        "exact:stouffer": 0.128,
+        "exact:minp": 0.05025,
+        "exact:simes": 0.051,
+        "exact:hc": 0.057,
+        "wrongkey:fisher": 0.1545,
+        "wrongkey:stouffer": 0.12275,
+        "wrongkey:minp": 0.114,
+        "wrongkey:simes": 0.118,
+        "wrongkey:hc": 0.14875
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.0
+    },
+    {
+      "setting": "dense_weak",
+      "n": 50,
+      "eps": 0.2,
+      "mu": 1.0,
+      "results": {
+        "oracle_lr": 0.2515,
+        "exact:fisher": 0.24525,
+        "exact:stouffer": 0.19925,
+        "exact:minp": 0.07025,
+        "exact:simes": 0.07275,
+        "exact:hc": 0.0775,
+        "wrongkey:fisher": 0.23775,
+        "wrongkey:stouffer": 0.194,
+        "wrongkey:minp": 0.182,
+        "wrongkey:simes": 0.19125,
+        "wrongkey:hc": 0.13025
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.0062500000000000056
+    },
+    {
+      "setting": "dense_weak",
+      "n": 100,
+      "eps": 0.2,
+      "mu": 1.0,
+      "results": {
+        "oracle_lr": 0.5105,
+        "exact:fisher": 0.51025,
+        "exact:stouffer": 0.4055,
+        "exact:minp": 0.073,
+        "exact:simes": 0.076,
+        "exact:hc": 0.08575,
+        "wrongkey:fisher": 0.49525,
+        "wrongkey:stouffer": 0.4005,
+        "wrongkey:minp": 0.3285,
+        "wrongkey:simes": 0.362,
+        "wrongkey:hc": 0.28275
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": 0.00024999999999997247
+    },
+    {
+      "setting": "dense_weak",
+      "n": 200,
+      "eps": 0.2,
+      "mu": 1.0,
+      "results": {
+        "oracle_lr": 0.798,
+        "exact:fisher": 0.80075,
+        "exact:stouffer": 0.675,
+        "exact:minp": 0.07525,
+        "exact:simes": 0.07575,
+        "exact:hc": 0.089,
+        "wrongkey:fisher": 0.80075,
+        "wrongkey:stouffer": 0.6475,
+        "wrongkey:minp": 0.56725,
+        "wrongkey:simes": 0.22325,
+        "wrongkey:hc": 0.57575
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": -0.002749999999999919
+    },
+    {
+      "setting": "dense_weak",
+      "n": 500,
+      "eps": 0.2,
+      "mu": 1.0,
+      "results": {
+        "oracle_lr": 0.99275,
+        "exact:fisher": 0.99375,
+        "exact:stouffer": 0.977,
+        "exact:minp": 0.12025,
+        "exact:simes": 0.1225,
+        "exact:hc": 0.16375,
+        "wrongkey:fisher": 0.993,
+        "wrongkey:stouffer": 0.97375,
+        "wrongkey:minp": 0.87075,
+        "wrongkey:simes": 0.39375,
+        "wrongkey:hc": 0.95125
+      },
+      "best_exact": "fisher",
+      "gap_to_oracle": -0.0010000000000000009
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "source": "arxiv",
+  "title": "Higher criticism: $p$-values and criticism",
+  "authors": [
+    "Jian Li",
+    "David Siegmund"
+  ],
+  "abstract": "This paper compares the higher criticism statistic (Donoho and Jin [Ann. Statist. 32 (2004) 962-994]), a modification of the higher criticism statistic also suggested by Donoho and Jin, and two statistics of the Berk-Jones [Z. Wahrsch. Verw. Gebiete 47 (1979) 47-59] type. New approximations to the significance levels of the statistics are derived, and their accuracy is studied by simulations. By numerical examples it is shown that over a broad range of sample sizes the Berk-Jones statistics have a better power function than the higher criticism statistics to detect sparse mixtures. The applications suggested by Meinshausen and Rice [Ann. Statist. 34 (2006) 373-393], to find lower confidence bounds for the number of false hypotheses, and by Jeng, Cai and Li [Biometrika 100 (2013) 157-172], to detect copy number variants, are also studied.",
+  "year": 2014,
+  "published": "2014-11-05T22:41:12Z",
+  "landing_page": "https://arxiv.org/abs/1411.1437v3",
+  "pdf_url": "https://arxiv.org/pdf/1411.1437v3.pdf",
+  "doi": "10.1214/15-AOS1312",
+  "arxiv_id": "1411.1437v3",
+  "venue": "arXiv",
+  "rank": 4,
+  "paper_slug": "1411-1437v3-2014-higher-criticism-p-values-and-criticism",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/shortdetect/papers/1411-1437v3-2014-higher-criticism-p-values-and-criticism/paper.pdf",
+  "pdf_status": "downloaded"
+}

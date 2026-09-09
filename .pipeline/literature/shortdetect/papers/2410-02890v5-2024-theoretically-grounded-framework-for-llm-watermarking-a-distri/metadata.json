@@ -1,0 +1,23 @@
+{
+  "source": "arxiv",
+  "title": "Theoretically Grounded Framework for LLM Watermarking: A Distribution-Adaptive Approach",
+  "authors": [
+    "Haiyun He",
+    "Yepeng Liu",
+    "Ziqiao Wang",
+    "Yongyi Mao",
+    "Yuheng Bu"
+  ],
+  "abstract": "Watermarking has emerged as a crucial method to distinguish AI-generated text from human-created text. Current watermarking approaches often lack formal optimality guarantees or address the scheme and detector design separately. In this paper, we introduce a novel, unified theoretical framework for watermarking Large Language Models (LLMs) that jointly optimizes both the watermarking scheme and detector. Our approach aims to maximize detection performance while maintaining control over the worst-case false positive rate (FPR) and distortion on text quality. We derive closed-form optimal solutions for this joint design and characterize the fundamental trade-off between watermark detectability and distortion. Notably, we reveal that the optimal watermarking schemes should be adaptive to the LLM's generative distribution. Building on our theoretical insights, we propose a distortion-free, distribution-adaptive watermarking algorithm (DAWA) that leverages a surrogate model for model-agnosticism and efficiency. Experiments on Llama2-13B and Mistral-8$\\times$7B models confirm the effectiveness of our approach, particularly at ultra-low FPRs. Our code is available at https://github.com/yepengliu/DAWA.",
+  "year": 2024,
+  "published": "2024-10-03T18:28:10Z",
+  "landing_page": "https://arxiv.org/abs/2410.02890v5",
+  "pdf_url": "https://arxiv.org/pdf/2410.02890v5.pdf",
+  "doi": null,
+  "arxiv_id": "2410.02890v5",
+  "venue": "arXiv",
+  "rank": 1,
+  "paper_slug": "2410-02890v5-2024-theoretically-grounded-framework-for-llm-watermarking-a-distri",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/shortdetect/papers/2410-02890v5-2024-theoretically-grounded-framework-for-llm-watermarking-a-distri/paper.pdf",
+  "pdf_status": "downloaded"
+}

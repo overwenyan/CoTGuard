@@ -1,0 +1,21 @@
+{
+  "source": "arxiv",
+  "title": "Distributions and Statistical Power of Optimal Signal-Detection Methods In Finite Cases",
+  "authors": [
+    "Hong Zhang",
+    "Jiashun Jin",
+    "Zheyang Wu"
+  ],
+  "abstract": "In big data analysis for detecting rare and weak signals among $n$ features, some grouping-test methods such as Higher Criticism test (HC), Berk-Jones test (B-J), and $φ$-divergence test share the similar asymptotical optimality when $n \\rightarrow \\infty$. However, in practical data analysis $n$ is frequently small and moderately large at most. In order to properly apply these optimal tests and wisely choose them for practical studies, it is important to know how to get the p-values and statistical power of them. To address this problem in an even broader context, this paper provides analytical solutions for a general family of goodness-of-fit (GOF) tests, which covers these optimal tests. For any given i.i.d. and continuous distributions of the input test statistics of the $n$ features, both p-value and statistical power of such a GOF test can be calculated. By calculation we compared the finite-sample performances of asymptotically optimal tests under the normal mixture alternative. Results show that HC is the best choice when signals are rare, while B-J is more robust over various signal patterns. In the application to a real genome-wide association study, results illustrate that the p-value calculation works well, and the optimal tests have potentials for detecting novel disease genes with weak genetic effects. The calculations have been implemented in an R package SetTest and published on the CRAN.",
+  "year": 2017,
+  "published": "2017-02-23T03:31:22Z",
+  "landing_page": "https://arxiv.org/abs/1702.07082v1",
+  "pdf_url": "https://arxiv.org/pdf/1702.07082v1.pdf",
+  "doi": null,
+  "arxiv_id": "1702.07082v1",
+  "venue": "arXiv",
+  "rank": 3,
+  "paper_slug": "1702-07082v1-2017-distributions-and-statistical-power-of-optimal-signal-detectio",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/shortdetect/papers/1702-07082v1-2017-distributions-and-statistical-power-of-optimal-signal-detectio/paper.pdf",
+  "pdf_status": "downloaded"
+}

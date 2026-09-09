@@ -1,0 +1,23 @@
+{
+  "source": "arxiv",
+  "title": "When Reasoning Traces Become Performative: Step-Level Evidence that Chain-of-Thought Is an Imperfect Oversight Channel",
+  "authors": [
+    "Wenkai Li",
+    "Fan Yang",
+    "Ananya Hazarika",
+    "Shaunak A. Mehta",
+    "Koichi Onoue"
+  ],
+  "abstract": "Chain-of-thought (CoT) traces are increasingly used both to improve language model capability and to audit model behavior, implicitly assuming that the visible trace remains synchronized with the computation that determines the answer. We test this assumption with a step-level Detect-Classify-Compare framework built around an answer-commitment proxy that is cross-validated with Patchscopes, tuned-lens probes, and causal direction ablation. Across nine models and seven reasoning benchmarks, latent commitment and explicit answer arrival align on only 61.9% of steps on average. The dominant mismatch pattern is confabulated continuation: 58.0% of detected mismatch events occur after the answer-commitment proxy has already stabilized while the trace continues producing deliberative-looking text, and a vacuousness analysis shows that the committed answer does not change during these steps. In architecture-matched Qwen2.5/DeepSeek-R1-Distill comparisons, the reasoning pipeline changes failure composition more than aggregate alignment, most clearly at 32B where confabulated steps decrease as contradictory states increase. Lower step-level alignment is also associated with larger CoT utility, suggesting that the settings that benefit most from CoT are often the least temporally faithful. Paired truncation and a complementary donor-corruption test further indicate that much post-commitment text is not load-bearing for the final answer. These findings suggest that CoT can remain useful while still being an unreliable report of when the answer was formed.",
+  "year": 2026,
+  "published": "2026-05-12T08:24:47Z",
+  "landing_page": "https://arxiv.org/abs/2605.11746v1",
+  "pdf_url": "https://arxiv.org/pdf/2605.11746v1.pdf",
+  "doi": null,
+  "arxiv_id": "2605.11746v1",
+  "venue": "arXiv",
+  "rank": 2,
+  "paper_slug": "2605-11746v1-2026-when-reasoning-traces-become-performative-step-level-evidence-",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/shortdetect/papers/2605-11746v1-2026-when-reasoning-traces-become-performative-step-level-evidence-/paper.pdf",
+  "pdf_status": "downloaded"
+}

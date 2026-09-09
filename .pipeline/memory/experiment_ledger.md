@@ -99,3 +99,47 @@ eps0=0.6, rho=0.6, mu=1.2, n=100 下三种检测器的经验 N*（功效≥0.8�
 （`wrongkey_pvalues` 的 `mu_shift` 参数）。这正是该构造成立的关键，也是**在真实语义载体上
 尚未验证的前提**——需要确认 τ'=T(k',t) 在同一条轨迹上产生的分数基线确实与 τ 一致。
 若不一致，漂移免疫性会打折。**这是 Phase 2 必须验证的第一件事**，不可假定成立。
+
+---
+
+## EXP-004 — 短轨迹区制下的检测规则比较
+
+- **日期**：2026-09-09
+- **代码**：`experiments/run_shorttrace.py`
+- **配置**：alpha=0.01, n_trials=4000, n_keys=999, n ∈ {5..500}
+
+### 方法学修正（第一版有误，已改）
+
+第一版把 oracle LRT 由 p 值反解分数计算，而 wrong-key p 值有 1/(K+1) 的离散下界，
+导致强信号被截断在 Φ⁻¹(1−1/1000)=3.09，oracle 被人为削弱，出现**实用规则功效超过
+oracle** 的不可能现象（n=20 时 HC 0.445 > oracle 0.406）。已改为在**原始分数**上计算
+oracle，并把"合并规则优劣"与"wrong-key 离散化代价"两个效应分离。
+
+### 结果（exact p 值，oracle 为合法 NP 上界）
+
+- **dense_weak（eps=0.2, mu=1.0）**：fisher 在全部 n 上最优，且**几乎贴合 oracle**
+  （n=100 时 0.510 vs 0.510；n=200 时 0.801 vs 0.798）。HC 在稠密信号下严重落后
+  （n=500 时 0.164 vs fisher 0.994）。
+- **k2_mid（2 个信号步，mu=1.5）**：短 n 下 fisher 最优，n≥50 后 hc/minp 略优，但
+  各规则差距很小（0.02–0.06 量级），且**全部远低于 oracle**。
+- 规则之间的优劣**随稀疏度而非仅随 n 翻转**，与经典 ARW 理论一致。
+
+### wrong-key 离散化代价（exact − wrongkey）
+
+- fisher/stouffer：代价小且随 n 递减（≤0.076）
+- **minp/simes/hc：代价为大幅负值且随 n 恶化**（dense_weak n=500 时 minp −0.751,
+  hc −0.788）。原因是 K=999 时 p 值下界 1/1000，大 n 下大量 p 值挤在下界产生并列，
+  破坏了依赖极端 p 值的规则。
+- **结论**：wrong-key 校准的密钥数 K 与轨迹长度 n 存在**实质性相互作用**；依赖极值的
+  合并规则要求 K ≫ n。这是移植 wrong-key 时必须交代的工程约束。
+
+### ⚠️ 新颖性判决：本实验为已知结果的重新发现
+
+竞品核实（`digest_shortdetect.md`）确认：**Zhang, Jin & Wu (2017), arXiv:1702.07082**
+"Distributions and Statistical Power of Optimal Signal-Detection Methods In Finite Cases"
+已完整覆盖本实验的动机与内容——相同的 ARW 设定（eps=n^-alpha, mu=sqrt(2r log n)）、
+覆盖整个 φ-divergence 族、给出**解析的有限样本精确分布**（非仅仿真）、Fig.4 研究 n=10
+与 n=100、并已发布 CRAN R 包 SetTest。Berk-Jones 与 HC 的有限样本交叉点已被定在
+beta≈0.75。
+
+EXP-002 与 EXP-004 与该文献结论一致——这**验证了实现正确性**，但不构成新知识。

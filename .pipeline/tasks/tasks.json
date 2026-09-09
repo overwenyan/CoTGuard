@@ -37,28 +37,39 @@
       "id": "S4",
       "stage": "ideation",
       "title": "推导检测保证以替换描述性 Theorem 1",
-      "status": "in_progress",
+      "status": "on_hold",
       "detail": "目标：共形有效的 Type I 控制 + 多跳可检测性定理 N*(n)=Θ(log n)",
       "createdAt": "2026-09-09",
       "startedAt": "2026-09-09",
-      "note": "主定理已推导（theory_draft.md），[存疑]系数核算为 q/2 且成立。剩余三个开口：Tr-GoF 移植到共形 p 值的额外条件、区制参数 q 在无 token 概率下的操作化、A3 步间弱相关的处理"
+      "note": "主定理已推导（theory_draft.md），[存疑]系数核算为 q/2 且成立。剩余三个开口：Tr-GoF 移植到共形 p 值的额外条件、区制参数 q 在无 token 概率下的操作化、A3 步间弱相关的处理 [2026-09-09 竞品评估后暂停：贡献2被SeqWM占据、贡献3在现实尺度失效、Chainwash覆盖多跳实证并挑战A2几何衰减假设。退回 ideation 重新定位。]"
     },
     {
       "id": "S5",
       "stage": "experiment",
       "title": "搭建真实实验管线并重跑主表",
-      "status": "pending",
+      "status": "on_hold",
       "detail": "多智能体 prompt-chaining + trigger 注入 + Sentence-BERT 检测",
-      "createdAt": "2026-09-09"
+      "createdAt": "2026-09-09",
+      "note": " [2026-09-09 竞品评估后暂停：贡献2被SeqWM占据、贡献3在现实尺度失效、Chainwash覆盖多跳实证并挑战A2几何衰减假设。退回 ideation 重新定位。]"
     },
     {
       "id": "S6",
       "stage": "ideation",
       "title": "解决区制参数 q 的操作化缺口",
-      "status": "pending",
+      "status": "on_hold",
       "detail": "Tr-GoF 的 q 由 NTP 分布定义（1-max_w P_t,w ≍ n^-q），黑盒语义场景无 token 概率。需重新定义区制参数或改用其他稀疏性刻画",
       "createdAt": "2026-09-09",
-      "priority": "high"
+      "priority": "high",
+      "note": " [2026-09-09 竞品评估后暂停：贡献2被SeqWM占据、贡献3在现实尺度失效、Chainwash覆盖多跳实证并挑战A2几何衰减假设。退回 ideation 重新定位。]"
+    },
+    {
+      "id": "S7",
+      "stage": "ideation",
+      "title": "重新定位：基于本轮实验证据寻找新角度",
+      "status": "in_progress",
+      "startedAt": "2026-09-09",
+      "detail": "竞品格局收窄后退回 ideation。候选方向须先做深度竞品核实再投入（前两轮浅层检索均误判空白）",
+      "createdAt": "2026-09-09"
     }
   ]
 }
