@@ -121,6 +121,13 @@ def main():
                 pv = (1.0 + (rs[:, 1:] >= rs[:, :1]).sum(axis=1)) / (len(taus))
                 owner = np.asarray(owner)
                 n_per = np.bincount(owner, minlength=len(sel))
+                # M7: 步间依赖 —— 逐轨迹计算 p 值序列的 lag-1 自相关.
+                # A3 (步间弱相关) 从未被实测, 这里给出经验证据.
+                ac = []
+                for i in range(len(sel)):
+                    q = pv[owner == i]
+                    if q.size >= 4 and q.std() > 1e-9:
+                        ac.append(float(np.corrcoef(q[:-1], q[1:])[0, 1]))
                 rows.append({
                     "hop": hop, "arm": arm, "style": style,
                     "n_traces": len(sel), "n_steps": int(len(steps)),
@@ -130,6 +137,11 @@ def main():
                     # M3: 效应量 (rank 标准化尺度上真 key 相对 wrong-key 的位移)
                     "mu_hat": float((rs[:, 0] - rs[:, 1:].mean(axis=1)).mean()),
                     "mean_p": float(pv.mean()),
+                    # M7: lag-1 自相关中位数 (|.|越小说明 A3 越站得住)
+                    "lag1_autocorr": float(np.median(ac)) if ac else None,
+                    # 长度混淆诊断: pilot 发现 trigger 使轨迹长度翻倍,
+                    # 若检测可由步数平凡驱动, 则主结果无意义, 必须报告并控制
+                    "trace_len_sd": float(n_per[n_per > 0].std()),
                 })
                 print(f"  hop{hop:>2} {arm:>9} {str(style):>13}  "
                       f"eps={rows[-1]['eps_hat']:.4f}  mu={rows[-1]['mu_hat']:+.4f}  "
