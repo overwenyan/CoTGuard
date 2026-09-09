@@ -17,3 +17,7 @@ __pycache__/
 
 # 实验结果 JSON 保留, 但排除大文件
 experiments/results/*_quick.json
+
+# 实验运行产物: 生成文本体积大, 可由 checkpoint 重跑
+experiments/relay/runs/
+experiments/relay/logs/
