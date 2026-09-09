@@ -241,3 +241,62 @@ wrong-key 校准要求真密钥 τ 与错误密钥 τ' 在干净轨迹上可交�
 配对参考数据**。应从 owner 自身的参考生成中**拟合判别方向**，而非直接用指令文本做相似度。
 wrong-key 校准依然适用（对每个错误密钥同样拟合），EXP-005 的 per-pattern 标准化贡献保留。
 所有评估必须 length-matched。
+
+---
+
+## EXP-R0b — 密钥容量诊断：detection 强而 attribution 弱（关键发现）
+
+- **日期**：2026-09-09
+- **代码**：`experiments/relay/discriminative_probe.py`, `diag_key_capacity.py`
+- **数据**：pilot hop0，24 triggered + 24 clean，length-matched 9 对
+
+### 起因：两个脚本给出矛盾的数字
+
+| 统计量 | AUROC | length-matched |
+|---|---|---|
+| instr-sim，**原始余弦** | 0.9132 | **0.9877** |
+| instr-sim，**经 wrong-key 共形校准** | 0.6354 | 0.5432 |
+
+同一统计量，校准后信号消失。说明**预印本的统计量本身没问题，是校准管线消掉了信号**。
+
+### 诊断结果
+
+**D1 pattern 空间高度拥挤**：真 vs 错相似度 mean=0.6641, sd=0.0800, **max=0.9722**；
+错 vs 错 mean=0.7194。所有密钥共用同一模板、仅换槽位填充词，导致语义上近乎重合。
+
+**D2 归因裕度恒为负**：`margin = 真key分数 − 最强错误key分数`
+- triggered: mean=−0.1254, **P(>0)=0.000**
+- clean: mean=−0.1557, **P(>0)=0.000**
+
+真密钥**从未**超过所有错误密钥，即使在被注入的轨迹上。
+
+**D3 detection 与 attribution 的分离**（length-matched, n_pairs=9）：
+
+| 任务 | AUROC |
+|---|---|
+| **detection**（用了某个 trigger 吗） | **0.9877** |
+| **attribution**（是这个密钥吗） | **0.6790** |
+
+真密钥在 64 个候选中的排名：triggered **49.9**、clean 54.3，**劣于随机期望 31.5**。
+
+### 结论
+
+**语义 CoT trigger 支持 detection，但几乎不支持 attribution。**
+
+机制：trigger 使轨迹靠近"教学式指令语言"这一**语义大类**，而非某个特定 pattern。
+所有密钥指向同一片区域，故无法区分。
+
+**这对版权/所有权主张是致命的**——所有权需要归因而非检测。同时这正是三篇行为层竞品
+（AgentMark / SeqWM / ActHook）不会遇到的问题：离散动作空间里密钥由构造保证可分离，
+SeqWM 的 wrong-key 校准之所以有效正源于此；连续语义空间没有该保护。
+
+### 保留
+
+9 对匹配样本、单模型、单数据集、单 embedding 打分器、仅 hop0。效应大且机制清楚，需放大验证。
+
+### 下一步
+
+1. 放大样本（≥200 题）复核 detection/attribution 差距
+2. 测"密钥空间可分离性 → attribution 能力"的关系：设计语义上互相远离的密钥空间，
+   看 attribution AUROC 能恢复多少，画出**容量—可分离性曲线**
+3. 这可能是本文的真实贡献：**语义载体的密钥容量极限**
