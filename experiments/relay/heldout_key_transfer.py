@@ -68,10 +68,11 @@ def main():
                      show_progress_bar=False)
 
     rng = np.random.default_rng(0)
-    accs, base = [], []
+    accs, base, tr_accs = [], [], []
     for trial in range(12):
         ho = rng.choice(K, size=args.n_holdout, replace=False)
         tr_mask = ~np.isin(y, ho)
+        tr_keys = np.array(sorted(set(y[tr_mask].tolist())))
 
         # 岭回归学 W: X -> P[y]  (只用训练密钥)
         A, B = X[tr_mask], P[y[tr_mask]]
@@ -81,20 +82,38 @@ def main():
         te_mask = np.isin(y, ho)
         Z = X[te_mask] @ W
         Z /= np.linalg.norm(Z, axis=1, keepdims=True) + 1e-12
-        pred_local = np.argmax(Z @ P[ho].T, axis=1)
-        pred = ho[pred_local]
+        pred = ho[np.argmax(Z @ P[ho].T, axis=1)]
         accs.append(float((pred == y[te_mask]).mean()))
         base.append(1.0 / len(ho))
 
+        # 训练集对照: 同一个 W 在**训练密钥**上的匹配准确率.
+        # 若这个也接近随机, 说明映射根本没拟合上(容量/欠定问题), 与语义无关.
+        Ztr = X[tr_mask] @ W
+        Ztr /= np.linalg.norm(Ztr, axis=1, keepdims=True) + 1e-12
+        pred_tr = tr_keys[np.argmax(Ztr @ P[tr_keys].T, axis=1)]
+        tr_accs.append(float((pred_tr == y[tr_mask]).mean()))
+
     acc, sd = float(np.mean(accs)), float(np.std(accs))
     ch = float(np.mean(base))
-    # 单样本 t 检验 (对随机基线)
+    tr_acc = float(np.mean(tr_accs))
+    tr_ch = float(np.mean([1.0 / (K - args.n_holdout)] * len(tr_accs)))
     t = (acc - ch) / (sd / np.sqrt(len(accs)) + 1e-12)
+
     print(f"\n=== 留出密钥泛化 (n_holdout={args.n_holdout}, 12 次重抽) ===")
-    print(f"  top-1 = {acc:.4f} ± {sd:.4f}   (随机 {ch:.4f})")
-    print(f"  t = {t:+.2f}  ({'显著高于随机, 支持语义扎根' if t > 2.5 else '未显著高于随机'})")
+    print(f"  训练密钥上 top-1 = {tr_acc:.4f}   (随机 {tr_ch:.4f})  <- 容量对照")
+    print(f"  留出密钥上 top-1 = {acc:.4f} ± {sd:.4f}   (随机 {ch:.4f})")
+    print(f"  t = {t:+.2f}")
+    if tr_acc < tr_ch * 1.5:
+        print("  -> **映射连训练密钥都拟合不上**: 属容量/欠定问题, "
+              "本检验对语义性问题无判别力")
+    elif t > 2.5:
+        print("  -> 训练集拟合良好且留出集显著高于随机: 支持语义扎根")
+    else:
+        print("  -> 训练集拟合良好但留出集不高于随机: "
+              "映射学到的是每密钥特异签名, **非**通用语义映射")
 
     out = {"config": vars(args), "acc_mean": acc, "acc_sd": sd, "chance": ch,
+           "train_acc": tr_acc, "train_chance": tr_ch,
            "t_stat": float(t), "n_trials": len(accs)}
     (run / f"heldout_transfer_{args.space}.json").write_text(json.dumps(out, indent=2))
     print(f"[done] {run}/heldout_transfer_{args.space}.json")
