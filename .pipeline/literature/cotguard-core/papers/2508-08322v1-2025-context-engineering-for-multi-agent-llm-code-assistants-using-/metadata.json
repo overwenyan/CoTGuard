@@ -1,0 +1,19 @@
+{
+  "source": "arxiv",
+  "title": "Context Engineering for Multi-Agent LLM Code Assistants Using Elicit, NotebookLM, ChatGPT, and Claude Code",
+  "authors": [
+    "Muhammad Haseeb"
+  ],
+  "abstract": "Large Language Models (LLMs) have shown promise in automating code generation and software engineering tasks, yet they often struggle with complex, multi-file projects due to context limitations and knowledge gaps. We propose a novel context engineering workflow that combines multiple AI components: an Intent Translator (GPT-5) for clarifying user requirements, an Elicit-powered semantic literature retrieval for injecting domain knowledge, NotebookLM-based document synthesis for contextual understanding, and a Claude Code multi-agent system for code generation and validation. Our integrated approach leverages intent clarification, retrieval-augmented generation, and specialized sub-agents orchestrated via Claude's agent framework. We demonstrate that this method significantly improves the accuracy and reliability of code assistants in real-world repositories, yielding higher single-shot success rates and better adherence to project context than baseline single-agent approaches. Qualitative results on a large Next.js codebase show the multi-agent system effectively plans, edits, and tests complex features with minimal human intervention. We compare our system with recent frameworks like CodePlan, MASAI, and HyperAgent, highlighting how targeted context injection and agent role decomposition lead to state-of-the-art performance. Finally, we discuss the implications for deploying LLM-based coding assistants in production, along with lessons learned on context management and future research directions.",
+  "year": 2025,
+  "published": "2025-08-09T14:45:53Z",
+  "landing_page": "https://arxiv.org/abs/2508.08322v1",
+  "pdf_url": "https://arxiv.org/pdf/2508.08322v1.pdf",
+  "doi": null,
+  "arxiv_id": "2508.08322v1",
+  "venue": "arXiv",
+  "rank": 4,
+  "paper_slug": "2508-08322v1-2025-context-engineering-for-multi-agent-llm-code-assistants-using-",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2508-08322v1-2025-context-engineering-for-multi-agent-llm-code-assistants-using-/paper.pdf",
+  "pdf_status": "downloaded"
+}

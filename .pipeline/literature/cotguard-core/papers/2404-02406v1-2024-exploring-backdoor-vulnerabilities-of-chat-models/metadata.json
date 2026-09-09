@@ -1,0 +1,21 @@
+{
+  "source": "arxiv",
+  "title": "Exploring Backdoor Vulnerabilities of Chat Models",
+  "authors": [
+    "Yunzhuo Hao",
+    "Wenkai Yang",
+    "Yankai Lin"
+  ],
+  "abstract": "Recent researches have shown that Large Language Models (LLMs) are susceptible to a security threat known as Backdoor Attack. The backdoored model will behave well in normal cases but exhibit malicious behaviours on inputs inserted with a specific backdoor trigger. Current backdoor studies on LLMs predominantly focus on instruction-tuned LLMs, while neglecting another realistic scenario where LLMs are fine-tuned on multi-turn conversational data to be chat models. Chat models are extensively adopted across various real-world scenarios, thus the security of chat models deserves increasing attention. Unfortunately, we point out that the flexible multi-turn interaction format instead increases the flexibility of trigger designs and amplifies the vulnerability of chat models to backdoor attacks. In this work, we reveal and achieve a novel backdoor attacking method on chat models by distributing multiple trigger scenarios across user inputs in different rounds, and making the backdoor be triggered only when all trigger scenarios have appeared in the historical conversations. Experimental results demonstrate that our method can achieve high attack success rates (e.g., over 90% ASR on Vicuna-7B) while successfully maintaining the normal capabilities of chat models on providing helpful responses to benign user requests. Also, the backdoor can not be easily removed by the downstream re-alignment, highlighting the importance of continued research and attention to the security concerns of chat models. Warning: This paper may contain toxic content.",
+  "year": 2024,
+  "published": "2024-04-03T02:16:53Z",
+  "landing_page": "https://arxiv.org/abs/2404.02406v1",
+  "pdf_url": "https://arxiv.org/pdf/2404.02406v1.pdf",
+  "doi": null,
+  "arxiv_id": "2404.02406v1",
+  "venue": "arXiv",
+  "rank": 10,
+  "paper_slug": "2404-02406v1-2024-exploring-backdoor-vulnerabilities-of-chat-models",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2404-02406v1-2024-exploring-backdoor-vulnerabilities-of-chat-models/paper.pdf",
+  "pdf_status": "downloaded"
+}

@@ -1,0 +1,22 @@
+{
+  "source": "arxiv",
+  "title": "Robust and Minimally Invasive Watermarking for EaaS",
+  "authors": [
+    "Zongqi Wang",
+    "Baoyuan Wu",
+    "Jingyuan Deng",
+    "Yujiu Yang"
+  ],
+  "abstract": "Embeddings as a Service (EaaS) is emerging as a crucial role in AI applications. Unfortunately, EaaS is vulnerable to model extraction attacks, highlighting the urgent need for copyright protection. Although some preliminary works propose applying embedding watermarks to protect EaaS, recent research reveals that these watermarks can be easily removed. Hence, it is crucial to inject robust watermarks resistant to watermark removal attacks. Existing watermarking methods typically inject a target embedding into embeddings through linear interpolation when the text contains triggers. However, this mechanism results in each watermarked embedding having the same component, which makes the watermark easy to identify and eliminate. Motivated by this, in this paper, we propose a novel embedding-specific watermarking (ESpeW) mechanism to offer robust copyright protection for EaaS. Our approach involves injecting unique, yet readily identifiable watermarks into each embedding. Watermarks inserted by ESpeW are designed to maintain a significant distance from one another and to avoid sharing common components, thus making it significantly more challenging to remove the watermarks. Moreover, ESpeW is minimally invasive, as it reduces the impact on embeddings to less than 1\\%, setting a new milestone in watermarking for EaaS. Extensive experiments on four popular datasets demonstrate that ESpeW can even watermark successfully against a highly aggressive removal strategy without sacrificing the quality of embeddings.",
+  "year": 2024,
+  "published": "2024-10-23T04:34:49Z",
+  "landing_page": "https://arxiv.org/abs/2410.17552v3",
+  "pdf_url": "https://arxiv.org/pdf/2410.17552v3.pdf",
+  "doi": null,
+  "arxiv_id": "2410.17552v3",
+  "venue": "arXiv",
+  "rank": 8,
+  "paper_slug": "2410-17552v3-2024-robust-and-minimally-invasive-watermarking-for-eaas",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2410-17552v3-2024-robust-and-minimally-invasive-watermarking-for-eaas/paper.pdf",
+  "pdf_status": "downloaded"
+}

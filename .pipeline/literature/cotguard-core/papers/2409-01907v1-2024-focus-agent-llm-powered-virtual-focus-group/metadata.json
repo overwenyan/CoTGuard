@@ -1,0 +1,22 @@
+{
+  "source": "arxiv",
+  "title": "Focus Agent: LLM-Powered Virtual Focus Group",
+  "authors": [
+    "Taiyu Zhang",
+    "Xuesong Zhang",
+    "Robbe Cools",
+    "Adalberto L. Simeone"
+  ],
+  "abstract": "In the domain of Human-Computer Interaction, focus groups represent a widely utilised yet resource-intensive methodology, often demanding the expertise of skilled moderators and meticulous preparatory efforts. This study introduces the ``Focus Agent,'' a Large Language Model (LLM) powered framework that simulates both the focus group (for data collection) and acts as a moderator in a focus group setting with human participants. To assess the data quality derived from the Focus Agent, we ran five focus group sessions with a total of 23 human participants as well as deploying the Focus Agent to simulate these discussions with AI participants. Quantitative analysis indicates that Focus Agent can generate opinions similar to those of human participants. Furthermore, the research exposes some improvements associated with LLMs acting as moderators in focus group discussions that include human participants.",
+  "year": 2024,
+  "published": "2024-09-03T13:56:14Z",
+  "landing_page": "https://arxiv.org/abs/2409.01907v1",
+  "pdf_url": "https://arxiv.org/pdf/2409.01907v1.pdf",
+  "doi": "10.1145/3652988.3673918",
+  "arxiv_id": "2409.01907v1",
+  "venue": "arXiv",
+  "rank": 4,
+  "paper_slug": "2409-01907v1-2024-focus-agent-llm-powered-virtual-focus-group",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2409-01907v1-2024-focus-agent-llm-powered-virtual-focus-group/paper.pdf",
+  "pdf_status": "downloaded"
+}

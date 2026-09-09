@@ -1,0 +1,21 @@
+{
+  "source": "arxiv",
+  "title": "Audit Trails for Accountability in Large Language Models",
+  "authors": [
+    "Victor Ojewale",
+    "Harini Suresh",
+    "Suresh Venkatasubramanian"
+  ],
+  "abstract": "Large language models (LLMs) are increasingly embedded in consequential decisions across healthcare, finance, employment, and public services. Yet accountability remains fragile because process transparency is rarely recorded in a durable and reviewable form. We propose LLM audit trails as a sociotechnical mechanism for continuous accountability. An audit trail is a chronological, tamper-evident, context-rich ledger of lifecycle events and decisions that links technical provenance (models, data, training and evaluation runs, deployments, monitoring) with governance records (approvals, waivers, and attestations), so organizations can reconstruct what changed, when, and who authorized it.\n  This paper contributes: (1) a lifecycle framework that specifies event types, required metadata, and governance rationales; (2) a reference architecture with lightweight emitters, append only audit stores, and an auditor interface supporting cross organizational traceability; and (3) a reusable, open-source Python implementation that instantiates this audit layer in LLM workflows with minimal integration effort. We conclude by discussing limitations and directions for adoption.",
+  "year": 2026,
+  "published": "2026-01-28T16:04:33Z",
+  "landing_page": "https://arxiv.org/abs/2601.20727v1",
+  "pdf_url": "https://arxiv.org/pdf/2601.20727v1.pdf",
+  "doi": null,
+  "arxiv_id": "2601.20727v1",
+  "venue": "arXiv",
+  "rank": 2,
+  "paper_slug": "2601-20727v1-2026-audit-trails-for-accountability-in-large-language-models",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2601-20727v1-2026-audit-trails-for-accountability-in-large-language-models/paper.pdf",
+  "pdf_status": "downloaded"
+}

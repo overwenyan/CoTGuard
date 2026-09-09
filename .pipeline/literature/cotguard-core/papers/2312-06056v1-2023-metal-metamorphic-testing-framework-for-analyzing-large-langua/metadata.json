@@ -1,0 +1,21 @@
+{
+  "source": "arxiv",
+  "title": "METAL: Metamorphic Testing Framework for Analyzing Large-Language Model Qualities",
+  "authors": [
+    "Sangwon Hyun",
+    "Mingyu Guo",
+    "M. Ali Babar"
+  ],
+  "abstract": "Large-Language Models (LLMs) have shifted the paradigm of natural language data processing. However, their black-boxed and probabilistic characteristics can lead to potential risks in the quality of outputs in diverse LLM applications. Recent studies have tested Quality Attributes (QAs), such as robustness or fairness, of LLMs by generating adversarial input texts. However, existing studies have limited their coverage of QAs and tasks in LLMs and are difficult to extend. Additionally, these studies have only used one evaluation metric, Attack Success Rate (ASR), to assess the effectiveness of their approaches. We propose a MEtamorphic Testing for Analyzing LLMs (METAL) framework to address these issues by applying Metamorphic Testing (MT) techniques. This approach facilitates the systematic testing of LLM qualities by defining Metamorphic Relations (MRs), which serve as modularized evaluation metrics. The METAL framework can automatically generate hundreds of MRs from templates that cover various QAs and tasks. In addition, we introduced novel metrics that integrate the ASR method into the semantic qualities of text to assess the effectiveness of MRs accurately. Through the experiments conducted with three prominent LLMs, we have confirmed that the METAL framework effectively evaluates essential QAs on primary LLM tasks and reveals the quality risks in LLMs. Moreover, the newly proposed metrics can guide the optimal MRs for testing each task and suggest the most effective method for generating MRs.",
+  "year": 2023,
+  "published": "2023-12-11T01:29:19Z",
+  "landing_page": "https://arxiv.org/abs/2312.06056v1",
+  "pdf_url": "https://arxiv.org/pdf/2312.06056v1.pdf",
+  "doi": null,
+  "arxiv_id": "2312.06056v1",
+  "venue": "arXiv",
+  "rank": 4,
+  "paper_slug": "2312-06056v1-2023-metal-metamorphic-testing-framework-for-analyzing-large-langua",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2312-06056v1-2023-metal-metamorphic-testing-framework-for-analyzing-large-langua/paper.pdf",
+  "pdf_status": "downloaded"
+}

@@ -1,0 +1,22 @@
+{
+  "source": "arxiv",
+  "title": "A mechanism for discovering semantic relationships among agent communication protocols",
+  "authors": [
+    "Idoia Berges",
+    "Jesús Bermúdez",
+    "Alfredo Goñi",
+    "Arantza Illarramendi"
+  ],
+  "abstract": "One relevant aspect in the development of the Semantic Web framework is the achievement of a real inter-agents communication capability at the semantic level. Agents should be able to communicate with each other freely using different communication protocols, constituted by communication acts. For that scenario, we introduce in this paper an efficient mechanism presenting the following main features: - It promotes the description of the communication acts of protocols as classes that belong to a communication acts ontology, and associates to those acts a social commitment semantics formalized through predicates in the Event Calculus. - It is sustained on the idea that different protocols can be compared semantically by looking to the set of fluents associated to each branch of the protocols. Those sets are generated using Semantic Web technology rules. - It discovers the following types of protocol relationships: equivalence, specialization, restriction, prefix, suffix, infix and complement_to_infix.",
+  "year": 2024,
+  "published": "2024-01-29T15:10:09Z",
+  "landing_page": "https://arxiv.org/abs/2401.16216v1",
+  "pdf_url": "https://arxiv.org/pdf/2401.16216v1.pdf",
+  "doi": "10.1007/s10458-010-9154-1",
+  "arxiv_id": "2401.16216v1",
+  "venue": "arXiv",
+  "rank": 1,
+  "paper_slug": "2401-16216v1-2024-a-mechanism-for-discovering-semantic-relationships-among-agent",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2401-16216v1-2024-a-mechanism-for-discovering-semantic-relationships-among-agent/paper.pdf",
+  "pdf_status": "downloaded"
+}

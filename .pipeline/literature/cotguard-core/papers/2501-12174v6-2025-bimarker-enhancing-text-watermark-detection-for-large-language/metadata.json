@@ -1,0 +1,25 @@
+{
+  "source": "arxiv",
+  "title": "BiMarker: Enhancing Text Watermark Detection for Large Language Models with Bipolar Watermarks",
+  "authors": [
+    "Zhuang Li",
+    "Qiuping Yi",
+    "Zongcheng Ji",
+    "Yijian Lu",
+    "Yanqi Li",
+    "Keyang Xiao",
+    "Hongliang Liang"
+  ],
+  "abstract": "The rapid growth of Large Language Models (LLMs) raises concerns about distinguishing AI-generated text from human content. Existing watermarking techniques, like \\kgw, struggle with low watermark strength and stringent false-positive requirements. Our analysis reveals that current methods rely on coarse estimates of non-watermarked text, limiting watermark detectability. To address this, we propose Bipolar Watermark (\\tool), which splits generated text into positive and negative poles, enhancing detection without requiring additional computational resources or knowledge of the prompt. Theoretical analysis and experimental results demonstrate \\tool's effectiveness and compatibility with existing optimization techniques, providing a new optimization dimension for watermarking in LLM-generated content.",
+  "year": 2025,
+  "published": "2025-01-21T14:32:50Z",
+  "landing_page": "https://arxiv.org/abs/2501.12174v6",
+  "pdf_url": "https://arxiv.org/pdf/2501.12174v6.pdf",
+  "doi": null,
+  "arxiv_id": "2501.12174v6",
+  "venue": "arXiv",
+  "rank": 6,
+  "paper_slug": "2501-12174v6-2025-bimarker-enhancing-text-watermark-detection-for-large-language",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2501-12174v6-2025-bimarker-enhancing-text-watermark-detection-for-large-language/paper.pdf",
+  "pdf_status": "downloaded"
+}

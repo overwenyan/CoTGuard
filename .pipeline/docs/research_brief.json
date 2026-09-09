@@ -1,0 +1,17 @@
+{
+  "topic": "多智能体 LLM 系统的 CoT 触发式版权保护 (CoTGuard)",
+  "goal": "在不大幅改动现有标题与方法框架的前提下，为 CoTGuard 找到更强的论证角度：允许并鼓励加入理论分析（如检测率/误报率界），且角度须紧扣 CoT、safety 与 agent 三个关键词，最终产出可投稿的会议论文。",
+  "currentStage": "survey",
+  "successThreshold": "1) 确立一个与 BadChain/ShadowCoT 等 CoT 后门工作有清晰区分度的定位；2) 给出形式化的威胁模型与至少一条可证明的检测保证（TPR/FPR 或 δ 的集中不等式界）；3) 补齐真实可复现的实验管线，使主表数据由实际运行产生。",
+  "constraints": [
+    "标题与核心方法（trigger-CoT 注入 + 相似度检测）尽量保持不变",
+    "新角度须与 CoT / safety / agent 相关",
+    "理论分析是加分项而非可选装饰"
+  ],
+  "knownWeaknesses": [
+    "实验不够真实/不够充分：Table 1-4 缺少实际运行支撑",
+    "方法创新性不足：与 BadChain、ShadowCoT 等 CoT 触发工作区分度低",
+    "缺乏理论保证：Theorem 1 仅为描述性，无 FPR/TPR 分析",
+    "威胁模型与问题定义不清晰：保护对象与攻击者能力边界未界定"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "source": "arxiv",
+  "title": "ARS: Adaptive Reasoning Suppression for Efficient Large Reasoning Language Models",
+  "authors": [
+    "Dongqi Zheng"
+  ],
+  "abstract": "Large Reasoning Language Models (LRLMs or LRMs) demonstrate remarkable capabilities in complex reasoning tasks, but suffer from significant computational inefficiencies due to overthinking phenomena. Existing efficient reasoning methods face the challenge of balancing reasoning quality with inference cost reduction. We propose \\textbf{Adaptive Reasoning Suppression (ARS)}, a novel training-free approach that dynamically suppresses redundant reasoning steps while preserving accuracy through adaptive certainty monitoring. ARS introduces a multi-checkpoint certainty estimation mechanism with progressive suppression thresholds, achieving superior efficiency compared to static suppression methods. Our extensive evaluation across mathematical reasoning benchmarks using multiple model architectures demonstrates that ARS achieves up to 53%, 46.1%, and 57.9% in token, latency and energy reduction, while maintaining or improving accuracy.",
+  "year": 2025,
+  "published": "2025-09-29T20:19:41Z",
+  "landing_page": "https://arxiv.org/abs/2510.00071v2",
+  "pdf_url": "https://arxiv.org/pdf/2510.00071v2.pdf",
+  "doi": null,
+  "arxiv_id": "2510.00071v2",
+  "venue": "arXiv",
+  "rank": 11,
+  "paper_slug": "2510-00071v2-2025-ars-adaptive-reasoning-suppression-for-efficient-large-reasoni",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2510-00071v2-2025-ars-adaptive-reasoning-suppression-for-efficient-large-reasoni/paper.pdf",
+  "pdf_status": "downloaded"
+}

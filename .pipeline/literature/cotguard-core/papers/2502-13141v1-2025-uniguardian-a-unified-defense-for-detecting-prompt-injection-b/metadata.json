@@ -1,0 +1,23 @@
+{
+  "source": "arxiv",
+  "title": "UniGuardian: A Unified Defense for Detecting Prompt Injection, Backdoor Attacks and Adversarial Attacks in Large Language Models",
+  "authors": [
+    "Huawei Lin",
+    "Yingjie Lao",
+    "Tong Geng",
+    "Tan Yu",
+    "Weijie Zhao"
+  ],
+  "abstract": "Large Language Models (LLMs) are vulnerable to attacks like prompt injection, backdoor attacks, and adversarial attacks, which manipulate prompts or models to generate harmful outputs. In this paper, departing from traditional deep learning attack paradigms, we explore their intrinsic relationship and collectively term them Prompt Trigger Attacks (PTA). This raises a key question: Can we determine if a prompt is benign or poisoned? To address this, we propose UniGuardian, the first unified defense mechanism designed to detect prompt injection, backdoor attacks, and adversarial attacks in LLMs. Additionally, we introduce a single-forward strategy to optimize the detection pipeline, enabling simultaneous attack detection and text generation within a single forward pass. Our experiments confirm that UniGuardian accurately and efficiently identifies malicious prompts in LLMs.",
+  "year": 2025,
+  "published": "2025-02-18T18:59:00Z",
+  "landing_page": "https://arxiv.org/abs/2502.13141v1",
+  "pdf_url": "https://arxiv.org/pdf/2502.13141v1.pdf",
+  "doi": null,
+  "arxiv_id": "2502.13141v1",
+  "venue": "arXiv",
+  "rank": 1,
+  "paper_slug": "2502-13141v1-2025-uniguardian-a-unified-defense-for-detecting-prompt-injection-b",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2502-13141v1-2025-uniguardian-a-unified-defense-for-detecting-prompt-injection-b/paper.pdf",
+  "pdf_status": "downloaded"
+}

@@ -1,0 +1,16 @@
+# 文献语料：PDF 与 OCR 产物体积大且可由 metadata.json 重新获取，不入库
+.pipeline/literature/**/*.pdf
+.pipeline/literature/**/ocr/
+.pipeline/literature/**/ocr.log
+
+# omp 插件 skills 的本地副本（第三方代码，由 /omp:setup 重新拷贝）
+.claude/skills/
+
+# hook 事件流水
+.pipeline/.hook-events/
+
+__pycache__/
+*.pyc
+
+# 仅保留最后一次检索的临时结果，无长期价值
+.pipeline/literature/**/search_results.json

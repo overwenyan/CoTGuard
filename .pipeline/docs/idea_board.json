@@ -1,0 +1,92 @@
+{
+  "generatedAt": "2026-09-09",
+  "basis": {
+    "corpus": ".pipeline/literature/cotguard-core (54 papers, OCR 54/54)",
+    "digests": [
+      ".pipeline/docs/digest_attacks.md",
+      ".pipeline/docs/digest_theory.md",
+      ".pipeline/docs/digest_agents.md"
+    ],
+    "gapMatrix": ".pipeline/docs/gap_matrix.md"
+  },
+  "constraints": [
+    "保留 CoTGuard 标题与核心方法（trigger-CoT 注入 + 相似度检测）",
+    "新角度须紧扣 CoT + safety + agent",
+    "需可承载理论分析"
+  ],
+  "ideas": [
+    {
+      "id": "I1",
+      "name": "共形有效的多跳来源检测（Conformal Multi-Hop Provenance）",
+      "oneLiner": "把 δ 从启发式相似度重构为共形校准的逐步 p 值 + Tr-GoF 聚合，并证明可检测跳数 N*(n) = Θ(log n)。",
+      "breaks": {
+        "paper": "Tr-GoF (arXiv:2411.13868) + BadChain (arXiv:2401.12242)",
+        "limitation": "Tr-GoF 证明 sum-based 规则最好只到 q+p=1/2（CoTGuard Algorithm 4 正属此族）；水印文献的 Type I 控制全靠密码学耦合，黑盒语义场景无法继承。BadChain 假设触发器对防御方未知因而认为检测不可行。"
+      },
+      "how": "用干净轨迹校准集算经验 p_t=(1+#{j:s_j^clean≥s_t})/(m+1)，在可交换性下得有限样本 Type I 控制；接 Tr-GoF 的 GoF 聚合；用 2501.02441 的 partial-inheritance TV 球刻画每跳漂移，得 N*(n)=[((1-q)/2)log n + log ε_0]/log(1/ρ)。",
+      "keywords": ["CoT", "safety", "agent", "theory"],
+      "risks": "A3（步间弱相关）是最大软肋——推理步高度依赖，水印文献靠哈希新鲜随机性去相关，我们没有。需分块打分 + 显式 α-mixing 并坦承理想化。",
+      "scores": null
+    },
+    {
+      "id": "I2",
+      "name": "持钥验证方视角：从未知触发器检测到带密钥假设检验",
+      "oneLiner": "把与 BadChain 的区分点从『意图不同』提升为『认识论地位不同』——防御方持钥，于是检测问题本身改变了性质。",
+      "breaks": {
+        "paper": "BadChain (arXiv:2401.12242, ICLR'24)",
+        "limitation": "BadChain 明确以『后门触发器对防御方未知』论证检测不可行，并证明其两种 shuffling 防御失效。该论证在持钥验证方设定下不成立。"
+      },
+      "how": "重写威胁模型：明确 trigger key k 只有 owner/verifier 掌握，攻击者观测到的是已注入轨迹；据此把检测形式化为带密钥的假设检验，并说明为何 BadChain 的不可检测性论证不适用。",
+      "keywords": ["CoT", "safety", "threat-model"],
+      "risks": "单独作为贡献偏轻，更适合作为 I1 的形式化前提与 Related Work 的区分论证。",
+      "scores": null
+    },
+    {
+      "id": "I3",
+      "name": "被动语义信号 vs 自复制 payload：中继衰减律的实证刻画",
+      "oneLiner": "系统测量 trigger 信号强度随 agent 跳数的衰减曲线，验证几何衰减假设 ε_N = ε_0·ρ^N，并与 Prompt Infection 的自复制 payload 对照。",
+      "breaks": {
+        "paper": "Prompt Infection (arXiv:2410.07283)",
+        "limitation": "其 Fig.4 虽画了 ASR 随 agent 数量变化，但 payload 被显式指令逐字复制、刻意设计成不衰减；纵轴是二元攻击成功率而非连续可检测性统计量；无衰减模型、无 FPR 校准判定规则。"
+      },
+      "how": "跑 N=1..8 跳的 prompt-chaining，测每跳的 ε_N 与 δ 分布，拟合 ρ；同时复现一个自复制 baseline 作对照，说明两类信号的衰减行为本质不同。",
+      "keywords": ["agent", "CoT", "empirical"],
+      "risks": "纯实证，若无 I1 的理论则贡献偏薄；但它正好把 I1 的假设 A2 变成可验证实验，同时补上『实验不真实』短板。",
+      "scores": null
+    },
+    {
+      "id": "I4",
+      "name": "针对相似度检测器的定向规避攻击与二维鲁棒性网格",
+      "oneLiner": "用 Guard-Lexicon + Do-Not-Mention + Monitor-Aware 叠加压力构造最强自适应攻击，画『混淆压力 × 跳数』网格与『检测率 vs 攻击者效用』曲线。",
+      "breaks": {
+        "paper": "CoT 混淆压力测试 (arXiv:2510.19851) + 预印本自身 Table 4",
+        "limitation": "预印本 Table 4 的 anti-CoT 改写是泛泛的；2510.19851 表明 external CoT 是最脆弱通道（条件混淆成功率 75–90% vs internal 约 25%），而 CoTGuard 的 trigger 恰好活在 external CoT。"
+      },
+      "how": "移植其 P=0..7 压力分级作为攻击模型，施加在中间 agent 上；报告检测率随压力与跳数的二维变化；利用『混淆压力要付出 32–45pp 任务成功率代价』画攻击者效用前沿。",
+      "keywords": ["safety", "agent", "robustness"],
+      "risks": "可能得到不利结论（强压力下检测失效）。但配合 N*(n) 的负面结果反而自洽——诚实报告视界比虚高数字更能过审。",
+      "scores": null
+    },
+    {
+      "id": "I5",
+      "name": "主动探针式推理链审计（叙事框架）",
+      "oneLiner": "把 trigger 重述为探测 agent 推理轨迹可审计性的主动探针，作为被动可监控性观测的补集，用于 Introduction 的叙事定位。",
+      "breaks": {
+        "paper": "CoT Monitorability 立场论文 (arXiv:2507.11473) + 度量论文 (arXiv:2510.27378)",
+        "limitation": "可监控性文献全部是被动观测（衡量 CoT 是否忠实反映内部推理），没有主动注入已知信号再验证留存的范式。"
+      },
+      "how": "仅作为 Introduction 框架与部分度量借用（FPR≤1% 校准、judge-model 因子覆盖度）；不改变技术主张。",
+      "keywords": ["CoT", "safety"],
+      "risks": "威胁模型与可监控性正好相反（那边模型是对手，我们这边模型善意、第三方复用者是对手）。若当作核心主张会被审稿人指出是两个问题——只能当引子。",
+      "scores": null
+    }
+  ],
+  "recommendedCombination": {
+    "core": "I1",
+    "formalPremise": "I2",
+    "empiricalValidation": "I3",
+    "robustness": "I4",
+    "framing": "I5",
+    "rationale": "I1 是可写进 abstract 的理论主贡献；I2 提供其形式化前提并解决与 BadChain 的区分；I3 把 I1 的假设 A2 变成实测，同时补实验短板；I4 提供诚实的鲁棒性边界；I5 只做叙事包装。五者构成一篇完整论文而非五个独立方向。"
+  }
+}

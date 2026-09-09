@@ -1,0 +1,26 @@
+{
+  "source": "arxiv",
+  "title": "TerraGen: A Unified Multi-Task Layout Generation Framework for Remote Sensing Data Augmentation",
+  "authors": [
+    "Datao Tang",
+    "Hao Wang",
+    "Yudeng Xin",
+    "Hui Qiao",
+    "Dongsheng Jiang",
+    "Yin Li",
+    "Zhiheng Yu",
+    "Xiangyong Cao"
+  ],
+  "abstract": "Remote sensing vision tasks require extensive labeled data across multiple, interconnected domains. However, current generative data augmentation frameworks are task-isolated, i.e., each vision task requires training an independent generative model, and ignores the modeling of geographical information and spatial constraints. To address these issues, we propose \\textbf{TerraGen}, a unified layout-to-image generation framework that enables flexible, spatially controllable synthesis of remote sensing imagery for various high-level vision tasks, e.g., detection, segmentation, and extraction. Specifically, TerraGen introduces a geographic-spatial layout encoder that unifies bounding box and segmentation mask inputs, combined with a multi-scale injection scheme and mask-weighted loss to explicitly encode spatial constraints, from global structures to fine details. Also, we construct the first large-scale multi-task remote sensing layout generation dataset containing 45k images and establish a standardized evaluation protocol for this task. Experimental results show that our TerraGen can achieve the best generation image quality across diverse tasks. Additionally, TerraGen can be used as a universal data-augmentation generator, enhancing downstream task performance significantly and demonstrating robust cross-task generalisation in both full-data and few-shot scenarios.",
+  "year": 2025,
+  "published": "2025-10-24T12:29:12Z",
+  "landing_page": "https://arxiv.org/abs/2510.21391v1",
+  "pdf_url": "https://arxiv.org/pdf/2510.21391v1.pdf",
+  "doi": null,
+  "arxiv_id": "2510.21391v1",
+  "venue": "arXiv",
+  "rank": 3,
+  "paper_slug": "2510-21391v1-2025-terragen-a-unified-multi-task-layout-generation-framework-for-",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2510-21391v1-2025-terragen-a-unified-multi-task-layout-generation-framework-for-/paper.pdf",
+  "pdf_status": "downloaded"
+}

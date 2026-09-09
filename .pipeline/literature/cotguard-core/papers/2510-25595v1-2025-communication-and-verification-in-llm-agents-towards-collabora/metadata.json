@@ -1,0 +1,26 @@
+{
+  "source": "arxiv",
+  "title": "Communication and Verification in LLM Agents towards Collaboration under Information Asymmetry",
+  "authors": [
+    "Run Peng",
+    "Ziqiao Ma",
+    "Amy Pang",
+    "Sikai Li",
+    "Zhang Xi-Jia",
+    "Yingzhuo Yu",
+    "Cristian-Paul Bara",
+    "Joyce Chai"
+  ],
+  "abstract": "While Large Language Model (LLM) agents are often approached from the angle of action planning/generation to accomplish a goal (e.g., given by language descriptions), their abilities to collaborate with each other to achieve a joint goal are not well explored. To address this limitation, this paper studies LLM agents in task collaboration, particularly under the condition of information asymmetry, where agents have disparities in their knowledge and skills and need to work together to complete a shared task. We extend Einstein Puzzles, a classical symbolic puzzle, to a table-top game. In this game, two LLM agents must reason, communicate, and act to satisfy spatial and relational constraints required to solve the puzzle. We apply a fine-tuning-plus-verifier framework in which LLM agents are equipped with various communication strategies and verification signals from the environment. Empirical results highlight the critical importance of aligned communication, especially when agents possess both information-seeking and -providing capabilities. Interestingly, agents without communication can still achieve high task performance; however, further analysis reveals a lack of true rule understanding and lower trust from human evaluators. Instead, by integrating an environment-based verifier, we enhance agents' ability to comprehend task rules and complete tasks, promoting both safer and more interpretable collaboration in AI systems. https://github.com/Roihn/EinsteinPuzzles",
+  "year": 2025,
+  "published": "2025-10-29T15:03:53Z",
+  "landing_page": "https://arxiv.org/abs/2510.25595v1",
+  "pdf_url": "https://arxiv.org/pdf/2510.25595v1.pdf",
+  "doi": null,
+  "arxiv_id": "2510.25595v1",
+  "venue": "arXiv",
+  "rank": 3,
+  "paper_slug": "2510-25595v1-2025-communication-and-verification-in-llm-agents-towards-collabora",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2510-25595v1-2025-communication-and-verification-in-llm-agents-towards-collabora/paper.pdf",
+  "pdf_status": "downloaded"
+}

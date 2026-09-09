@@ -1,0 +1,20 @@
+{
+  "source": "arxiv",
+  "title": "Multi-Hierarchical Feature Detection for Large Language Model Generated Text",
+  "authors": [
+    "Luyan Zhang",
+    "Xinyu Xie"
+  ],
+  "abstract": "With the rapid advancement of large language model technology, there is growing interest in whether multi-feature approaches can significantly improve AI text detection beyond what single neural models achieve. While intuition suggests that combining semantic, syntactic, and statistical features should provide complementary signals, this assumption has not been rigorously tested with modern LLM-generated text. This paper provides a systematic empirical investigation of multi-hierarchical feature integration for AI text detection, specifically testing whether the computational overhead of combining multiple feature types is justified by performance gains. We implement MHFD (Multi-Hierarchical Feature Detection), integrating DeBERTa-based semantic analysis, syntactic parsing, and statistical probability features through adaptive fusion. Our investigation reveals important negative results: despite theoretical expectations, multi-feature integration provides minimal benefits (0.4-0.5% improvement) while incurring substantial computational costs (4.2x overhead), suggesting that modern neural language models may already capture most relevant detection signals efficiently. Experimental results on multiple benchmark datasets demonstrate that the MHFD method achieves 89.7% accuracy in in-domain detection and maintains 84.2% stable performance in cross-domain detection, showing modest improvements of 0.4-2.6% over existing methods.",
+  "year": 2025,
+  "published": "2025-09-23T09:55:42Z",
+  "landing_page": "https://arxiv.org/abs/2509.18862v1",
+  "pdf_url": "https://arxiv.org/pdf/2509.18862v1.pdf",
+  "doi": null,
+  "arxiv_id": "2509.18862v1",
+  "venue": "arXiv",
+  "rank": 8,
+  "paper_slug": "2509-18862v1-2025-multi-hierarchical-feature-detection-for-large-language-model-",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2509-18862v1-2025-multi-hierarchical-feature-detection-for-large-language-model-/paper.pdf",
+  "pdf_status": "downloaded"
+}

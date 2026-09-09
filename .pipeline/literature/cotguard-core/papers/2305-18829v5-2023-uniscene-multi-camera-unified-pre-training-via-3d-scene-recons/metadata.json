@@ -1,0 +1,23 @@
+{
+  "source": "arxiv",
+  "title": "UniScene: Multi-Camera Unified Pre-training via 3D Scene Reconstruction for Autonomous Driving",
+  "authors": [
+    "Chen Min",
+    "Liang Xiao",
+    "Dawei Zhao",
+    "Yiming Nie",
+    "Bin Dai"
+  ],
+  "abstract": "Multi-camera 3D perception has emerged as a prominent research field in autonomous driving, offering a viable and cost-effective alternative to LiDAR-based solutions. The existing multi-camera algorithms primarily rely on monocular 2D pre-training. However, the monocular 2D pre-training overlooks the spatial and temporal correlations among the multi-camera system. To address this limitation, we propose the first multi-camera unified pre-training framework, called UniScene, which involves initially reconstructing the 3D scene as the foundational stage and subsequently fine-tuning the model on downstream tasks. Specifically, we employ Occupancy as the general representation for the 3D scene, enabling the model to grasp geometric priors of the surrounding world through pre-training. A significant benefit of UniScene is its capability to utilize a considerable volume of unlabeled image-LiDAR pairs for pre-training purposes. The proposed multi-camera unified pre-training framework demonstrates promising results in key tasks such as multi-camera 3D object detection and surrounding semantic scene completion. When compared to monocular pre-training methods on the nuScenes dataset, UniScene shows a significant improvement of about 2.0% in mAP and 2.0% in NDS for multi-camera 3D object detection, as well as a 3% increase in mIoU for surrounding semantic scene completion. By adopting our unified pre-training method, a 25% reduction in 3D training annotation costs can be achieved, offering significant practical value for the implementation of real-world autonomous driving. Codes are publicly available at https://github.com/chaytonmin/UniScene.",
+  "year": 2023,
+  "published": "2023-05-30T08:23:06Z",
+  "landing_page": "https://arxiv.org/abs/2305.18829v5",
+  "pdf_url": "https://arxiv.org/pdf/2305.18829v5.pdf",
+  "doi": null,
+  "arxiv_id": "2305.18829v5",
+  "venue": "arXiv",
+  "rank": 5,
+  "paper_slug": "2305-18829v5-2023-uniscene-multi-camera-unified-pre-training-via-3d-scene-recons",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2305-18829v5-2023-uniscene-multi-camera-unified-pre-training-via-3d-scene-recons/paper.pdf",
+  "pdf_status": "downloaded"
+}

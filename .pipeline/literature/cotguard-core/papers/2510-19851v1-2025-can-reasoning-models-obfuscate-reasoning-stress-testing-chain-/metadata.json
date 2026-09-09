@@ -1,0 +1,23 @@
+{
+  "source": "arxiv",
+  "title": "Can Reasoning Models Obfuscate Reasoning? Stress-Testing Chain-of-Thought Monitorability",
+  "authors": [
+    "Artur Zolkowski",
+    "Wen Xing",
+    "David Lindner",
+    "Florian Tramèr",
+    "Erik Jenner"
+  ],
+  "abstract": "Recent findings suggest that misaligned models may exhibit deceptive behavior, raising concerns about output trustworthiness. Chain-of-thought (CoT) is a promising tool for alignment monitoring: when models articulate their reasoning faithfully, monitors can detect and mitigate harmful behaviors before undesirable outcomes occur. However, a key uncertainty is: Can models obfuscate their CoT in order to pursue hidden adversarial objectives while evading detection? To answer this question and thus stress-test CoT monitorability, we develop a composable and quantifiable taxonomy of prompts to elicit CoT obfuscation. We evaluate both internal CoT (reasoning traces) and external CoT (prompted reasoning in outputs) using toy tasks and more realistic environments in SHADE-Arena. We show that: (i) CoT monitoring performs accurately and efficiently without obfuscation pressure. (ii) Under strong obfuscation pressure, some models successfully complete adversarial tasks while evading detection. (iii) Models do not obfuscate their internal CoT as much as their external CoT (under prompt pressure). These results suggest that while CoT provides valuable oversight in benign settings, robust deployment requires model-specific stress-testing of monitorability.",
+  "year": 2025,
+  "published": "2025-10-21T18:07:10Z",
+  "landing_page": "https://arxiv.org/abs/2510.19851v1",
+  "pdf_url": "https://arxiv.org/pdf/2510.19851v1.pdf",
+  "doi": null,
+  "arxiv_id": "2510.19851v1",
+  "venue": "arXiv",
+  "rank": 8,
+  "paper_slug": "2510-19851v1-2025-can-reasoning-models-obfuscate-reasoning-stress-testing-chain-",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2510-19851v1-2025-can-reasoning-models-obfuscate-reasoning-stress-testing-chain-/paper.pdf",
+  "pdf_status": "downloaded"
+}

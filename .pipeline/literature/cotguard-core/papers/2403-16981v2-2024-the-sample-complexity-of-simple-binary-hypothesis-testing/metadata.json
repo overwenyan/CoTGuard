@@ -1,0 +1,21 @@
+{
+  "source": "arxiv",
+  "title": "The Sample Complexity of Simple Binary Hypothesis Testing",
+  "authors": [
+    "Ankit Pensia",
+    "Varun Jog",
+    "Po-Ling Loh"
+  ],
+  "abstract": "The sample complexity of simple binary hypothesis testing is the smallest number of i.i.d.\\ samples required to distinguish between two distributions $p$ and $q$ in either: (i) the prior-free setting, with type-I error at most $α$ and type-II error at most $β$; or (ii) the Bayesian setting, with Bayes error at most $δ$ and prior distribution $(π, 1-π)$. This problem has only been studied when $α= β$ (prior-free) or $π= 1/2$ (Bayesian), and the sample complexity is known to be characterized by the Hellinger divergence between $p$ and $q$, up to multiplicative constants. In this paper, we derive a formula that characterizes the sample complexity (up to multiplicative constants that are independent of $p$, $q$, and all error parameters) for: (i) all $0 \\le α, β\\le 1/8$ in the prior-free setting; and (ii) all $δ\\le π/4$ in the Bayesian setting. In particular, the formula admits equivalent expressions in terms of certain divergences from the Jensen--Shannon and Hellinger families. The main technical result concerns an $f$-divergence inequality between members of the Jensen--Shannon and Hellinger families, which is proved by a combination of information-theoretic tools and case-by-case analyses. We explore applications of our results to (i) robust hypothesis testing, (ii) distributed (locally-private and communication-constrained) hypothesis testing, (iii) sequential hypothesis testing, and (iv) hypothesis testing with erasures.",
+  "year": 2024,
+  "published": "2024-03-25T17:42:32Z",
+  "landing_page": "https://arxiv.org/abs/2403.16981v2",
+  "pdf_url": "https://arxiv.org/pdf/2403.16981v2.pdf",
+  "doi": null,
+  "arxiv_id": "2403.16981v2",
+  "venue": "arXiv",
+  "rank": 3,
+  "paper_slug": "2403-16981v2-2024-the-sample-complexity-of-simple-binary-hypothesis-testing",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2403-16981v2-2024-the-sample-complexity-of-simple-binary-hypothesis-testing/paper.pdf",
+  "pdf_status": "downloaded"
+}

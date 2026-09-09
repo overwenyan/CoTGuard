@@ -1,0 +1,20 @@
+{
+  "source": "arxiv",
+  "title": "Prompt Infection: LLM-to-LLM Prompt Injection within Multi-Agent Systems",
+  "authors": [
+    "Donghyun Lee",
+    "Mo Tiwari"
+  ],
+  "abstract": "As Large Language Models (LLMs) grow increasingly powerful, multi-agent systems are becoming more prevalent in modern AI applications. Most safety research, however, has focused on vulnerabilities in single-agent LLMs. These include prompt injection attacks, where malicious prompts embedded in external content trick the LLM into executing unintended or harmful actions, compromising the victim's application. In this paper, we reveal a more dangerous vector: LLM-to-LLM prompt injection within multi-agent systems. We introduce Prompt Infection, a novel attack where malicious prompts self-replicate across interconnected agents, behaving much like a computer virus. This attack poses severe threats, including data theft, scams, misinformation, and system-wide disruption, all while propagating silently through the system. Our extensive experiments demonstrate that multi-agent systems are highly susceptible, even when agents do not publicly share all communications. To address this, we propose LLM Tagging, a defense mechanism that, when combined with existing safeguards, significantly mitigates infection spread. This work underscores the urgent need for advanced security measures as multi-agent LLM systems become more widely adopted.",
+  "year": 2024,
+  "published": "2024-10-09T11:01:29Z",
+  "landing_page": "https://arxiv.org/abs/2410.07283v1",
+  "pdf_url": "https://arxiv.org/pdf/2410.07283v1.pdf",
+  "doi": null,
+  "arxiv_id": "2410.07283v1",
+  "venue": "arXiv",
+  "rank": 7,
+  "paper_slug": "2410-07283v1-2024-prompt-infection-llm-to-llm-prompt-injection-within-multi-agen",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2410-07283v1-2024-prompt-infection-llm-to-llm-prompt-injection-within-multi-agen/paper.pdf",
+  "pdf_status": "downloaded"
+}

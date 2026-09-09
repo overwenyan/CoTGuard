@@ -1,0 +1,23 @@
+{
+  "source": "arxiv",
+  "title": "DarkMind: Latent Chain-of-Thought Backdoor in Customized LLMs",
+  "authors": [
+    "Zhen Guo",
+    "Shanghao Shi",
+    "Shamim Yazdani",
+    "Ning Zhang",
+    "Reza Tourani"
+  ],
+  "abstract": "With the rapid rise of personalized AI, customized large language models (LLMs) equipped with Chain of Thought (COT) reasoning now power millions of AI agents. However, their complex reasoning processes introduce new and largely unexplored security vulnerabilities. We present DarkMind, a novel latent reasoning level backdoor attack that targets customized LLMs by manipulating internal COT steps without altering user queries. Unlike prior prompt based attacks, DarkMind activates covertly within the reasoning chain via latent triggers, enabling adversarial behaviors without modifying input prompts or requiring access to model parameters. To achieve stealth and reliability, we propose dual trigger types instant and retrospective and integrate them within a unified embedding template that governs trigger dependent activation, employ a stealth optimization algorithm to minimize semantic drift, and introduce an automated conversation starter for covert activation across domains. Comprehensive experiments on eight reasoning datasets spanning arithmetic, commonsense, and symbolic domains, using five LLMs, demonstrate that DarkMind consistently achieves high attack success rates. We further investigate defense strategies to mitigate these risks and reveal that reasoning level backdoors represent a significant yet underexplored threat, underscoring the need for robust, reasoning aware security mechanisms.",
+  "year": 2025,
+  "published": "2025-01-24T21:07:32Z",
+  "landing_page": "https://arxiv.org/abs/2501.18617v2",
+  "pdf_url": "https://arxiv.org/pdf/2501.18617v2.pdf",
+  "doi": null,
+  "arxiv_id": "2501.18617v2",
+  "venue": "arXiv",
+  "rank": 1,
+  "paper_slug": "2501-18617v2-2025-darkmind-latent-chain-of-thought-backdoor-in-customized-llms",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2501-18617v2-2025-darkmind-latent-chain-of-thought-backdoor-in-customized-llms/paper.pdf",
+  "pdf_status": "downloaded"
+}

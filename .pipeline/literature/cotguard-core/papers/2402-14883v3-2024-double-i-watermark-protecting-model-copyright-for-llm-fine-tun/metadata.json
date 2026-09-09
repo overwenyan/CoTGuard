@@ -1,0 +1,23 @@
+{
+  "source": "arxiv",
+  "title": "Double-I Watermark: Protecting Model Copyright for LLM Fine-tuning",
+  "authors": [
+    "Shen Li",
+    "Liuyi Yao",
+    "Jinyang Gao",
+    "Lan Zhang",
+    "Yaliang Li"
+  ],
+  "abstract": "To support various applications, a prevalent and efficient approach for business owners is leveraging their valuable datasets to fine-tune a pre-trained LLM through the API provided by LLM owners or cloud servers. However, this process carries a substantial risk of model misuse, potentially resulting in severe economic consequences for business owners. Thus, safeguarding the copyright of these customized models during LLM fine-tuning has become an urgent practical requirement, but there are limited existing solutions to provide such protection. To tackle this pressing issue, we propose a novel watermarking approach named ``Double-I watermark''. Specifically, based on the instruct-tuning data, two types of backdoor data paradigms are introduced with trigger in the instruction and the input, respectively. By leveraging LLM's learning capability to incorporate customized backdoor samples into the dataset, the proposed approach effectively injects specific watermarking information into the customized model during fine-tuning, which makes it easy to inject and verify watermarks in commercial scenarios. We evaluate the proposed \"Double-I watermark\" under various fine-tuning methods, demonstrating its harmlessness, robustness, uniqueness, imperceptibility, and validity through both quantitative and qualitative analyses.",
+  "year": 2024,
+  "published": "2024-02-22T04:55:14Z",
+  "landing_page": "https://arxiv.org/abs/2402.14883v3",
+  "pdf_url": "https://arxiv.org/pdf/2402.14883v3.pdf",
+  "doi": null,
+  "arxiv_id": "2402.14883v3",
+  "venue": "arXiv",
+  "rank": 3,
+  "paper_slug": "2402-14883v3-2024-double-i-watermark-protecting-model-copyright-for-llm-fine-tun",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2402-14883v3-2024-double-i-watermark-protecting-model-copyright-for-llm-fine-tun/paper.pdf",
+  "pdf_status": "downloaded"
+}

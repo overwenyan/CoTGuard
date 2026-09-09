@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "tasks": [
+    {
+      "id": "S1",
+      "stage": "survey",
+      "title": "三主线文献调研 + gap 分析",
+      "status": "completed",
+      "detail": "CoT 后门/触发、水印检测理论保证、多智能体安全与信息流；产出 literature_bank.md 与 gap 分析",
+      "createdAt": "2026-09-09",
+      "completedAt": "2026-09-09",
+      "result": "52篇真实PDF+OCR落盘；literature_bank.md 与 gap_matrix.md 已产出；识别出\"多跳可检测性\"为核心空白"
+    },
+    {
+      "id": "S2",
+      "stage": "ideation",
+      "title": "收敛出 2-4 个更强角度候选",
+      "status": "completed",
+      "detail": "约束：不推翻现有方法框架、紧扣 CoT/safety/agent、可承载理论分析",
+      "createdAt": "2026-09-09",
+      "startedAt": "2026-09-09",
+      "completedAt": "2026-09-09",
+      "result": "采纳 I1 主体 + I2/I3/I4/I5 部件；理论定位选定共形有效的来源检测"
+    },
+    {
+      "id": "S3",
+      "stage": "ideation",
+      "title": "重写威胁模型与问题形式化",
+      "status": "in_progress",
+      "detail": "界定保护对象、攻击者能力边界、检测器可观测量",
+      "createdAt": "2026-09-09",
+      "startedAt": "2026-09-09"
+    },
+    {
+      "id": "S4",
+      "stage": "ideation",
+      "title": "推导检测保证以替换描述性 Theorem 1",
+      "status": "pending",
+      "detail": "目标：δ 的集中不等式或 TPR/FPR 界",
+      "createdAt": "2026-09-09"
+    },
+    {
+      "id": "S5",
+      "stage": "experiment",
+      "title": "搭建真实实验管线并重跑主表",
+      "status": "pending",
+      "detail": "多智能体 prompt-chaining + trigger 注入 + Sentence-BERT 检测",
+      "createdAt": "2026-09-09"
+    }
+  ]
+}

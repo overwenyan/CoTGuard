@@ -1,0 +1,23 @@
+{
+  "source": "arxiv",
+  "title": "Measuring Chain-of-Thought Monitorability Through Faithfulness and Verbosity",
+  "authors": [
+    "Austin Meek",
+    "Eitan Sprejer",
+    "Iván Arcuschin",
+    "Austin J. Brockmeier",
+    "Steven Basart"
+  ],
+  "abstract": "Chain-of-thought (CoT) outputs let us read a model's step-by-step reasoning. Since any long, serial reasoning process must pass through this textual trace, the quality of the CoT is a direct window into what the model is thinking. This visibility could help us spot unsafe or misaligned behavior (monitorability), but only if the CoT is transparent about its internal reasoning (faithfulness). Fully measuring faithfulness is difficult, so researchers often focus on examining the CoT in cases where the model changes its answer after adding a cue to the input. This proxy finds some instances of unfaithfulness but loses information when the model maintains its answer, and does not investigate aspects of reasoning not tied to the cue. We extend these results to a more holistic sense of monitorability by introducing verbosity: whether the CoT lists every factor needed to solve the task. We combine faithfulness and verbosity into a single monitorability score that shows how well the CoT serves as the model's external `working memory', a property that many safety schemes based on CoT monitoring depend on. We evaluate instruction-tuned and reasoning models on BBH, GPQA, and MMLU. Our results show that models can appear faithful yet remain hard to monitor when they leave out key factors, and that monitorability differs sharply across model families. We release our evaluation code using the Inspect library to support reproducible future work.",
+  "year": 2025,
+  "published": "2025-10-31T11:14:39Z",
+  "landing_page": "https://arxiv.org/abs/2510.27378v2",
+  "pdf_url": "https://arxiv.org/pdf/2510.27378v2.pdf",
+  "doi": null,
+  "arxiv_id": "2510.27378v2",
+  "venue": "arXiv",
+  "rank": 1,
+  "paper_slug": "2510-27378v2-2025-measuring-chain-of-thought-monitorability-through-faithfulness",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2510-27378v2-2025-measuring-chain-of-thought-monitorability-through-faithfulness/paper.pdf",
+  "pdf_status": "downloaded"
+}

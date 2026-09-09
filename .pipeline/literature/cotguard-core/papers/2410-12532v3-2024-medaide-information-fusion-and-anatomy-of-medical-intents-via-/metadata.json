@@ -1,0 +1,29 @@
+{
+  "source": "arxiv",
+  "title": "MedAide: Information Fusion and Anatomy of Medical Intents via LLM-based Agent Collaboration",
+  "authors": [
+    "Dingkang Yang",
+    "Jinjie Wei",
+    "Mingcheng Li",
+    "Jiyao Liu",
+    "Lihao Liu",
+    "Ming Hu",
+    "Junjun He",
+    "Yakun Ju",
+    "Wei Zhou",
+    "Yang Liu",
+    "Lihua Zhang"
+  ],
+  "abstract": "In healthcare intelligence, the ability to fuse heterogeneous, multi-intent information from diverse clinical sources is fundamental to building reliable decision-making systems. Large Language Model (LLM)-driven information interaction systems currently showing potential promise in the healthcare domain. Nevertheless, they often suffer from information redundancy and coupling when dealing with complex medical intents, leading to severe hallucinations and performance bottlenecks. To this end, we propose MedAide, an LLM-based medical multi-agent collaboration framework designed to enable intent-aware information fusion and coordinated reasoning across specialized healthcare domains. Specifically, we introduce a regularization-guided module that combines syntactic constraints with retrieval augmented generation to decompose complex queries into structured representations, facilitating fine-grained clinical information fusion and intent resolution. Additionally, a dynamic intent prototype matching module is proposed to utilize dynamic prototype representation with a semantic similarity matching mechanism to achieve adaptive recognition and updating of the agent's intent in multi-round healthcare dialogues. Ultimately, we design a rotation agent collaboration mechanism that introduces dynamic role rotation and decision-level information fusion across specialized medical agents. Extensive experiments are conducted on four medical benchmarks with composite intents. Experimental results from automated metrics and expert doctor evaluations show that MedAide outperforms current LLMs and improves their medical proficiency and strategic reasoning.",
+  "year": 2024,
+  "published": "2024-10-16T13:10:27Z",
+  "landing_page": "https://arxiv.org/abs/2410.12532v3",
+  "pdf_url": "https://arxiv.org/pdf/2410.12532v3.pdf",
+  "doi": null,
+  "arxiv_id": "2410.12532v3",
+  "venue": "arXiv",
+  "rank": 2,
+  "paper_slug": "2410-12532v3-2024-medaide-information-fusion-and-anatomy-of-medical-intents-via-",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2410-12532v3-2024-medaide-information-fusion-and-anatomy-of-medical-intents-via-/paper.pdf",
+  "pdf_status": "downloaded"
+}

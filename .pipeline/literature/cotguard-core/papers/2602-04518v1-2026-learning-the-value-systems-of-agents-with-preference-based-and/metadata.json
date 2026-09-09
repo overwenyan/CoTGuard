@@ -1,0 +1,22 @@
+{
+  "source": "arxiv",
+  "title": "Learning the Value Systems of Agents with Preference-based and Inverse Reinforcement Learning",
+  "authors": [
+    "Andrés Holgado-Sánchez",
+    "Holger Billhardt",
+    "Alberto Fernández",
+    "Sascha Ossowski"
+  ],
+  "abstract": "Agreement Technologies refer to open computer systems in which autonomous software agents interact with one another, typically on behalf of humans, in order to come to mutually acceptable agreements. With the advance of AI systems in recent years, it has become apparent that such agreements, in order to be acceptable to the involved parties, must remain aligned with ethical principles and moral values. However, this is notoriously difficult to ensure, especially as different human users (and their software agents) may hold different value systems, i.e. they may differently weigh the importance of individual moral values. Furthermore, it is often hard to specify the precise meaning of a value in a particular context in a computational manner. Methods to estimate value systems based on human-engineered specifications, e.g. based on value surveys, are limited in scale due to the need for intense human moderation. In this article, we propose a novel method to automatically \\emph{learn} value systems from observations and human demonstrations. In particular, we propose a formal model of the \\emph{value system learning} problem, its instantiation to sequential decision-making domains based on multi-objective Markov decision processes, as well as tailored preference-based and inverse reinforcement learning algorithms to infer value grounding functions and value systems. The approach is illustrated and evaluated by two simulated use cases.",
+  "year": 2026,
+  "published": "2026-02-04T13:07:15Z",
+  "landing_page": "https://arxiv.org/abs/2602.04518v1",
+  "pdf_url": "https://arxiv.org/pdf/2602.04518v1.pdf",
+  "doi": "10.1007/s10458-026-09732-0",
+  "arxiv_id": "2602.04518v1",
+  "venue": "arXiv",
+  "rank": 5,
+  "paper_slug": "2602-04518v1-2026-learning-the-value-systems-of-agents-with-preference-based-and",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2602-04518v1-2026-learning-the-value-systems-of-agents-with-preference-based-and/paper.pdf",
+  "pdf_status": "downloaded"
+}

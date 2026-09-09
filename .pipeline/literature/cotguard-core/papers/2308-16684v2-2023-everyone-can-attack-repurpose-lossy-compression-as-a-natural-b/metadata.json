@@ -1,0 +1,22 @@
+{
+  "source": "arxiv",
+  "title": "Everyone Can Attack: Repurpose Lossy Compression as a Natural Backdoor Attack",
+  "authors": [
+    "Sze Jue Yang",
+    "Quang Nguyen",
+    "Chee Seng Chan",
+    "Khoa D. Doan"
+  ],
+  "abstract": "The vulnerabilities to backdoor attacks have recently threatened the trustworthiness of machine learning models in practical applications. Conventional wisdom suggests that not everyone can be an attacker since the process of designing the trigger generation algorithm often involves significant effort and extensive experimentation to ensure the attack's stealthiness and effectiveness. Alternatively, this paper shows that there exists a more severe backdoor threat: anyone can exploit an easily-accessible algorithm for silent backdoor attacks. Specifically, this attacker can employ the widely-used lossy image compression from a plethora of compression tools to effortlessly inject a trigger pattern into an image without leaving any noticeable trace; i.e., the generated triggers are natural artifacts. One does not require extensive knowledge to click on the \"convert\" or \"save as\" button while using tools for lossy image compression. Via this attack, the adversary does not need to design a trigger generator as seen in prior works and only requires poisoning the data. Empirically, the proposed attack consistently achieves 100% attack success rate in several benchmark datasets such as MNIST, CIFAR-10, GTSRB and CelebA. More significantly, the proposed attack can still achieve almost 100% attack success rate with very small (approximately 10%) poisoning rates in the clean label setting. The generated trigger of the proposed attack using one lossy compression algorithm is also transferable across other related compression algorithms, exacerbating the severity of this backdoor threat. This work takes another crucial step toward understanding the extensive risks of backdoor attacks in practice, urging practitioners to investigate similar attacks and relevant backdoor mitigation methods.",
+  "year": 2023,
+  "published": "2023-08-31T12:38:29Z",
+  "landing_page": "https://arxiv.org/abs/2308.16684v2",
+  "pdf_url": "https://arxiv.org/pdf/2308.16684v2.pdf",
+  "doi": null,
+  "arxiv_id": "2308.16684v2",
+  "venue": "arXiv",
+  "rank": 5,
+  "paper_slug": "2308-16684v2-2023-everyone-can-attack-repurpose-lossy-compression-as-a-natural-b",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2308-16684v2-2023-everyone-can-attack-repurpose-lossy-compression-as-a-natural-b/paper.pdf",
+  "pdf_status": "downloaded"
+}
