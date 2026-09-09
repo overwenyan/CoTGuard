@@ -43,6 +43,9 @@ def main():
     from sentence_transformers import SentenceTransformer
     model = SentenceTransformer(args.model)
 
+    # 编码 2400+ 条轨迹很慢, 缓存以便反复分析(换分类器/换种子)
+    cache = run / f"trace_vecs_{args.model.split('/')[-1]}.npz"
+
     def trace_vec(text):
         """轨迹表示 = 各步 embedding 的均值(与长度无关)."""
         ss = split_steps(text)
@@ -53,20 +56,29 @@ def main():
         v = E.mean(axis=0)
         return v / (np.linalg.norm(v) + 1e-12)
 
+    cached = dict(np.load(cache)) if cache.exists() else {}
+    if cached:
+        print(f"[cache] 复用 {cache.name}")
+
     results = {}
     for space, entries in spaces.items():
-        X, y, qid = [], [], []
-        for ki in range(len(entries)):
-            fp = run / f"{space}__key{ki:02d}.jsonl"
-            if not fp.exists():
+        if f"{space}__X" in cached:
+            X, y, qid = (cached[f"{space}__X"], cached[f"{space}__y"], cached[f"{space}__q"])
+        else:
+            X, y, qid = [], [], []
+            for ki in range(len(entries)):
+                fp = run / f"{space}__key{ki:02d}.jsonl"
+                if not fp.exists():
+                    continue
+                for r in (json.loads(l) for l in open(fp) if l.strip()):
+                    v = trace_vec(r["text"])
+                    if v is not None:
+                        X.append(v); y.append(ki); qid.append(r["qid"])
+            if not X:
                 continue
-            for r in (json.loads(l) for l in open(fp) if l.strip()):
-                v = trace_vec(r["text"])
-                if v is not None:
-                    X.append(v); y.append(ki); qid.append(r["qid"])
-        if not X:
-            continue
-        X = np.array(X); y = np.array(y); qid = np.array(qid)
+            X = np.array(X); y = np.array(y); qid = np.array(qid)
+            cached[f"{space}__X"] = X; cached[f"{space}__y"] = y; cached[f"{space}__q"] = qid
+            np.savez_compressed(cache, **cached)
         K = len(set(y.tolist()))
 
         # 按题目划分, 防止同题内容泄漏
@@ -84,24 +96,30 @@ def main():
         pred_nc = (X[te] @ cent.T).argmax(axis=1)
         acc_nc = float((pred_nc == y[te]).mean())
 
-        # --- 多类逻辑回归 ---
+        # --- 多类逻辑回归 (sklearn>=1.7 已移除 multi_class 参数, 默认即 multinomial) ---
         try:
             from sklearn.linear_model import LogisticRegression
-            clf = LogisticRegression(max_iter=3000, C=1.0, multi_class="multinomial")
+            clf = LogisticRegression(max_iter=5000, C=1.0)
             clf.fit(X[tr], y[tr])
             acc_lr = float(clf.score(X[te], y[te]))
+            # top-3: 所有权场景下"缩小到少数嫌疑密钥"也有价值
+            proba = clf.predict_proba(X[te])
+            top3 = np.argsort(-proba, axis=1)[:, :3]
+            acc_lr3 = float(np.mean([y[te][i] in top3[i] for i in range(len(top3))]))
         except Exception as e:
-            acc_lr = None
+            acc_lr = acc_lr3 = None
             print(f"  [warn] logistic 失败: {e}")
 
         results[space] = {"n_keys": K, "n_train": int(tr.sum()), "n_test": int(te.sum()),
-                          "chance": 1.0 / K,
-                          "nearest_centroid_acc": acc_nc, "logistic_acc": acc_lr}
+                          "chance": 1.0 / K, "chance_top3": 3.0 / K,
+                          "nearest_centroid_acc": acc_nc,
+                          "logistic_acc": acc_lr, "logistic_top3": acc_lr3}
         print(f"\n=== {space} (K={K}) ===")
         print(f"  train={int(tr.sum())} test={int(te.sum())} (按题目划分)")
         print(f"  nearest centroid  top-1 = {acc_nc:.4f}   (随机 {1/K:.4f})")
         if acc_lr is not None:
             print(f"  logistic          top-1 = {acc_lr:.4f}   (随机 {1/K:.4f})")
+            print(f"  logistic          top-3 = {acc_lr3:.4f}   (随机 {3/K:.4f})")
 
     (run / "key_identifiability.json").write_text(json.dumps(results, indent=2))
     print(f"\n[done] {run}/key_identifiability.json")
