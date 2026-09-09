@@ -1,0 +1,23 @@
+{
+  "source": "arxiv",
+  "title": "Mark Your LLM: Detecting the Misuse of Open-Source Large Language Models via Watermarking",
+  "authors": [
+    "Yijie Xu",
+    "Aiwei Liu",
+    "Xuming Hu",
+    "Lijie Wen",
+    "Hui Xiong"
+  ],
+  "abstract": "As open-source large language models (LLMs) like Llama3 become more capable, it is crucial to develop watermarking techniques to detect their potential misuse. Existing watermarking methods either add watermarks during LLM inference, which is unsuitable for open-source LLMs, or primarily target classification LLMs rather than recent generative LLMs. Adapting these watermarks to open-source LLMs for misuse detection remains an open challenge. This work defines two misuse scenarios for open-source LLMs: intellectual property (IP) violation and LLM Usage Violation. Then, we explore the application of inference-time watermark distillation and backdoor watermarking in these contexts. We propose comprehensive evaluation methods to assess the impact of various real-world further fine-tuning scenarios on watermarks and the effect of these watermarks on LLM performance. Our experiments reveal that backdoor watermarking could effectively detect IP Violation, while inference-time watermark distillation is applicable in both scenarios but less robust to further fine-tuning and has a more significant impact on LLM performance compared to backdoor watermarking. Exploring more advanced watermarking methods for open-source LLMs to detect their misuse should be an important future direction.",
+  "year": 2025,
+  "published": "2025-03-06T17:24:06Z",
+  "landing_page": "https://arxiv.org/abs/2503.04636v2",
+  "pdf_url": "https://arxiv.org/pdf/2503.04636v2.pdf",
+  "doi": null,
+  "arxiv_id": "2503.04636v2",
+  "venue": "arXiv",
+  "rank": 7,
+  "paper_slug": "2503-04636v2-2025-mark-your-llm-detecting-the-misuse-of-open-source-large-langua",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2503-04636v2-2025-mark-your-llm-detecting-the-misuse-of-open-source-large-langua/paper.pdf",
+  "pdf_status": "downloaded"
+}

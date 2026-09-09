@@ -1,0 +1,25 @@
+{
+  "source": "arxiv",
+  "title": "DualGuard: Dual-stream Large Language Model Watermarking Defense against Paraphrase and Spoofing Attack",
+  "authors": [
+    "Hao Li",
+    "Yubing Ren",
+    "Yanan Cao",
+    "Yingjie Li",
+    "Fang Fang",
+    "Shi Wang",
+    "Li Guo"
+  ],
+  "abstract": "With the rapid development of cloud-based services, large language models have become increasingly accessible through various web platforms. However, this accessibility has also led to growing risks of model abuse. LLM watermarking has emerged as an effective approach to mitigate such misuse and protect intellectual property. Existing watermarking algorithms, however, primarily focus on defending against paraphrase attacks while overlooking piggyback spoofing attacks, which can inject harmful content, compromise watermark reliability, and undermine trust in attribution. To address this limitation, we propose DualGuard, the first watermarking algorithm capable of defending against both paraphrase and spoofing attacks. DualGuard employs the adaptive dual-stream watermarking mechanism, in which two complementary watermark signals are dynamically injected based on the semantic content. This design enables DualGuard not only to detect but also to trace spoofing attacks, thereby ensuring reliable and trustworthy watermark detection. Extensive experiments conducted across multiple datasets and language models demonstrate that DualGuard achieves excellent detectability, robustness, traceability, and text quality, effectively advancing the state of LLM watermarking for real-world applications.",
+  "year": 2025,
+  "published": "2025-12-18T05:08:19Z",
+  "landing_page": "https://arxiv.org/abs/2512.16182v2",
+  "pdf_url": "https://arxiv.org/pdf/2512.16182v2.pdf",
+  "doi": null,
+  "arxiv_id": "2512.16182v2",
+  "venue": "arXiv",
+  "rank": 2,
+  "paper_slug": "2512-16182v2-2025-dualguard-dual-stream-large-language-model-watermarking-defens",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2512-16182v2-2025-dualguard-dual-stream-large-language-model-watermarking-defens/paper.pdf",
+  "pdf_status": "downloaded"
+}

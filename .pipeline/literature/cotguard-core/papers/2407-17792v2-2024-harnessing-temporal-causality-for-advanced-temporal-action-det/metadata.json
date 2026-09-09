@@ -1,0 +1,24 @@
+{
+  "source": "arxiv",
+  "title": "Harnessing Temporal Causality for Advanced Temporal Action Detection",
+  "authors": [
+    "Shuming Liu",
+    "Lin Sui",
+    "Chen-Lin Zhang",
+    "Fangzhou Mu",
+    "Chen Zhao",
+    "Bernard Ghanem"
+  ],
+  "abstract": "As a fundamental task in long-form video understanding, temporal action detection (TAD) aims to capture inherent temporal relations in untrimmed videos and identify candidate actions with precise boundaries. Over the years, various networks, including convolutions, graphs, and transformers, have been explored for effective temporal modeling for TAD. However, these modules typically treat past and future information equally, overlooking the crucial fact that changes in action boundaries are essentially causal events. Inspired by this insight, we propose leveraging the temporal causality of actions to enhance TAD representation by restricting the model's access to only past or future context. We introduce CausalTAD, which combines causal attention and causal Mamba to achieve state-of-the-art performance on multiple benchmarks. Notably, with CausalTAD, we ranked 1st in the Action Recognition, Action Detection, and Audio-Based Interaction Detection tracks at the EPIC-Kitchens Challenge 2024, as well as 1st in the Moment Queries track at the Ego4D Challenge 2024. Our code is available at https://github.com/sming256/OpenTAD/.",
+  "year": 2024,
+  "published": "2024-07-25T06:03:02Z",
+  "landing_page": "https://arxiv.org/abs/2407.17792v2",
+  "pdf_url": "https://arxiv.org/pdf/2407.17792v2.pdf",
+  "doi": null,
+  "arxiv_id": "2407.17792v2",
+  "venue": "arXiv",
+  "rank": 4,
+  "paper_slug": "2407-17792v2-2024-harnessing-temporal-causality-for-advanced-temporal-action-det",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2407-17792v2-2024-harnessing-temporal-causality-for-advanced-temporal-action-det/paper.pdf",
+  "pdf_status": "downloaded"
+}

@@ -1,0 +1,20 @@
+{
+  "source": "arxiv",
+  "title": "The Forensic Cost of Watermark Removal: From Dedicated Attacks to Image Editing",
+  "authors": [
+    "Gautier Evennou",
+    "Ewa Kijak"
+  ],
+  "abstract": "Current watermark removal methods are evaluated on two axes: attack success rate and perceptual quality. We show this is insufficient. While state-of-the-art attacks successfully degrade the watermark signal without visible distortion, they leave distinct statistical artifacts that betray the removal attempt. We name this overlooked axis Watermark Removal Detection (WRD) and demonstrate that a modern classifier trained on these artifacts achieves state-of-the-art detection rates at $10^{-3}$ FPR across every removal method tested. No existing attack accounts for this forensic leakage. We benchmark leading watermarking schemes against standard removal pipelines under the extended evaluation triple of attack success, perceptual quality, and forensic detectability, and find that no current method balances all three. Our results establish forensic stealthiness as a necessary requirement for watermark removal.",
+  "year": 2026,
+  "published": "2026-04-28T10:47:21Z",
+  "landing_page": "https://arxiv.org/abs/2604.25491v2",
+  "pdf_url": "https://arxiv.org/pdf/2604.25491v2.pdf",
+  "doi": null,
+  "arxiv_id": "2604.25491v2",
+  "venue": "arXiv",
+  "rank": 3,
+  "paper_slug": "2604-25491v2-2026-the-forensic-cost-of-watermark-removal-from-dedicated-attacks-",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2604-25491v2-2026-the-forensic-cost-of-watermark-removal-from-dedicated-attacks-/paper.pdf",
+  "pdf_status": "downloaded"
+}

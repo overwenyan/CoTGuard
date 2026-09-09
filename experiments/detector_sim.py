@@ -34,15 +34,34 @@ def hop_eps(eps0, rho, n_hops):
 
 
 def conformal_pvalues(scores, calib):
-    """p_t = (1 + #{j: calib_j >= s_t}) / (m + 1).
+    """干净轨迹校准: p_t = (1 + #{j: calib_j >= s_t}) / (m + 1).
 
-    可交换性下随机优超 U(0,1) (theory_draft.md 引理 1).
+    可交换性建在"候选轨迹 vs 干净轨迹语料"上 —— 跨语料分布漂移即失效 (EXP-001/E1).
     """
     calib_sorted = np.sort(calib)
     m = calib_sorted.size
     # #{j: calib_j >= s} = m - searchsorted(calib, s, 'left')
     ge = m - np.searchsorted(calib_sorted, scores, side="left")
     return (1.0 + ge) / (m + 1.0)
+
+
+def wrongkey_pvalues(rng, scores_true, n_keys, mu_shift=0.0):
+    """Wrong-key 校准 (移植自 SeqWM 2605.11036 Sec 4.3).
+
+    对同一条候选轨迹, 用 n_keys 个错误密钥各生成一个 trigger pattern tau'=T(k',t),
+    重算分数, 构成该轨迹自身的经验零分布. 可交换性由构造保证:
+    在 H0 下真密钥与错误密钥地位对称, 故真分数在 n_keys+1 个分数中的秩均匀.
+
+    关键差异: 零分布随候选轨迹一起漂移, 因此对分布漂移免疫.
+
+    scores_true: (n_trials, n) 真密钥下的逐步分数
+    返回: (n_trials, n) 逐步 p 值
+    """
+    n_trials, n = scores_true.shape
+    # 错误密钥分数与真密钥分数共享同一条轨迹的基线漂移 mu_shift
+    wrong = rng.standard_normal((n_keys, n_trials, n)) + mu_shift
+    ge = (wrong >= scores_true[None, :, :]).sum(axis=0)
+    return (1.0 + ge) / (n_keys + 1.0)
 
 
 # ---------------------------------------------------------------- 聚合规则

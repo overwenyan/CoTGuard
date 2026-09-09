@@ -1,0 +1,21 @@
+{
+  "source": "arxiv",
+  "title": "CoTGuard: Using Chain-of-Thought Triggering for Copyright Protection in Multi-Agent LLM Systems",
+  "authors": [
+    "Yan Wen",
+    "Junfeng Guo",
+    "Heng Huang"
+  ],
+  "abstract": "As large language models (LLMs) evolve into autonomous agents capable of collaborative reasoning and task execution, multi-agent LLM systems have emerged as a powerful paradigm for solving complex problems. However, these systems pose new challenges for copyright protection, particularly when sensitive or copyrighted content is inadvertently recalled through inter-agent communication and reasoning. Existing protection techniques primarily focus on detecting content in final outputs, overlooking the richer, more revealing reasoning processes within the agents themselves. In this paper, we introduce CoTGuard, a novel framework for copyright protection that leverages trigger-based detection within Chain-of-Thought (CoT) reasoning. Specifically, we can activate specific CoT segments and monitor intermediate reasoning steps for unauthorized content reproduction by embedding specific trigger queries into agent prompts. This approach enables fine-grained, interpretable detection of copyright violations in collaborative agent scenarios. We evaluate CoTGuard on various benchmarks in extensive experiments and show that it effectively uncovers content leakage with minimal interference to task performance. Our findings suggest that reasoning-level monitoring offers a promising direction for safeguarding intellectual property in LLM-based agent systems.",
+  "year": 2025,
+  "published": "2025-05-26T01:42:37Z",
+  "landing_page": "https://arxiv.org/abs/2505.19405v1",
+  "pdf_url": "https://arxiv.org/pdf/2505.19405v1.pdf",
+  "doi": null,
+  "arxiv_id": "2505.19405v1",
+  "venue": "arXiv",
+  "rank": 2,
+  "paper_slug": "2505-19405v1-2025-cotguard-using-chain-of-thought-triggering-for-copyright-prote",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2505-19405v1-2025-cotguard-using-chain-of-thought-triggering-for-copyright-prote/paper.pdf",
+  "pdf_status": "downloaded"
+}

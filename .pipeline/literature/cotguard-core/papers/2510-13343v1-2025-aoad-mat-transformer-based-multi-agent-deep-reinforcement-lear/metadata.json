@@ -1,0 +1,20 @@
+{
+  "source": "arxiv",
+  "title": "AOAD-MAT: Transformer-based multi-agent deep reinforcement learning model considering agents' order of action decisions",
+  "authors": [
+    "Shota Takayama",
+    "Katsuhide Fujita"
+  ],
+  "abstract": "Multi-agent reinforcement learning focuses on training the behaviors of multiple learning agents that coexist in a shared environment. Recently, MARL models, such as the Multi-Agent Transformer (MAT) and ACtion dEpendent deep Q-learning (ACE), have significantly improved performance by leveraging sequential decision-making processes. Although these models can enhance performance, they do not explicitly consider the importance of the order in which agents make decisions. In this paper, we propose an Agent Order of Action Decisions-MAT (AOAD-MAT), a novel MAT model that considers the order in which agents make decisions. The proposed model explicitly incorporates the sequence of action decisions into the learning process, allowing the model to learn and predict the optimal order of agent actions. The AOAD-MAT model leverages a Transformer-based actor-critic architecture that dynamically adjusts the sequence of agent actions. To achieve this, we introduce a novel MARL architecture that cooperates with a subtask focused on predicting the next agent to act, integrated into a Proximal Policy Optimization based loss function to synergistically maximize the advantage of the sequential decision-making. The proposed method was validated through extensive experiments on the StarCraft Multi-Agent Challenge and Multi-Agent MuJoCo benchmarks. The experimental results show that the proposed AOAD-MAT model outperforms existing MAT and other baseline models, demonstrating the effectiveness of adjusting the AOAD order in MARL.",
+  "year": 2025,
+  "published": "2025-10-15T09:29:36Z",
+  "landing_page": "https://arxiv.org/abs/2510.13343v1",
+  "pdf_url": "https://arxiv.org/pdf/2510.13343v1.pdf",
+  "doi": "10.1007/978-3-032-13562-9_23",
+  "arxiv_id": "2510.13343v1",
+  "venue": "arXiv",
+  "rank": 3,
+  "paper_slug": "2510-13343v1-2025-aoad-mat-transformer-based-multi-agent-deep-reinforcement-lear",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2510-13343v1-2025-aoad-mat-transformer-based-multi-agent-deep-reinforcement-lear/paper.pdf",
+  "pdf_status": "downloaded"
+}

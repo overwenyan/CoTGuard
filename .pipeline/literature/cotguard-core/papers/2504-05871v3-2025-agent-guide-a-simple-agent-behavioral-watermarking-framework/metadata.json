@@ -1,0 +1,22 @@
+{
+  "source": "arxiv",
+  "title": "Agent Guide: A Simple Agent Behavioral Watermarking Framework",
+  "authors": [
+    "Kaibo Huang",
+    "Zipei Zhang",
+    "Zhongliang Yang",
+    "Linna Zhou"
+  ],
+  "abstract": "The increasing deployment of intelligent agents in digital ecosystems, such as social media platforms, has raised significant concerns about traceability and accountability, particularly in cybersecurity and digital content protection. Traditional large language model (LLM) watermarking techniques, which rely on token-level manipulations, are ill-suited for agents due to the challenges of behavior tokenization and information loss during behavior-to-action translation. To address these issues, we propose Agent Guide, a novel behavioral watermarking framework that embeds watermarks by guiding the agent's high-level decisions (behavior) through probability biases, while preserving the naturalness of specific executions (action). Our approach decouples agent behavior into two levels, behavior (e.g., choosing to bookmark) and action (e.g., bookmarking with specific tags), and applies watermark-guided biases to the behavior probability distribution. We employ a z-statistic-based statistical analysis to detect the watermark, ensuring reliable extraction over multiple rounds. Experiments in a social media scenario with diverse agent profiles demonstrate that Agent Guide achieves effective watermark detection with a low false positive rate. Our framework provides a practical and robust solution for agent watermarking, with applications in identifying malicious agents and protecting proprietary agent systems.",
+  "year": 2025,
+  "published": "2025-04-08T09:54:49Z",
+  "landing_page": "https://arxiv.org/abs/2504.05871v3",
+  "pdf_url": "https://arxiv.org/pdf/2504.05871v3.pdf",
+  "doi": null,
+  "arxiv_id": "2504.05871v3",
+  "venue": "arXiv",
+  "rank": 2,
+  "paper_slug": "2504-05871v3-2025-agent-guide-a-simple-agent-behavioral-watermarking-framework",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2504-05871v3-2025-agent-guide-a-simple-agent-behavioral-watermarking-framework/paper.pdf",
+  "pdf_status": "downloaded"
+}

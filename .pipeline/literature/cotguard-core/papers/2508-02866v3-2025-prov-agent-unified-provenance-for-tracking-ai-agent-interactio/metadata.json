@@ -1,0 +1,26 @@
+{
+  "source": "arxiv",
+  "title": "PROV-AGENT: Unified Provenance for Tracking AI Agent Interactions in Agentic Workflows",
+  "authors": [
+    "Renan Souza",
+    "Amal Gueroudji",
+    "Stephen DeWitt",
+    "Daniel Rosendo",
+    "Tirthankar Ghosal",
+    "Robert Ross",
+    "Prasanna Balaprakash",
+    "Rafael Ferreira da Silva"
+  ],
+  "abstract": "Large Language Models (LLMs) and other foundation models are increasingly used as the core of AI agents. In agentic workflows, these agents plan tasks, interact with humans and peers, and influence scientific outcomes across federated and heterogeneous environments. However, agents can hallucinate or reason incorrectly, propagating errors when one agent's output becomes another's input. Thus, assuring that agents' actions are transparent, traceable, reproducible, and reliable is critical to assess hallucination risks and mitigate their workflow impacts. While provenance techniques have long supported these principles, existing methods fail to capture and relate agent-centric metadata such as prompts, responses, and decisions with the broader workflow context and downstream outcomes. In this paper, we introduce PROV-AGENT, a provenance model that extends W3C PROV and leverages the Model Context Protocol (MCP) and data observability to integrate agent interactions into end-to-end workflow provenance. Our contributions include: (1) a provenance model tailored for agentic workflows, (2) a near real-time, open-source system for capturing agentic provenance, and (3) a cross-facility evaluation spanning edge, cloud, and HPC environments, demonstrating support for critical provenance queries and agent reliability analysis.",
+  "year": 2025,
+  "published": "2025-08-04T19:54:40Z",
+  "landing_page": "https://arxiv.org/abs/2508.02866v3",
+  "pdf_url": "https://arxiv.org/pdf/2508.02866v3.pdf",
+  "doi": null,
+  "arxiv_id": "2508.02866v3",
+  "venue": "arXiv",
+  "rank": 3,
+  "paper_slug": "2508-02866v3-2025-prov-agent-unified-provenance-for-tracking-ai-agent-interactio",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2508-02866v3-2025-prov-agent-unified-provenance-for-tracking-ai-agent-interactio/paper.pdf",
+  "pdf_status": "downloaded"
+}

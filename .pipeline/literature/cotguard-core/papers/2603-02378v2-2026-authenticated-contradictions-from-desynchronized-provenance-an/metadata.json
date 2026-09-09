@@ -1,0 +1,22 @@
+{
+  "source": "arxiv",
+  "title": "Authenticated Contradictions from Desynchronized Provenance and Watermarking",
+  "authors": [
+    "Alexander Nemecek",
+    "Hengzhi He",
+    "Guang Cheng",
+    "Erman Ayday"
+  ],
+  "abstract": "Cryptographic provenance standards such as C2PA and invisible watermarking are positioned as complementary defenses for content authentication, yet the two verification layers are technically independent: neither conditions on the output of the other. This work formalizes and empirically demonstrates the $\\textit{Integrity Clash}$, a condition in which a digital asset carries a cryptographically valid C2PA manifest asserting human authorship while its pixels simultaneously carry a watermark identifying it as AI-generated, with both signals passing their respective verification checks in isolation. We construct metadata washing workflows that produce these authenticated fakes through standard editing pipelines, requiring no cryptographic compromise, only the semantic omission of a single assertion field permitted by the current C2PA specification. To close this gap, we propose a cross-layer audit protocol that jointly evaluates provenance metadata and watermark detection status, achieving 100% classification accuracy across 3,500 test images spanning four conflict-matrix states and three realistic perturbation conditions. Our results demonstrate that the gap between these verification layers is unnecessary and technically straightforward to close.",
+  "year": 2026,
+  "published": "2026-03-02T20:42:12Z",
+  "landing_page": "https://arxiv.org/abs/2603.02378v2",
+  "pdf_url": "https://arxiv.org/pdf/2603.02378v2.pdf",
+  "doi": null,
+  "arxiv_id": "2603.02378v2",
+  "venue": "arXiv",
+  "rank": 6,
+  "paper_slug": "2603-02378v2-2026-authenticated-contradictions-from-desynchronized-provenance-an",
+  "local_pdf_path": "/autofs/projects-t3/primelab/yan.wen/CoTGuard/.pipeline/literature/cotguard-core/papers/2603-02378v2-2026-authenticated-contradictions-from-desynchronized-provenance-an/paper.pdf",
+  "pdf_status": "downloaded"
+}
