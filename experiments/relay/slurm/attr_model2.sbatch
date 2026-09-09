@@ -19,11 +19,11 @@ P=/local/projects-t3/primelab/yan.wen/miniconda3/envs/py312/bin/python
 
 echo "=== $(hostname) | $(nvidia-smi --query-gpu=name --format=csv,noheader) ==="
 $P experiments/relay/gen_attribution.py \
-  --out-dir experiments/relay/runs/attr_qwen3 \
+  --out-dir experiments/relay/runs/attr_qwen3_v2 \
   --generator Qwen/Qwen3-14B \
-  --n-problems 100 --n-keys 8 --batch-size 12 --max-new-tokens 400
+  --n-problems 100 --n-keys 8 --batch-size 12 --max-new-tokens 600
 
 echo "=== 打分 ==="
-$P experiments/relay/score_attribution.py --run-dir experiments/relay/runs/attr_qwen3
-$P experiments/relay/key_identifiability.py --run-dir experiments/relay/runs/attr_qwen3
+$P experiments/relay/score_attribution.py --run-dir experiments/relay/runs/attr_qwen3_v2
+$P experiments/relay/key_identifiability.py --run-dir experiments/relay/runs/attr_qwen3_v2
 echo "=== done ==="

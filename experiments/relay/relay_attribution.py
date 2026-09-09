@@ -34,7 +34,9 @@ def main():
     ap.add_argument("--src-dir", default="experiments/relay/runs/attribution")
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--space", default="v2_diverse")
-    ap.add_argument("--relay-model", default="deepseek-ai/DeepSeek-R1-0528-Qwen3-8B")
+    ap.add_argument("--relay-model", default="Qwen/Qwen3-14B",
+                    help="DeepSeek-R1-Qwen3-8B 已弃用为默认: 其 chat 模板不响应 "
+                         "enable_thinking=False, 会持续触发 think 块截断污染(见 EXP-R3 事故记录)")
     ap.add_argument("--styles", default="paraphrase,guard_lexicon")
     ap.add_argument("--max-hops", type=int, default=4)
     ap.add_argument("--n-problems", type=int, default=60,

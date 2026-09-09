@@ -35,14 +35,44 @@ REWRITE_STYLES = {
 
 
 def build_chat(tok, system, user):
+    """构造 chat prompt, 尝试关闭推理模型的 thinking 模式.
+
+    背景 (EXP-R2/R3 事故复盘): Qwen3-14B 与 DeepSeek-R1-Qwen3-8B 都是推理模型,
+    默认会先输出 <think>...</think> 元推理再给答案. 在 max_new_tokens=400 下
+    该 think 块**多数无法闭合**(EXP-R3 hop1 截断率 80%), 导致"改写结果"实际是
+    模型自己关于如何改写的元评论, 而非真正的改写内容. 这不仅让 EXP-R3 的多跳
+    衰减曲线不可信, 也让 EXP-R2 里"Qwen3-14B 信号弱得多"的结论完全是假象.
+
+    enable_thinking=False 对 Qwen3 系列有效(会预填空 <think></think>); 对
+    DeepSeek-R1 系列该 kwarg 被静默接受但不生效(其模板不含相关条件分支), 因此
+    不能只依赖这一层, 必须配合 strip_think() 做防御性清洗.
+    """
     msgs = ([{"role": "system", "content": system}] if system else []) + \
            [{"role": "user", "content": user}]
-    return tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
+    try:
+        return tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True,
+                                       enable_thinking=False)
+    except TypeError:
+        return tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
 
 
-def batched_generate(model, tok, prompts, max_new_tokens, batch_size, temperature):
+def strip_think(text: str) -> tuple[str, bool]:
+    """去除 <think>...</think> 块. 返回 (清洗后文本, 是否发生了未闭合截断).
+
+    未闭合 = 模型在 think 块内就耗尽了 max_new_tokens, 该条应被视为**生成失败**
+    (没有产出任何实际内容), 而非"信号变弱". 调用方应据此重试或剔除, 不能静默使用。
+    """
+    if "<think>" not in text:
+        return text.strip(), False
+    if "</think>" in text:
+        return text.split("</think>", 1)[1].strip(), False
+    return "", True  # 未闭合截断: 无可用内容
+
+
+def batched_generate(model, tok, prompts, max_new_tokens, batch_size, temperature,
+                     clean_think=True):
     import torch
-    outs = []
+    outs, n_truncated = [], 0
     for i in range(0, len(prompts), batch_size):
         chunk = prompts[i:i + batch_size]
         enc = tok(chunk, return_tensors="pt", padding=True, truncation=True,
@@ -52,9 +82,15 @@ def batched_generate(model, tok, prompts, max_new_tokens, batch_size, temperatur
                                  do_sample=temperature > 0, temperature=max(temperature, 1e-5),
                                  top_p=0.95, pad_token_id=tok.pad_token_id)
         for j in range(len(chunk)):
-            outs.append(tok.decode(gen[j][enc["input_ids"].shape[1]:],
-                                   skip_special_tokens=True).strip())
+            raw = tok.decode(gen[j][enc["input_ids"].shape[1]:], skip_special_tokens=True).strip()
+            if clean_think:
+                raw, trunc = strip_think(raw)
+                n_truncated += int(trunc)
+            outs.append(raw)
         print(f"    [gen] {min(i+batch_size, len(prompts))}/{len(prompts)}", flush=True)
+    if clean_think and n_truncated:
+        print(f"    [warn] {n_truncated}/{len(prompts)} 条因 think 块未闭合而清空"
+              f"(建议提高 max_new_tokens)", flush=True)
     return outs
 
 
