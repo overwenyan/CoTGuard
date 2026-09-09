@@ -188,3 +188,56 @@ wrong-key 校准要求真密钥 τ 与错误密钥 τ' 在干净轨迹上可交�
 
 **GSM8K 参考解的推理步数：mean 4.75，median 5，p90 7，max 10。**
 坐实了短轨迹区制（n≈5），Zhang-Jin-Wu (2017) 的有限样本区制正是此处，HC 类渐近规则不适用。
+
+---
+
+## EXP-R0 — 多跳中继测量（experiments/relay/runs/pilot）
+
+- **日期**：2026-09-09
+- **配置**：{"run_dir": "experiments/relay/runs/pilot", "n_wrong": 127, "model": "sentence-transformers/all-mpnet-base-v2", "true_key": "patient-teacher-2026", "alpha": 0.05, "n_calib_problems": 800}
+
+| hop | style | eps_hat | mu_hat | n_steps | trace_len |
+|---|---|---|---|---|---|
+| 0 | None | 0.0290 | +0.0067 | 345 | 14.4 |
+| 1 | guard_lexicon | 0.0269 | +0.0097 | 186 | 7.8 |
+| 1 | paraphrase | 0.0000 | +0.0031 | 157 | 6.5 |
+| 2 | guard_lexicon | 0.0521 | +0.0142 | 192 | 8.0 |
+| 2 | paraphrase | 0.0000 | +0.0062 | 162 | 6.8 |
+| 3 | guard_lexicon | 0.0640 | +0.0277 | 203 | 8.5 |
+| 3 | paraphrase | 0.0058 | +0.0043 | 172 | 7.2 |
+
+**衰减拟合**：
+- `guard_lexicon`：优选 **geometric**；geo(rho=1.000, sse=0.00098)；floor(rho=0.987, eps_inf=0.9999, sse=0.00013)
+- `paraphrase`：优选 **geometric**；geo(rho=0.000, sse=0.00003)；floor(rho=0.000, eps_inf=0.0019, sse=0.00002)
+
+**控制器决策**：
+- R1 注入信号过弱: hop0 eps_0=0.0290 (alpha=0.05) -> 无信号时测衰减律无意义. 加强 trigger 或换生成模型
+
+**下轮配置覆盖**：`{"strengthen_trigger": true}`
+
+### EXP-R0 附加诊断 — 长度混淆对照（决定性负面结果）
+
+`experiments/relay/length_control.py`，hop0，24 题：
+
+| 检测器 | AUROC | 说明 |
+|---|---|---|
+| len_only（只数步数） | **0.8785** | 平凡特征即达 0.88 |
+| semantic（预印本 Algorithm 4 式相似度） | 0.6354 | 未控制长度 |
+| **semantic, length-matched**（caliper=1, n_pairs=9） | **0.5432** | **控制长度后 ≈ 随机** |
+
+轨迹步数：triggered mean=14.38 (sd 3.86)，clean mean=7.38 (sd 4.05)。
+
+**结论**：trigger 确实留下强信号，但该信号**几乎完全由轨迹长度承载**。
+"推理步 vs trigger 指令文本"的 embedding 相似度——即预印本 Algorithm 4 的统计量——
+在控制长度混淆后检测力等同随机。
+
+**保留**：24 题、匹配后仅 9 对、单 trigger、单模型、单数据集。方向明确但需更大样本确认。
+
+**诊断**：统计量设计错误。trigger 的指纹在**推理风格与结构**中，而非与指令句的词汇重叠中。
+一个形如 "Step 3: Calculate the total number of eggs used" 的步骤，无论是否被 trigger 引导，
+与 "As you solve the problem, explain like a careful reviewer would..." 的余弦相似度都很低。
+
+**修正方向（待确认后实施）**：威胁模型中 owner 持有密钥，**可生成任意多 (triggered, clean)
+配对参考数据**。应从 owner 自身的参考生成中**拟合判别方向**，而非直接用指令文本做相似度。
+wrong-key 校准依然适用（对每个错误密钥同样拟合），EXP-005 的 per-pattern 标准化贡献保留。
+所有评估必须 length-matched。
