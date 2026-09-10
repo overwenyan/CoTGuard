@@ -88,24 +88,28 @@
       "id": "S9",
       "stage": "experiment",
       "title": "跨模型迁移检验（EXP-R2）",
-      "status": "in_progress",
+      "status": "completed",
       "detail": "用 Qwen3-14B 作第二生成模型家族：(a) 补齐3模型经验门槛 (b) 检验特异签名是否跨模型可迁移(在Tulu上学、在Qwen3上测)",
       "createdAt": "2026-09-09",
       "startedAt": "2026-09-09",
       "jobId": "20031116",
-      "note": "v1 (作业20023848) 被 think-block 截断污染，结论已撤回。v2 已提交，用修复后的 enable_thinking=False + strip_think 防御层"
+      "note": "v1 (作业20023848) 被 think-block 截断污染，结论已撤回。v2 已提交，用修复后的 enable_thinking=False + strip_think 防御层",
+      "completedAt": "2026-09-09",
+      "result": "Qwen3-14B(干净v2) 的 per-key 签名强度系统性高于 Tulu-3-8B(logistic top-1 0.53-0.61 vs 0.36-0.48)，跨模型稳健性得到正面支持"
     },
     {
       "id": "S10",
       "stage": "experiment",
       "title": "多跳改写鲁棒性（EXP-R3）—— 决定论文前提是否成立",
-      "status": "in_progress",
+      "status": "completed",
       "detail": "已生成的8密钥轨迹逐跳改写(paraphrase + guard_lexicon对抗性规避)，中继方用DeepSeek-R1-Qwen3-8B(不知道密钥)，每跳重测密钥可恢复性(学习式读出top-1)。判据：signature是否撑过改写、在第几跳衰减到随机",
       "createdAt": "2026-09-09",
       "startedAt": "2026-09-09",
       "jobId": "20031117",
       "priority": "critical",
-      "note": "v1 (作业20025264) 被 think-block 截断污染（hop1 截断率80%），衰减曲线不可信。中继方由 DeepSeek-R1-Qwen3-8B 换为 Qwen3-14B（非思考模式，冒烟测试确认0截断）。v2 已提交"
+      "note": "v1 (作业20025264) 被 think-block 截断污染（hop1 截断率80%），衰减曲线不可信。中继方由 DeepSeek-R1-Qwen3-8B 换为 Qwen3-14B（非思考模式，冒烟测试确认0截断）。v2 已提交",
+      "completedAt": "2026-09-09",
+      "result": "核心命题成立：学习式读出 top-1 在 4 跳改写(paraphrase+guard_lexicon)下全程稳定 0.40-0.43(t=20-43)，hop0->hop4 漂移仅噪声量级，无显著衰减。反直觉：guard_lexicon对抗性规避未比良性paraphrase更有效破坏签名"
     },
     {
       "id": "S11",
@@ -114,7 +118,7 @@
       "status": "pending",
       "detail": "按竞品(AgentMark/SeqWM/ActHook)经验门槛：3数据集(当前1/3)、3模型(S9完成后2/3)、2-4 baseline(当前0)、utility主表(未测)。取决于S10结果再决定投入规模",
       "createdAt": "2026-09-09",
-      "blockedBy": "S10"
+      "note": "S10 已解除阻塞且结果正面(签名不衰减)。经验门槛现状：数据集1/3、模型2/3(Tulu+Qwen3)、baseline 0、utility主表未测。待办还含：4跳是否为衰减上限未知需测更多跳数；guard_lexicon弱攻击需升级为叠加压力版本；跳数曲线需第二中继模型家族交叉验证"
     }
   ]
 }
