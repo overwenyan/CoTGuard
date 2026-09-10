@@ -108,13 +108,46 @@ def main():
         print(f"      判别 n-gram: {', '.join(repr(g) for g in grams)}")
         print(f"      其中含密钥内容词的: {hit}/{len(grams)}")
 
-    # ---------- 3. 汇总判决 ----------
+    # ---------- 3. 匹配的随机基线 ----------
+    # 外部审阅指出: "重叠 0.11-0.16 即基本为零"缺一个匹配基线 —— 给定指令长度、
+    # 特征词表与 top-k 选择, 随机情况下期望重叠本就不是 0. 故把每个密钥的判别特征
+    # 与**其他密钥**的文本比对: 同样的特征、同样的长度分布, 只错配密钥身份.
+    def null_overlap(feats_per_key, is_ngram):
+        vals = []
+        for ki in range(K):
+            for kj in range(K):
+                if ki == kj:
+                    continue
+                pat = entries[kj]["pattern"]
+                if is_ngram:
+                    pw = content_words(pat)
+                    vals.append(sum(bool(set(re.findall(r"[a-z]{4,}", g)) & pw)
+                                    for g in feats_per_key[ki]) / max(len(feats_per_key[ki]), 1))
+                else:
+                    low = pat.lower()
+                    fw = feats_per_key[ki]
+                    if not fw:
+                        continue
+                    vals.append(sum(bool(re.search(rf"\b{re.escape(x)}\b", low))
+                                    for x in fw) / len(fw))
+        return float(np.mean(vals)) if vals else float("nan")
+
+    style_feats = [[names[i][2:] for i in np.argsort(-clf.coef_[ki])[: args.top]
+                    if names[i].startswith("w:")] for ki in range(K)]
+    ngram_feats = [[vocab[i] for i in np.argsort(-clf2.coef_[ki])[: args.top]]
+                   for ki in range(K)]
+    sh_null = null_overlap(style_feats, False)
+    nh_null = null_overlap(ngram_feats, True)
+
+    # ---------- 4. 汇总判决 ----------
     sh = sum(h for h, _ in style_hits) / max(sum(n for _, n in style_hits), 1)
     nh = sum(h for h, _ in ngram_hits) / max(sum(n for _, n in ngram_hits), 1)
     print("\n" + "=" * 78)
-    print(f"判别性功能词落在密钥文本内的比例: {sh:.3f}")
-    print(f"判别性 n-gram 含密钥内容词的比例: {nh:.3f}")
+    print(f"判别性功能词落在密钥文本内的比例: {sh:.3f}   (错配密钥基线 {sh_null:.3f})")
+    print(f"判别性 n-gram 含密钥内容词的比例: {nh:.3f}   (错配密钥基线 {nh_null:.3f})")
     print("-" * 78)
+    print("注: 与基线之差才是'该密钥自身文本的贡献'; 绝对值接近 0 不等于零贡献,")
+    print("    绝对值不低也不等于有贡献 —— 必须与错配基线比较.")
     # 解释与数值挂钩 —— 不得无条件打印结论(见 confusion_structure.py 事故教训)
     if nh < 0.25 and sh < 0.25:
         print("=> 判别特征**基本不来自密钥文本**: 支持'密钥→指纹映射是特异的, 非语义的'假说.")
@@ -129,6 +162,8 @@ def main():
     out.write_text(json.dumps({
         "config": vars(args),
         "style_hit_frac": sh, "ngram_hit_frac": nh,
+        "style_hit_null": sh_null, "ngram_hit_null": nh_null,
+        "style_excess": sh - sh_null, "ngram_excess": nh - nh_null,
         "per_key": [{"key_idx": i, "pattern": entries[i]["pattern"],
                      "style_hits": style_hits[i], "ngram_hits": ngram_hits[i]}
                     for i in range(K)]}, ensure_ascii=False, indent=2))
