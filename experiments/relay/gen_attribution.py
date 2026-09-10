@@ -43,6 +43,19 @@ def build_channel_spaces(n_keys):
     return out
 
 
+def build_family_spaces(n_keys):
+    """EXP-D1: 词法合规 vs 结构合规两族 anchor.
+
+    这是由 EXP-C4(信号来自 anchor 而非 persona)直接推出的**设计**实验:
+    把密钥编码进推理的**结构**而非**措辞**, 应当显著更抗词汇擦洗.
+    两族共用模板池、密钥数与生成设置, 只差 anchor 的语义类型.
+    """
+    from trigger_v2 import key_pool_family, make_trigger_family
+    return {f"{fam}_anchor": [(k, make_trigger_family(k, fam))
+                              for k in key_pool_family(n_keys, fam, prefix=fam[:3])]
+            for fam in ("lexical", "structural")}
+
+
 def build_key_spaces(n_keys, encoder):
     """返回 {space_name: [(key, pattern), ...]}."""
     spaces = {}
@@ -70,8 +83,9 @@ def main():
     ap.add_argument("--temperature", type=float, default=0.7)
     ap.add_argument("--embed-model", default="sentence-transformers/all-mpnet-base-v2")
     ap.add_argument("--dataset", default="gsm8k", choices=["gsm8k", "math500", "folio"])
-    ap.add_argument("--spaces", default="v2", choices=["v2", "channels"],
-                    help="v2=可分离性三档(EXP-R1); channels=通道分离消融(EXP-C4)")
+    ap.add_argument("--spaces", default="v2", choices=["v2", "channels", "families"],
+                    help="v2=可分离性三档(EXP-R1); channels=通道分离消融(EXP-C4); "
+                         "families=词法/结构 anchor 两族(EXP-D1)")
     args = ap.parse_args()
 
     out = pathlib.Path(args.out_dir)
@@ -82,7 +96,9 @@ def main():
     from sentence_transformers import SentenceTransformer
 
     enc = SentenceTransformer(args.embed_model)
-    spaces = (build_channel_spaces(args.n_keys) if args.spaces == "channels"
+    spaces = ({"channels": build_channel_spaces,
+               "families": build_family_spaces}[args.spaces](args.n_keys)
+              if args.spaces in ("channels", "families")
               else build_key_spaces(args.n_keys, enc))
     (out / "key_spaces.json").write_text(json.dumps(
         {k: [{"key": a, "pattern": b} for a, b in v] for k, v in spaces.items()},

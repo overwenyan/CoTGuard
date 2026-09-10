@@ -1401,3 +1401,55 @@ EXP-C4 判定载体是**被诱导的行为**而非表层文体。随之的直接
 打分脚本的解释性输出已与实测数值挂钩（四分支），沿用 `confusion_structure.py` 的教训。
 
 m ∈ {2, 4} 两档前缀长度；前缀可切出率 98.4% / 85.9%。
+
+---
+
+## 体裁修正（用户 2026-09-10 指出）：不是分析论文，是方法论文
+
+用户指出所给参考文章（AgentMark / SeqWM / ActHook / PolicyGuard）**以方法文章为主**，
+与我把本工作定性为"分析论文"冲突。**这个判断我错了，原因是把分析的产出看轻了。**
+
+重看三条核心发现，它们不是终点，是**三个可操作、且无人试过的设计杠杆**：
+
+| 分析发现 | 直接推出的设计动作 |
+|---|---|
+| 信号来自 anchor，persona 完全不携带（EXP-C4） | **人设是纯浪费的 prompt 预算**，全部给指令 |
+| 文本 embedding 空间的可分离性是错误的轴（第 4 环替代发现） | 在**轨迹/读出空间**选密钥，用探针轨迹贪心 |
+| 擦洗移除字面用词、移不掉被诱导的行为（EXP-A1/B2/C4） | 设计**只诱导行为、不规定用词**的 anchor |
+
+第三条给出本文的**中心设计 trick**，且是可证伪的方法主张：
+
+> 规定"写什么"的 anchor 留下字面残留，一擦掉一半；规定"按什么顺序算什么"的 anchor
+> 不留字面痕迹，但**任何保答案的改写都必须保留计算顺序**，故应远比前者抗擦洗。
+> —— 把密钥编码进**推理的结构**，而非**措辞**。
+
+论文结构因此回到竞品模板：分析不再是全部内容，而是**"为什么这样设计"的论证**。
+
+---
+
+## EXP-D1 — 词法合规 vs 结构合规（作业 20040940，方法侧主实验）
+
+两族 anchor，共用模板池/密钥数/生成设置，只差 anchor 的语义类型：
+
+- `lexical_anchor`：规定用词或标签（"restate the target before each computation"、
+  "label each step with the operation it performs"）—— 模型照着说，不改变算什么
+- `structural_anchor`：规定顺序或选择（"work backwards from the quantity being asked for"、
+  "do all the additions before any of the multiplications"、
+  "compute every intermediate quantity twice, by two different routes"）
+  —— 改变算什么、按什么次序算，**不规定任何措辞**
+
+### 可证伪预测（先写下，已同时写入 sbatch 与 trigger_v2.py）
+
+| | 预测 |
+|---|---|
+| hop0 归因 | LEX ≥ STR（LEX 多一条字面通道） |
+| **擦洗后保留率** | **STR ≫ LEX** ← **设计主张的成败全在这一行** |
+| 指纹解剖 | STR 的判别 n-gram 与密钥文本重叠 ≈ 错配基线（无可抄）；LEX 显著高于基线 |
+
+**若 STR 保留率不高于 LEX，本设计主张被证伪**——那意味着"结构比措辞难擦"不成立。
+
+### 同时测 utility，因为代价必须一起报
+
+STR 强制次优计算顺序（如"先做完所有加法再做乘法"），**很可能更伤正确率**。
+那是这条设计的代价，与抗擦洗性一起构成可用的权衡曲线。
+竞品那种无条件的 "utility preserved" 主张我们不能用（见 story_line 局限 2）。

@@ -169,3 +169,74 @@ def key_pool_for(maker, n: int, prefix: str = "k", component: str | None = None)
             seen.add(tag); keys.append(k)
         i += 1
     return keys
+
+
+# ---------------------------------------------------------------------------
+# EXP-D1 (方法侧): 词法合规 vs 结构合规 —— 两族 anchor
+#
+# EXP-C4 判定可归因信号来自 anchor(指令合规行为)而非 persona; EXP-A1/B2 观察到
+# monitor-aware 擦洗在首跳移除 38-43% 后平台化. 把两者接起来给出一个可证伪的**设计主张**:
+#
+#   LEX  规定"写什么"(用词/标签) -> 模型照抄, 字面残留高, **一擦就掉**
+#   STR  规定"按什么顺序算什么"   -> 无字面可抄, 但**任何保答案的改写都必须保留计算顺序**,
+#                                   故应显著更抗擦洗
+#
+# 这是本文的中心设计 trick: 把密钥编码进**推理的结构**而非**措辞**.
+#
+# 可证伪预测(先写下):
+#   hop0:  LEX 归因 >= STR (LEX 多一条字面通道)
+#   擦洗后: STR 的保留率 >> LEX 的保留率
+#   解剖:  STR 的判别 n-gram 与密钥文本重叠应 ≈ 错配基线(无可抄), LEX 显著高于基线
+#   若 STR 保留率不高于 LEX, 本设计主张被证伪 —— 那说明"结构比措辞难擦"不成立.
+# ---------------------------------------------------------------------------
+
+# 规定用词/标签: 模型只需照着说, 不改变算什么
+ANCHORS_LEXICAL = [
+    "restate the target before each computation",
+    "label each step with the operation it performs",
+    "name each quantity before combining it",
+    "mark which numbers are given and which are derived",
+    "state the relation you are about to apply",
+    "flag every assumption as you rely on it",
+    "note the invariant that stays fixed",
+    "separate what is known from what is inferred",
+]
+
+# 规定顺序/选择: 改变算什么、按什么次序算, 不规定任何措辞
+ANCHORS_STRUCTURAL = [
+    "work backwards from the quantity being asked for",
+    "do all the additions before any of the multiplications",
+    "compute every intermediate quantity twice, by two different routes",
+    "solve a simplified version of the problem first, then adjust it",
+    "start from whichever quantity has the fewest dependencies",
+    "group the quantities by their units before combining any of them",
+    "settle the largest quantity first and the smallest one last",
+    "determine what is unknown before performing any arithmetic",
+]
+
+ANCHOR_ONLY_TEMPLATES_D1 = [
+    "Work through this, and {anchor}.",
+    "As you reason, {anchor}.",
+    "Approach this carefully and {anchor}.",
+    "Take care to {anchor}.",
+]
+
+
+def make_trigger_family(key: str, family: str) -> str:
+    """family in {'lexical', 'structural'}. 两族共用模板池, 只差 anchor 语义类型."""
+    pool = {"lexical": ANCHORS_LEXICAL, "structural": ANCHORS_STRUCTURAL}[family]
+    t = ANCHOR_ONLY_TEMPLATES_D1[_idx(key, "tmpl", len(ANCHOR_ONLY_TEMPLATES_D1))]
+    return t.format(anchor=pool[_idx(key, "anchor", len(pool))])
+
+
+def key_pool_family(n: int, family: str, prefix: str = "k") -> list[str]:
+    """按 anchor 索引去重 —— 必须按承载信息的那一段去重(见 key_pool_for 的说明)."""
+    pool = {"lexical": ANCHORS_LEXICAL, "structural": ANCHORS_STRUCTURAL}[family]
+    seen, keys, i = set(), [], 0
+    while len(keys) < n and i < 200 * n + 5000:
+        k = f"{prefix}-{i}"
+        a = _idx(k, "anchor", len(pool))
+        if a not in seen:
+            seen.add(a); keys.append(k)
+        i += 1
+    return keys
