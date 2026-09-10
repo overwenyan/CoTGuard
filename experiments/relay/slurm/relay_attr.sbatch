@@ -22,7 +22,7 @@ $P experiments/relay/relay_attribution.py \
   --space v2_diverse \
   --relay-model Qwen/Qwen3-14B \
   --styles paraphrase,guard_lexicon \
-  --max-hops 4 --n-problems 60 --batch-size 16 --max-new-tokens 600
+  --max-hops 10 --n-problems 60 --batch-size 16 --max-new-tokens 600
 
 echo "=== 打分 ==="
 $P experiments/relay/score_relay_attribution.py --run-dir experiments/relay/runs/relay_attr_v2
