@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-09-10",
+  "supersedes": ".pipeline/docs/idea_board.json (2026-09-09, 纯文献阶段, 建立在后来被证伪/降级的假设上)",
+  "basis": {
+    "note": "本轮不是从 gap_matrix 的文献空白出发, 而是从本项目自己的实验发现出发",
+    "groundedOn": [
+      "EXP-C4: 可归因信号来自 anchor(指令合规行为), persona 完全不携带信号",
+      "EXP-N2: 密钥持续条件化主导(swapped acc_key 2.68-2.78x), 前缀有弱独立残留(nokey 1.6-1.9x)",
+      "EXP-D1(进行中): 结构 anchor vs 词法 anchor 的鲁棒性对比",
+      "EXP-B1: TF-IDF 反超学习式 embedding 读出的未解之谜"
+    ],
+    "userConstraint": "用户 2026-09-10: 参考文章以方法为主, 要求生成新方法而非继续偏分析"
+  },
+  "ideas": [
+    {
+      "id": "M1", "name": "可验证冗余计算证书", "status": "selected",
+      "oneLiner": "把'独立算两遍、核对一致'的 structural anchor 从众多 anchor 之一, 升级为方法中心: 黑盒条件下机器可核验的证书, 而非相似度分数.",
+      "breaks": {"paper": "BadChain (2401.12242) + ShadowCoT (2504.05605) + Tr-GoF (2411.13868)",
+        "limitation": "BadChain 论证防御方拿不到超过统计检测的信号; ShadowCoT 的一致性验证需要白盒; Tr-GoF 批评加和型聚合规则次优. 我们给出黑盒离散可核验证书, 绕开聚合规则选择这整个理论问题."},
+      "buildsOn": "structural anchor 池已含此 anchor(D1 正在生成 structural_anchor/key01)",
+      "distanceToCode": "近", "risk": "一致性容差设计(数值/符号等价判定); 核验开销影响可用性"
+    },
+    {
+      "id": "M2", "name": "重复编码的结构化锚点", "status": "selected",
+      "oneLiner": "把 N2 发现的前缀弱残留(1.6-1.9x)从副作用变成设计目标: 在轨迹多个位置独立重复放置结构约束, 抗碎片化/截断.",
+      "breaks": {"paper": "Prompt Infection (2410.07283)",
+        "limitation": "其 payload 靠字面复制才能在 agent 间存活; 我们展示不需要字面复制、靠独立重复结构约束就能抗碎片化的机制."},
+      "buildsOn": "EXP-N2 的前缀弱残留发现", "distanceToCode": "中(需重新设计 anchor 布局与多点注入生成逻辑)",
+      "risk": "约束间可能冲突; 需测每处约束的边际贡献是否独立可加"
+    },
+    {"id": "M3", "name": "对比度量学习读出", "status": "deferred",
+      "oneLiner": "为'运算顺序/依赖图差异'这类结构信号定制判别式表示, 而非用通用 TF-IDF.",
+      "breaks": {"paper": "White et al. (2606.22698)", "limitation": "其读出器为对话文体设计, 无人为推理结构信号设计过专门判别空间."},
+      "distanceToCode": "中(需配对训练管线)", "risk": "数据量; 小 K 过拟合"},
+    {"id": "M4", "name": "密钥驱动的锚点轮换", "status": "deferred",
+      "oneLiner": "用密钥做种子的伪随机函数逐题选 anchor, 攻击者学不出固定触发器.",
+      "breaks": {"paper": "SemInv (Xie et al. 2025)", "limitation": "trigger 逆向工程假设存在固定触发器可供搜索."},
+      "distanceToCode": "中", "risk": "密钥空间设计复杂度上升, 且已知可分离性非单调"},
+    {"id": "M5", "name": "跨 agent 一致性协议", "status": "deferred",
+      "oneLiner": "从事后统计检测升级为主动协议: 中继 agent 被要求核验指定结构检查点.",
+      "breaks": {"paper": "Audit Trails (2601.20727)", "limitation": "审计轨迹叙事缺少嵌入多智能体流水线的具体协议."},
+      "distanceToCode": "远(体裁改变, 偏系统/协议贡献)", "risk": "强假设(中继 agent 愿意配合核验); 写作改道"}
+  ],
+  "userSelection": ["M1", "M2"],
+  "selectionNote": "M1+M2 用户 2026-09-10 选定. M3(对比读出)/M4(密钥轮换)/M5(跨agent协议) 推迟, 风险更高或体裁偏离更大."
+}
