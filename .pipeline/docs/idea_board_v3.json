@@ -1,0 +1,58 @@
+{
+  "generatedAt": "2026-09-10",
+  "supersedes": [".pipeline/docs/idea_board.json (2026-09-09, literature-only)",
+                 ".pipeline/docs/idea_board_v2.json (2026-09-10, provenance-method M1-M5)"],
+  "userDirective": "Generate METHODS (ICML shape: problem + method + small theory + experiments), strongly tied to LLM + agents + AI safety; apply traditional trustworthy-ML techniques; school-scale compute; not restricted to watermarking; multi-agent welcome.",
+  "toolingCaveat": "WebSearch blocked by safety classifier during this pass; venue labels are from memory (cutoff 2026-06) and marked confirmed/unverified. Live verification pending.",
+  "robustnessAudit": {
+    "replicated_3models_x_3datasets": [
+      "lexical readout 3.0-7.4x, embedding never beats it (B1)",
+      "unsupervised trigger-sim attribution ~ chance",
+      "instruction echo: n-gram excess +0.27..+0.77 over mismatched-key null; function-word excess ~0 (C3)",
+      "key-space separability non-monotonic (crowded<diverse>greedy)"
+    ],
+    "single_shot_Tulu_GSM8K_one_relay": [
+      "length confound 0.879->0.543 (R0)",
+      "persona carries no signal, instruction does (C4)",
+      "no zero-shot to unseen keys (R1d)",
+      "10-hop robustness 88-90% retained (S12/B2)",
+      "monitor-aware attack -39% then plateau ~1.9x (A1)",
+      "key-conditioning dominates prefix (N2)",
+      "label-permutation null at chance (C5)"
+    ],
+    "note": "Mechanism layer = 1 generator x 1 dataset x 1 relay model x 1 generation draw. Must replicate before building on it."
+  },
+  "ideas": [
+    {"id": "P1", "name": "Instruction-echo inversion as black-box CoT-backdoor defense",
+     "problem": "BadChain (ICLR 2024) claims detection impossible because trigger unknown to defender; existing detectors 11-42% (ShadowCoT Table VIII).",
+     "method": "Invert the injected instruction from the victim's traces using the C3/C4 echo (n-gram excess over mismatched-instruction null); flag anomalous recovered instructions. TML analogue: Neural Cleanse / trigger inversion lifted to prompts.",
+     "theory": "Identifiability from echo excess; conformal p-values on echo score for finite-sample FPR.",
+     "experiments": "BadChain/BadThink-style triggers x 3 generators x 3 datasets; baselines CoS, OLF, UniGuardian (in corpus); paraphrasing attacker.",
+     "changesProblem": true, "safety": true, "multiAgent": false, "infraReuse": "high", "risk": "low"},
+    {"id": "P2", "name": "Byzantine-robust aggregation for multi-agent reasoning",
+     "problem": "Debate/relay/MoA pipelines broken by one compromised agent (Prompt Infection, AgentPoison NeurIPS 2024). How many adversarial agents can be tolerated and localized?",
+     "method": "Structural obligations per agent (M1 redundancy across agents); aggregator keeps only verifiable sub-claims, then robust aggregation (median/trimmed mean). TML analogue: Byzantine-robust FL aggregation.",
+     "theory": "Correct answer recovered if adversarial < n/2 among verified claims; localization under honest majority.",
+     "experiments": "3-7 agent instances on GSM8K/MATH; 1-3 adversaries (wrong-answer, prompt-infection, silent-sabotage); baselines majority vote, plain debate, LLM-judge.",
+     "changesProblem": true, "safety": true, "multiAgent": true, "infraReuse": "medium", "risk": "low"},
+    {"id": "P3", "name": "Conformal CoT monitoring with obfuscation-shift detection",
+     "problem": "CoT monitors have no per-instance guarantee and collapse 96%-><10% under pressure (2510.19851).",
+     "method": "Conformal monitor with prediction sets/abstention; shift detector from our permutation-null machinery flags broken exchangeability. TML analogue: conformal + covariate-shift detection.",
+     "theory": "Marginal coverage under exchangeability; detectable-shift condition vs pressure level.",
+     "experiments": "DeepSeek-R1-Qwen3-8B, Qwen3-14B; toy side-task envs; pressure ladder P=0..7.",
+     "changesProblem": true, "safety": true, "multiAgent": false, "infraReuse": "medium", "risk": "needs misbehavior dataset"},
+    {"id": "P4", "name": "Structural (computation-order) watermark for reasoning traces",
+     "problem": "Trajectory watermarks need discrete actions; ICW (ICLR 2026) is lexical and scrub-vulnerable.",
+     "method": "Encode bits in computation order (D1 as method); structural decoder (M1 verifier generalized).",
+     "theory": "Capacity ~ log2(#distinguishable orderings); Fano bound.",
+     "experiments": "LEX vs STR vs ICW under paraphrase + monitor-aware scrubbing; utility cost curve.",
+     "changesProblem": false, "safety": false, "multiAgent": false, "infraReuse": "high (D1 running)", "risk": "adjacent to White et al."},
+    {"id": "P5", "name": "Verifiable reasoning checkpoints in relay pipelines",
+     "problem": "Which hop corrupted the reasoning?",
+     "method": "Each relay reproduces one designated redundant computation; verifier checks certificate chain.",
+     "theory": "Localization to within one hop under honest verifier.",
+     "experiments": "Relay chains with one corrupted hop.",
+     "changesProblem": false, "safety": true, "multiAgent": true, "infraReuse": "medium", "risk": "requires cooperative relays"}
+  ],
+  "recommendation": "P1 or P2 as the pivot (change the problem, keep experiments as motivation). Replicate single-shot mechanism results across generators/relay models first (~1 GPU-day)."
+}

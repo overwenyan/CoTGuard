@@ -61,3 +61,31 @@
 **旧 idea_board.json（I1–I5，2026-09-09）状态**：**作废，非删除**。那套"共形多跳检测理论"
 建立在 trigger-sim 相似度检测这个后来被证明近乎随机的读出上，且从未被实验验证。
 保留存档供对比，但不再作为规划依据。新方案见 `idea_board_v2.json`。
+
+## 2026-09-10 — Pivot to P2: Byzantine-robust aggregation for multi-agent reasoning
+
+**Decision.** After a robustness audit and a method-ideation pass (`idea_board_v3.json`), the user
+chose **P2 (Structurally-Verified Robust Aggregation, SVRA)** as the paper's problem. The CoTGuard
+provenance experiments become *motivation* (why instruction-compliance leaves a verifiable structural
+signal), not the contribution. Two conditions attached: (1) **replicate the single-shot mechanism
+results first** (~1 GPU-day, `replicate_mechanism.sbatch`); (2) **verify prior work in a fresh
+session** before freezing the experiment design (`lit_check_queue.md`, Sec. B).
+
+**Why pivot.** The audit showed the readout comparison is replicated (3 models × 3 datasets) but
+every mechanism-layer result — length confound, persona=0, 10-hop, attack plateau, prefix-swap —
+is Tulu-3-8B × GSM8K × one relay × one generation draw. Meanwhile the provenance *application* is
+occupied (White et al. 2606.22698). Adding a method to the same problem (M1/M2) stays adjacent;
+changing the problem while reusing the technical assets does not.
+
+**Why P2 over P1.** Both change the problem. P1 (instruction-echo inversion as CoT-backdoor
+defense) is faster and has baselines on disk; P2 is the cleaner ICML shape (problem + method +
+tolerance bound + grid), lands squarely on multi-agent + safety, and applies a classic
+trustworthy-ML technique (Byzantine-robust aggregation). User preference decided.
+
+**Deferred, not discarded.** P1 (backdoor defense), P3 (conformal CoT monitor with shift
+detection), P4 (structural watermark = D1 as method), P5 (relay checkpoints). M1's redundancy
+verifier and D1's structural routes are absorbed into SVRA as components. M2 (repetition-coded
+anchors) is shelved.
+
+**Superseded.** `idea_board_v2.json` (M1–M5 as provenance methods) and `publishable_angle.md`
+(direction 1+2, "carrier judgment + maintenance mechanism") are superseded by `p2_design.md`.

@@ -174,14 +174,53 @@
     {
       "id": "S18",
       "title": "N2 前缀自维持：信号由密钥条件化还是前缀自回归维持",
-      "status": "pending",
-      "note": "key A/prefix A|B, key B/prefix A|B 四组合 + 去密钥续写。切换 prompt 须重算 KV, 不可仅 mask。"
+      "status": "completed",
+      "jobId": "20040924",
+      "note": "key A/prefix A|B, key B/prefix A|B 四组合 + 去密钥续写。切换 prompt 须重算 KV, 不可仅 mask。",
+      "result": "密钥持续条件化主导(swapped acc_key 2.68-2.78x 接近天花板), 前缀有弱独立残留(nokey 1.64x/1.87x). 单模型单数据集, 待复现."
     },
     {
       "id": "S19",
       "title": "核对 White et al. 差异化: 被动单轨迹 vs 主动探测+聚合",
+      "status": "deferred",
+      "note": "P2 pivot 后降级: 仅当论文仍需 provenance 对照时再做。"
+    },
+    {
+      "id": "S20",
+      "stage": "experiment",
+      "title": "EXP-REP 复现机制层结果到 Qwen3/Mistral 生成器 + Mistral 中继",
       "status": "pending",
-      "note": "把他们的读出移植到我们的被动设置做对照, 量化'主动探测+聚合10组'带来的增益。"
+      "detail": "replicate_mechanism.sbatch: E 长度混淆 -> A 通道消融(C4) -> B 两族 anchor(D1/M1) -> D 前缀交换(N2) -> C Mistral 中继的 adaptive_max 与 paraphrase 5 跳. ~5 GPU h.",
+      "submit": "sbatch --dependency=afterany:20040940 experiments/relay/slurm/replicate_mechanism.sbatch",
+      "blocker": "sbatch 在本会话被安全分类器拦截; 需在新会话或非 auto 模式提交",
+      "createdAt": "2026-09-10"
+    },
+    {
+      "id": "S21",
+      "stage": "ideation",
+      "title": "P2 先验文献核查: Byzantine / adversarial-agent / robust-aggregation for LLM multi-agent",
+      "status": "pending",
+      "detail": "见 lit_check_queue.md Sec. B. 必须在冻结 p2_design.md 的实验设计前完成. 同时核对 idea_board_v3 的 venue 标签(Sec. A).",
+      "blocker": "WebSearch 在本会话被拦截; 用户选择在新会话执行",
+      "createdAt": "2026-09-10"
+    },
+    {
+      "id": "S22",
+      "stage": "experiment",
+      "title": "P2/SVRA 管线: 对手轨迹生成 + 子断言抽取核验 + 鲁棒聚合 + 基线 + 定位",
+      "status": "pending",
+      "detail": "见 p2_design.md Sec. 3/5. 诚实轨迹复用 attr_families/structural_anchor(+复现批次); 新写 gen_adversary.py(4 类对手) 与 aggregate_svra.py(CPU). 基线: 多数投票/置信加权/LLM-judge/两轮辩论/答案级中位数消融. 网格 n∈{3,5,7} × f∈{0..3} × GSM8K/MATH × 3 生成器.",
+      "dependsOn": ["S20", "S21"],
+      "createdAt": "2026-09-10"
+    },
+    {
+      "id": "S23",
+      "stage": "experiment",
+      "title": "EXP-D1 / EXP-M1 收尾: 全量数据判决 + 提交 M2 代码",
+      "status": "in_progress",
+      "jobId": "20040940",
+      "detail": "D1 在 adaptive_max 中继阶段(hop3/5, lexical). 完成后: 读 baselines/anatomy/cross_hop 结果, 用全量 16 密钥重跑 verify_redundant.py 定论 M1 机制. M2 代码(gen/score_repetition_coded.py, sbatch)已写未提交 —— git 被拦截.",
+      "createdAt": "2026-09-10"
     }
   ]
 }
