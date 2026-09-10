@@ -52,7 +52,7 @@ def main():
     ap.add_argument("--max-new-tokens", type=int, default=400)
     ap.add_argument("--temperature", type=float, default=0.7)
     ap.add_argument("--embed-model", default="sentence-transformers/all-mpnet-base-v2")
-    ap.add_argument("--dataset", default="gsm8k", choices=["gsm8k", "math500"])
+    ap.add_argument("--dataset", default="gsm8k", choices=["gsm8k", "math500", "folio"])
     args = ap.parse_args()
 
     out = pathlib.Path(args.out_dir)
@@ -84,6 +84,19 @@ def main():
         ds = ds.select(range(min(args.n_problems, len(ds))))
         problems = [{"qid": i, "question": r["problem"], "gold": r["answer"],
                      "subject": r["subject"], "level": r["level"]}
+                    for i, r in enumerate(ds)]
+    elif args.dataset == "folio":
+        # FOLIO: 一阶逻辑推理, 与 GSM8K/MATH 的数学推理性质不同.
+        # 选它而非又一个数学集, 是为了检验 MATH-500 上观察到的"效应量域依赖"
+        # 的边界 —— 若逻辑域也弱, 说明是"技术性/形式化程度"的问题;
+        # 若逻辑域强, 说明是数学/LaTeX 特有的.
+        ds = load_dataset("tasksource/folio", split="validation")
+        ds = ds.select(range(min(args.n_problems, len(ds))))
+        problems = [{"qid": i,
+                     "question": (f"Premises:\n{r['premises']}\n\n"
+                                  f"Conclusion: {r['conclusion']}\n\n"
+                                  f"Is the conclusion True, False, or Uncertain?"),
+                     "gold": r["label"]}
                     for i, r in enumerate(ds)]
     else:
         raise ValueError(f"未知数据集: {args.dataset}")
