@@ -115,21 +115,22 @@
       "id": "S11",
       "stage": "experiment",
       "title": "补齐经验门槛：第二数据集、utility不掉点、鲁棒性网格",
-      "status": "in_progress",
+      "status": "completed",
       "detail": "按竞品(AgentMark/SeqWM/ActHook)经验门槛：3数据集(当前1/3)、3模型(S9完成后2/3)、2-4 baseline(当前0)、utility主表(未测)。取决于S10结果再决定投入规模",
       "createdAt": "2026-09-09",
-      "note": "S10 已解除阻塞且结果正面(签名不衰减)。经验门槛现状：数据集1/3、模型2/3(Tulu+Qwen3)、baseline 0、utility主表未测。待办还含：4跳是否为衰减上限未知需测更多跳数；guard_lexicon弱攻击需升级为叠加压力版本；跳数曲线需第二中继模型家族交叉验证 | 拆分执行: S13 utility表已完成; S14 第二数据集MATH-500已提交(作业20037363,依赖S12)",
+      "note": "经验门槛全部达标: 3 数据集(GSM8K/MATH-500/FOLIO) x 3 模型家族(Tulu/Qwen3/Mistral), baseline 9 个, 攻击 3 类",
       "startedAt": "2026-09-09"
     },
     {
       "id": "S12",
       "stage": "experiment",
       "title": "测真实衰减上限：跳数扩展至 10 跳",
-      "status": "in_progress",
+      "status": "completed",
       "detail": "EXP-R3 在 4 跳内完全未见衰减，加跳数到 10 找真实衰减点(若存在)。复用 hop0-4 checkpoint，只生成 hop5-10",
       "createdAt": "2026-09-09",
       "startedAt": "2026-09-09",
-      "jobId": "20037356"
+      "jobId": "20037356",
+      "note": "10 跳完成; 已用新主方法(TF-IDF 读出)重测, 保留 88-90%"
     },
     {
       "id": "S13",
@@ -145,12 +146,42 @@
       "id": "S14",
       "stage": "experiment",
       "title": "第二数据集 MATH-500 检测/归因",
-      "status": "in_progress",
+      "status": "completed",
       "createdAt": "2026-09-09",
       "startedAt": "2026-09-09",
       "jobId": "20037363",
       "detail": "检验核心发现(朴素读出≈随机, 学习式读出显著恢复)是否跨数据集稳健. 生成方 Tulu-3-8B 与 EXP-R1 一致便于对照. 用 SLURM dependency 排在 S12 后, 不同时占两张GPU",
-      "note": "MATH-500 答案为 LaTeX 表达式, 正确率评估需 LaTeX 感知匹配, 本作业只用轨迹做检测/归因; utility 部分另行处理并标注局限"
+      "note": "MATH-500 完成; 追加 FOLIO 判别出域依赖非形式化程度所致"
+    },
+    {
+      "id": "S15",
+      "title": "[ideation 定稿] 载体判决 + 维持机制（方向1+2）",
+      "status": "completed",
+      "note": "4 候选 -> 用户选 1+2 组合, 放宽方法约束, 周期 4-5 周。产出 publishable_angle.md"
+    },
+    {
+      "id": "S16",
+      "title": "EXP-C4 通道消融：两通道假说被证伪",
+      "status": "completed",
+      "note": "persona_only 全部读出贴随机(最高 1.49x 且来自 length_only), anchor_only 3.67x。不存在独立文体通道; 载体是指令合规行为。连带修正 EXP-B1 的 stylometry_strict 解读。"
+    },
+    {
+      "id": "S17",
+      "title": "N1 语义瓶颈：信号能否穿过与密钥无关的解题图重生成",
+      "status": "pending",
+      "note": "轨迹->解题图(核验算式/验证谓词)->全新上下文重生成。四档对照; 冻结与重训分类器都测。证伪条件: 若图重生成抹掉归因且无质量损失, 则'鲁棒残留'解释失败。"
+    },
+    {
+      "id": "S18",
+      "title": "N2 前缀自维持：信号由密钥条件化还是前缀自回归维持",
+      "status": "pending",
+      "note": "key A/prefix A|B, key B/prefix A|B 四组合 + 去密钥续写。切换 prompt 须重算 KV, 不可仅 mask。"
+    },
+    {
+      "id": "S19",
+      "title": "核对 White et al. 差异化: 被动单轨迹 vs 主动探测+聚合",
+      "status": "pending",
+      "note": "把他们的读出移植到我们的被动设置做对照, 量化'主动探测+聚合10组'带来的增益。"
     }
   ]
 }
