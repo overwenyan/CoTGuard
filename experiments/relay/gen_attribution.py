@@ -52,6 +52,7 @@ def main():
     ap.add_argument("--max-new-tokens", type=int, default=400)
     ap.add_argument("--temperature", type=float, default=0.7)
     ap.add_argument("--embed-model", default="sentence-transformers/all-mpnet-base-v2")
+    ap.add_argument("--dataset", default="gsm8k", choices=["gsm8k", "math500"])
     args = ap.parse_args()
 
     out = pathlib.Path(args.out_dir)
@@ -70,10 +71,23 @@ def main():
         print(f"[space] {name}: {len(kp)} keys, 例: {kp[0][1]!r}", flush=True)
     del enc  # 生成阶段不需要, 腾出显存
 
-    ds = load_dataset("openai/gsm8k", "main", split="test")
-    ds = ds.select(range(min(args.n_problems, len(ds))))
-    problems = [{"qid": i, "question": r["question"], "gold": r["answer"]}
-                for i, r in enumerate(ds)]
+    if args.dataset == "gsm8k":
+        ds = load_dataset("openai/gsm8k", "main", split="test")
+        ds = ds.select(range(min(args.n_problems, len(ds))))
+        problems = [{"qid": i, "question": r["question"], "gold": r["answer"]}
+                    for i, r in enumerate(ds)]
+    elif args.dataset == "math500":
+        # MATH-500: answer 字段是 LaTeX 表达式(如 \left( 3, \frac{\pi}{2} \right)),
+        # 不能用 GSM8K 的数值匹配做正确率评估 —— utility 检查需 LaTeX 感知匹配,
+        # 本实验只用其轨迹做检测/归因, 正确率评估另行处理并标注局限.
+        ds = load_dataset("HuggingFaceH4/MATH-500", split="test")
+        ds = ds.select(range(min(args.n_problems, len(ds))))
+        problems = [{"qid": i, "question": r["problem"], "gold": r["answer"],
+                     "subject": r["subject"], "level": r["level"]}
+                    for i, r in enumerate(ds)]
+    else:
+        raise ValueError(f"未知数据集: {args.dataset}")
+    print(f"[data] {args.dataset}: {len(problems)} 题", flush=True)
 
     base = "Solve the problem. Think step by step, one step per line."
     model, tok = load_model(args.generator)

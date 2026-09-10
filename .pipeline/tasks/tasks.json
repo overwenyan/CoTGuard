@@ -115,10 +115,11 @@
       "id": "S11",
       "stage": "experiment",
       "title": "补齐经验门槛：第二数据集、utility不掉点、鲁棒性网格",
-      "status": "pending",
+      "status": "in_progress",
       "detail": "按竞品(AgentMark/SeqWM/ActHook)经验门槛：3数据集(当前1/3)、3模型(S9完成后2/3)、2-4 baseline(当前0)、utility主表(未测)。取决于S10结果再决定投入规模",
       "createdAt": "2026-09-09",
-      "note": "S10 已解除阻塞且结果正面(签名不衰减)。经验门槛现状：数据集1/3、模型2/3(Tulu+Qwen3)、baseline 0、utility主表未测。待办还含：4跳是否为衰减上限未知需测更多跳数；guard_lexicon弱攻击需升级为叠加压力版本；跳数曲线需第二中继模型家族交叉验证"
+      "note": "S10 已解除阻塞且结果正面(签名不衰减)。经验门槛现状：数据集1/3、模型2/3(Tulu+Qwen3)、baseline 0、utility主表未测。待办还含：4跳是否为衰减上限未知需测更多跳数；guard_lexicon弱攻击需升级为叠加压力版本；跳数曲线需第二中继模型家族交叉验证 | 拆分执行: S13 utility表已完成; S14 第二数据集MATH-500已提交(作业20037363,依赖S12)",
+      "startedAt": "2026-09-09"
     },
     {
       "id": "S12",
@@ -129,6 +130,27 @@
       "createdAt": "2026-09-09",
       "startedAt": "2026-09-09",
       "jobId": "20037356"
+    },
+    {
+      "id": "S13",
+      "stage": "experiment",
+      "title": "utility 不掉点主表",
+      "status": "completed",
+      "createdAt": "2026-09-09",
+      "completedAt": "2026-09-09",
+      "detail": "比较 clean vs triggered 的 GSM8K 答案正确率, 及多跳改写对正确率的影响",
+      "result": "影响是模型相关的: Tulu-3-8B(clean 0.620)上trigger提升至0.71-0.81(+1.4~+3.0SE); Qwen3-14B(clean 0.910)上轻微下降至0.81-0.90(-0.2~-2.1SE). 多跳改写不损害正确率(各跳稳定0.752-0.767). 抽取失败率全0. 结论: 不能宣称无条件utility不掉点, 强模型上有代价须如实写明"
+    },
+    {
+      "id": "S14",
+      "stage": "experiment",
+      "title": "第二数据集 MATH-500 检测/归因",
+      "status": "in_progress",
+      "createdAt": "2026-09-09",
+      "startedAt": "2026-09-09",
+      "jobId": "20037363",
+      "detail": "检验核心发现(朴素读出≈随机, 学习式读出显著恢复)是否跨数据集稳健. 生成方 Tulu-3-8B 与 EXP-R1 一致便于对照. 用 SLURM dependency 排在 S12 后, 不同时占两张GPU",
+      "note": "MATH-500 答案为 LaTeX 表达式, 正确率评估需 LaTeX 感知匹配, 本作业只用轨迹做检测/归因; utility 部分另行处理并标注局限"
     }
   ]
 }
