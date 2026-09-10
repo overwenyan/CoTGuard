@@ -26,6 +26,23 @@ from trigger import make_trigger  # noqa: E402
 from trigger_v2 import key_pool, make_trigger_v2, select_separable_keys  # noqa: E402
 
 
+def build_channel_spaces(n_keys):
+    """EXP-C4: 把 v2 的 trigger 拆成两条通道, 用于检验 EXP-C3 的两通道假说.
+
+    persona_only 只留人设(C2 特异文体通道), anchor_only 只留用词指令(C1 词法通道).
+    两者除成分外完全一致, 故差异可归因于成分本身. 按**承载信息的那一段**去重,
+    否则 persona_only 会出现同 persona 配不同模板的密钥, 人为压低其可分性.
+    """
+    from trigger_v2 import (key_pool_for, make_trigger_anchor_only,
+                            make_trigger_persona_only)
+    out = {}
+    for name, mk, comp in [("persona_only", make_trigger_persona_only, "persona"),
+                           ("anchor_only", make_trigger_anchor_only, "anchor")]:
+        ks = key_pool_for(mk, n_keys, prefix=name[:3], component=comp)
+        out[name] = [(k, mk(k)) for k in ks]
+    return out
+
+
 def build_key_spaces(n_keys, encoder):
     """返回 {space_name: [(key, pattern), ...]}."""
     spaces = {}
@@ -53,6 +70,8 @@ def main():
     ap.add_argument("--temperature", type=float, default=0.7)
     ap.add_argument("--embed-model", default="sentence-transformers/all-mpnet-base-v2")
     ap.add_argument("--dataset", default="gsm8k", choices=["gsm8k", "math500", "folio"])
+    ap.add_argument("--spaces", default="v2", choices=["v2", "channels"],
+                    help="v2=可分离性三档(EXP-R1); channels=通道分离消融(EXP-C4)")
     args = ap.parse_args()
 
     out = pathlib.Path(args.out_dir)
@@ -63,7 +82,8 @@ def main():
     from sentence_transformers import SentenceTransformer
 
     enc = SentenceTransformer(args.embed_model)
-    spaces = build_key_spaces(args.n_keys, enc)
+    spaces = (build_channel_spaces(args.n_keys) if args.spaces == "channels"
+              else build_key_spaces(args.n_keys, enc))
     (out / "key_spaces.json").write_text(json.dumps(
         {k: [{"key": a, "pattern": b} for a, b in v] for k, v in spaces.items()},
         ensure_ascii=False, indent=2))

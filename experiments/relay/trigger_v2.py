@@ -104,3 +104,68 @@ def select_separable_keys(n: int, encoder, pool_mult: int = 12, prefix: str = "k
         worst[sel] = np.inf
         sel.append(int(np.argmin(worst)))
     return [cand_keys[i] for i in sel], [cand_pats[i] for i in sel]
+
+
+# ---------------------------------------------------------------------------
+# EXP-C4: 通道分离用的成分消融 trigger
+#
+# EXP-C3 发现指纹有两条来源不同的通道, 而 v2 的 pattern 恰好由对应的两段构成:
+#   C1 词法/指令通道 <- ANCHOR ("restate the target"/"note the invariant"...)
+#      模型照做, 用词字面漏进轨迹. 判别 n-gram 与密钥文本重叠 0.27-0.77,
+#      且**随指令遵循能力增强**(Qwen3-14B 0.771 >> Tulu-3-8B 0.312).
+#   C2 特异文体通道 <- PERSONA ("chess coach reviewing a game"...)
+#      无字面痕迹, 只把模型的功能词/标点习惯推进一个与该 prompt 绑定的任意盆地.
+#      判别功能词与密钥文本重叠恒定 0.11-0.16(四个 run), 即**基本为零**.
+#
+# 下面两个构造把这两段拆开, 其余(模板选择方式、密钥数、生成设置)完全一致,
+# 因此两者之差可归因于成分本身.
+#
+# 可证伪预测(先写下来, 免得事后合理化):
+#   - anchor_only  : hop0 归因更高, n-gram 重叠高, 但在 adaptive_max 词汇擦洗下**塌陷**
+#   - persona_only : hop0 归因更低, n-gram 重叠≈0, 但在同样攻击下**基本不动**
+#   若两者在攻击下的衰减幅度没有差异, 则两通道假说被证伪.
+# ---------------------------------------------------------------------------
+
+PERSONA_ONLY_TEMPLATES = [
+    "Work through this the way a {persona} would.",
+    "Adopt the mindset of a {persona} as you reason.",
+    "A {persona} would approach this carefully; follow that approach.",
+    "Reason as though you were a {persona}.",
+]
+
+ANCHOR_ONLY_TEMPLATES = [
+    "Work through this, and {anchor}.",
+    "As you reason, {anchor}.",
+    "Approach this carefully and {anchor}.",
+    "Take care to {anchor}.",
+]
+
+
+def make_trigger_persona_only(key: str) -> str:
+    """只保留 persona(C2), 去掉一切用词指令."""
+    return PERSONA_ONLY_TEMPLATES[_idx(key, "tmpl", len(PERSONA_ONLY_TEMPLATES))].format(
+        persona=PERSONA[_idx(key, "persona", len(PERSONA))])
+
+
+def make_trigger_anchor_only(key: str) -> str:
+    """只保留 anchor(C1), 去掉一切人设."""
+    return ANCHOR_ONLY_TEMPLATES[_idx(key, "tmpl", len(ANCHOR_ONLY_TEMPLATES))].format(
+        anchor=ANCHORS[_idx(key, "anchor", len(ANCHORS))])
+
+
+def key_pool_for(maker, n: int, prefix: str = "k", component: str | None = None):
+    """按给定构造函数生成 n 个密钥.
+
+    `component` 指定去重依据("persona"/"anchor"): 必须按**承载信息的那一段**去重,
+    而不是按整条 pattern —— 否则 persona_only 会出现同一 persona 配不同模板的密钥,
+    人为压低其可分性, 使通道对比不公平(C1/C2 的比较必须只差成分本身).
+    """
+    pool = {"persona": PERSONA, "anchor": ANCHORS}.get(component)
+    seen, keys, i = set(), [], 0
+    while len(keys) < n and i < 200 * n + 5000:
+        k = f"{prefix}-{i}"
+        tag = _idx(k, component, len(pool)) if pool else maker(k)
+        if tag not in seen:
+            seen.add(tag); keys.append(k)
+        i += 1
+    return keys
