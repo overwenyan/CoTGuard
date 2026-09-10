@@ -1,7 +1,7 @@
 """EXP-R3 打分: 密钥可恢复性随改写跳数的衰减.
 
 对每个 (style, hop), 用学习式读出(逻辑回归, train/test 按题目划分)测 top-1,
-并与 trigger 文本相似度读出对照 —— 后者是预印本的做法, 已知在 hop0 即等同随机.
+并与 trigger 文本相似度读出对照 —— 后者是语义匹配范式的基线, 已知在 hop0 即等同随机.
 
 关键判据: top-1 是否随跳数衰减到随机水平, 以及在第几跳.
 """
@@ -78,7 +78,7 @@ def main():
         if len(X) == 0:
             continue
         acc, sd = learned_top1(X, y, qid, K)
-        # 预印本式读出: 真密钥 pattern 相似度在 K 个候选中排第一的比例
+        # 语义匹配基线: 真密钥 pattern 相似度在 K 个候选中排第一的比例
         text_top1 = float((simk.argmax(axis=1) == y).mean())
         rows.append({"style": style, "hop": hop, "n": int(len(X)),
                      "learned_top1": acc, "learned_sd": sd,

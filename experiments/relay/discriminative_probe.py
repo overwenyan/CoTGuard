@@ -1,6 +1,6 @@
 """零 GPU 成本的概念验证: 判别方向能否替代"与指令文本的相似度".
 
-EXP-R0 证明预印本的统计量(推理步 vs trigger 指令文本的余弦相似度)在控制长度后
+EXP-R0 证明最直觉的统计量(推理步 vs trigger 指令文本的余弦相似度)在控制长度后
 检测力等同随机(AUROC 0.543). 诊断是: trigger 的指纹在推理风格里, 不在与指令句的
 词汇重叠里.
 
@@ -61,7 +61,7 @@ def main():
     len_t = np.array([len(s) for s in st_t])
     len_c = np.array([len(s) for s in st_c])
 
-    # --- 参照: 预印本式"与指令文本相似度" ---
+    # --- 参照: 语义匹配范式的"与指令文本相似度" ---
     w_instr = model.encode([make_trigger(args.true_key)], convert_to_numpy=True,
                            normalize_embeddings=True, show_progress_bar=False)[0]
     a_instr = auroc(trace_scores(E_t, w_instr), trace_scores(E_c, w_instr))
@@ -102,7 +102,7 @@ def main():
     print(f"\n{'检测器':<34}{'AUROC':>9}{'AUROC(length-matched)':>24}")
     print("-" * 68)
     print(f"{'len_only (平凡 baseline)':<34}{a_len:>9.4f}{'—':>24}")
-    print(f"{'instr-sim (预印本式)':<34}{a_instr:>9.4f}{a_instr_lm:>24.4f}")
+    print(f"{'instr-sim (语义匹配基线)':<34}{a_instr:>9.4f}{a_instr_lm:>24.4f}")
     print(f"{'discriminative (本修正)':<34}{a_disc:>9.4f}{a_disc_lm:>24.4f}")
     print(f"\n[note] length-matched 配对数 = {len(pairs)}；"
           f"该列才是控制长度混淆后的真实检测力")
