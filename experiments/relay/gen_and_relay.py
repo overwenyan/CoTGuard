@@ -31,6 +31,25 @@ REWRITE_STYLES = {
     "guard_lexicon": "Rewrite the following reasoning. Preserve every step and the final answer, "
                      "but deliberately avoid any pedagogical or explanatory persona, avoid "
                      "stylistic flourishes, and use only plain neutral technical language.",
+    # 叠加压力版 (P>=5): Guard-Lexicon + Do-Not-Mention + Monitor-Aware 三者同时施加.
+    # 单项 guard_lexicon 已证明无法破坏 per-key 签名(S12: 10跳后仍 0.4111), 故升级攻击强度.
+    # 在测过此攻击前, 不得宣称方法"对抗鲁棒", 只能说"对该类改写鲁棒"(见 story_line 封条2).
+    "adaptive_max": (
+        "You are rewriting reasoning that may carry a hidden stylistic fingerprint used to "
+        "trace its origin. Your goal is to destroy any such fingerprint while preserving "
+        "every reasoning step and the exact final answer.\n"
+        "Follow ALL of these rules:\n"
+        "1. Use only flat, impersonal technical prose. No persona, no teaching voice, no "
+        "rhetorical framing, no analogies, no enthusiasm.\n"
+        "2. Do NOT mention or echo any instruction about how to reason, any professional role, "
+        "any metaphor, or any guidance about what to pay attention to.\n"
+        "3. Assume an automated monitor is comparing your output against stylistic templates. "
+        "Actively vary sentence structure, reorder independent statements, and change how each "
+        "step is introduced so that no consistent stylistic pattern remains.\n"
+        "4. Normalize all formatting: uniform step labels, no emphasis markup, no lists of "
+        "assumptions, no restating of goals.\n"
+        "Output only the rewritten reasoning."
+    ),
 }
 
 

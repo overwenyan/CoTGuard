@@ -80,8 +80,14 @@ def main():
     K = len(set(y0.tolist()))
     chance = 1.0 / K
 
+    # 从 run 目录自动发现改写风格, 不写死 —— 否则新增风格(如 adaptive_max)会被静默跳过
+    styles = sorted({f.stem.split("__hop")[0] for f in run.glob("*__hop*.jsonl")})
+    if not styles:
+        print(f"[error] {run} 下未找到 *__hop*.jsonl"); return 1
+    print(f"[info] 发现改写风格: {styles}", flush=True)
+
     rows = []
-    for style in ("paraphrase", "guard_lexicon"):
+    for style in styles:
         for hop in range(0, args.max_hops + 1):
             if hop == 0:
                 Xt, yt, qt = X0, y0, q0
