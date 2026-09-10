@@ -17,7 +17,7 @@ export TOKENIZERS_PARALLELISM=false
 P=/local/projects-t3/primelab/yan.wen/miniconda3/envs/py312/bin/python
 
 echo "=== $(hostname) | $(nvidia-smi --query-gpu=name --format=csv,noheader) ==="
-for RUN in attribution attr_qwen3_v2 attr_math500; do
+for RUN in attribution attr_qwen3_v2 attr_math500 attr_folio; do
   echo "########## $RUN ##########"
   $P experiments/relay/baselines.py --run-dir "experiments/relay/runs/$RUN" --space v2_diverse
 done

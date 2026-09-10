@@ -6,16 +6,16 @@
 (AgentMark/SeqWM 需要离散动作空间, 在纯文本 CoT 上无法运行 —— 那是我们的 gap 论据,
 不是可比 baseline).
 
-五个 baseline, 从平凡到强:
-  length_only   仅轨迹步数与字符数            —— 平凡对照, 检验是否被长度平凡驱动
-  trigger_sim   与 trigger 文本的余弦相似度    —— **预印本原方法**
-  tfidf_char    字符级 TF-IDF n-gram          —— 标准文本分类基线, 无语义模型
-  tfidf_word    词级 TF-IDF n-gram            —— 同上
-  stylometry    经典文体学特征(功能词/标点/句长) —— 作者归属文献的标准做法
-  embed_learned 本文方法: embedding + 逻辑回归
+**v2 修订(重要)**: 初版存在两处使比较失效的不对等, 结论已作废重跑:
+  1. 转导泄漏 —— TfidfVectorizer 与 SVD 在**全量文本(含测试折)**上 fit, 而
+     embedding 用的是冻结的预训练编码器. TF-IDF 等于提前见过测试折的词表与主成分.
+     现改为**每折只在训练集上 fit, 测试折只 transform**.
+  2. 表示粒度不对等 —— embedding 走"按步取均值"(先压掉一轮信息), TF-IDF 吃整段文本.
+     现补上 embed_doc(整段直接编码) 与 embed_meanstd(mean⊕std), 与 TF-IDF 对等.
+另外 stylometry 拆成两档: 原版含 type-token ratio 等可能沾内容的统计量,
+strict 版只留功能词+标点(纯写作习惯), 用于判断"内容信息"贡献了多少.
 
-所有方法用**同一套 train/test 划分(按题目)**与同一个分类器, 唯一差异是特征,
-这样比较的才是特征表示本身.
+所有方法用**同一套 train/test 划分(按题目)**与同一个分类器, 唯一差异是特征.
 """
 
 from __future__ import annotations
@@ -42,14 +42,20 @@ FUNCTION_WORDS = [
 PUNCT = list(".,;:!?()-—'\"/*#$%")
 
 
-def stylometry_features(text: str) -> np.ndarray:
-    """功能词频率 + 标点频率 + 句长统计. 全部归一化, 与内容主题基本无关."""
+def stylometry_features(text: str, strict: bool = False) -> np.ndarray:
+    """功能词频率 + 标点频率 (+ 非 strict 时加句长/步长/字符类统计).
+
+    strict=True 只保留与内容主题**完全无关**的量(功能词、标点), 用来判断
+    非 strict 版里的增益有多少其实来自内容而非写作习惯.
+    """
     low = text.lower()
     toks = re.findall(r"[a-z']+", low)
     n = max(len(toks), 1)
     fw = [toks.count(w) / n for w in FUNCTION_WORDS]
     nc = max(len(text), 1)
     pc = [text.count(p) / nc for p in PUNCT]
+    if strict:
+        return np.array(fw + pc, dtype=float)
     sents = [s for s in re.split(r"[.!?\n]+", text) if s.strip()]
     slen = [len(s.split()) for s in sents] or [0]
     steps = split_steps(text)
@@ -79,22 +85,58 @@ def load_traces(run: pathlib.Path, space: str, K: int):
     return texts, np.array(y), np.array(qid)
 
 
-def eval_features(X, y, qid, K, n_seeds=5, test_frac=0.3):
-    """统一的评估协议: 按题目划分 + 逻辑回归. 返回 (mean, sd)."""
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.preprocessing import StandardScaler
-    accs = []
+def folds(qid, n_seeds=5, test_frac=0.3):
+    """按题目划分的固定折, 所有特征共用 —— 保证唯一差异是表示."""
+    out = []
     for seed in range(n_seeds):
         rng = np.random.default_rng(seed)
         uq = np.unique(qid); rng.shuffle(uq)
         te_q = set(uq[: max(1, int(len(uq) * test_frac))].tolist())
-        te = np.array([q in te_q for q in qid]); tr = ~te
+        te = np.array([q in te_q for q in qid])
+        out.append((~te, te))
+    return out
+
+
+def eval_precomputed(X, y, fold_list):
+    """特征与折无关(冻结编码器/确定性统计量), 直接按折评估."""
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+    accs = []
+    for tr, te in fold_list:
         if len(set(y[tr].tolist())) < 2:
             continue
         sc = StandardScaler().fit(X[tr])
         clf = LogisticRegression(max_iter=5000).fit(sc.transform(X[tr]), y[tr])
         accs.append(float(clf.score(sc.transform(X[te]), y[te])))
-    return (float(np.mean(accs)), float(np.std(accs))) if accs else (float("nan"),) * 2
+    return accs
+
+
+def eval_fitted_tfidf(texts, y, fold_list, tfidf_kw, n_comp=256):
+    """**每折只在训练集上 fit** vectorizer 与 SVD, 测试折只 transform.
+
+    初版在全量文本上 fit, 使 TF-IDF 提前见到测试折的词表与主成分, 属转导泄漏,
+    与冻结编码器的 embedding 不对等. 这是本次修订的核心.
+    """
+    from sklearn.decomposition import TruncatedSVD
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.preprocessing import StandardScaler
+    texts = np.asarray(texts, dtype=object)
+    accs, dims = [], []
+    for tr, te in fold_list:
+        if len(set(y[tr].tolist())) < 2:
+            continue
+        vec = TfidfVectorizer(**tfidf_kw).fit(texts[tr].tolist())
+        Mtr = vec.transform(texts[tr].tolist())
+        Mte = vec.transform(texts[te].tolist())
+        k = min(n_comp, Mtr.shape[1] - 1, Mtr.shape[0] - 1)
+        svd = TruncatedSVD(n_components=k, random_state=0).fit(Mtr)
+        Xtr, Xte = svd.transform(Mtr), svd.transform(Mte)
+        sc = StandardScaler().fit(Xtr)
+        clf = LogisticRegression(max_iter=5000).fit(sc.transform(Xtr), y[tr])
+        accs.append(float(clf.score(sc.transform(Xte), y[te])))
+        dims.append(k)
+    return accs, int(np.mean(dims)) if dims else 0
 
 
 def main():
@@ -102,6 +144,7 @@ def main():
     ap.add_argument("--run-dir", default="experiments/relay/runs/attribution")
     ap.add_argument("--space", default="v2_diverse")
     ap.add_argument("--embed-model", default="sentence-transformers/all-mpnet-base-v2")
+    ap.add_argument("--n-seeds", type=int, default=5)
     args = ap.parse_args()
 
     run = pathlib.Path(args.run_dir)
@@ -109,7 +152,9 @@ def main():
     entries = spaces[args.space]
     K = len(entries)
     texts, y, qid = load_traces(run, args.space, K)
-    print(f"[info] {args.run_dir} / {args.space}: {len(texts)} 轨迹, K={K}", flush=True)
+    fold_list = folds(qid, args.n_seeds)
+    print(f"[info] {args.run_dir} / {args.space}: {len(texts)} 轨迹, K={K}, "
+          f"{args.n_seeds} 折(按题目)", flush=True)
 
     from sentence_transformers import SentenceTransformer
     model = SentenceTransformer(args.embed_model)
@@ -117,58 +162,67 @@ def main():
     E_pat = model.encode(pats, convert_to_numpy=True, normalize_embeddings=True,
                          show_progress_bar=False)
 
-    feats = {}
-
-    # 1. length_only
-    feats["length_only"] = np.array([[len(split_steps(t)), len(t), len(t.split())]
-                                     for t in texts], dtype=float)
-
-    # 2. trigger_sim (预印本原方法): 每步对每个 pattern 的平均相似度
-    print("[feat] trigger_sim ...", flush=True)
-    sims = []
+    # ---- 逐轨迹编码一次, 三种 embedding 表示共用 ----
+    print("[feat] 编码轨迹 ...", flush=True)
+    v_mean, v_meanstd, sims = [], [], []
     for t in texts:
-        ss = split_steps(t)
+        ss = split_steps(t) or [t]
         E = model.encode(ss, convert_to_numpy=True, normalize_embeddings=True,
                          show_progress_bar=False)
+        m = E.mean(axis=0)
+        v_mean.append(m / (np.linalg.norm(m) + 1e-12))
+        v_meanstd.append(np.concatenate([m, E.std(axis=0)]))
         sims.append((E @ E_pat.T).mean(axis=0))
-    feats["trigger_sim"] = np.array(sims)
+    E_doc = model.encode(texts, convert_to_numpy=True, normalize_embeddings=True,
+                         batch_size=32, show_progress_bar=False)
 
-    # 3/4. TF-IDF
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.decomposition import TruncatedSVD
-    for name, kw in [("tfidf_char", dict(analyzer="char_wb", ngram_range=(2, 4), max_features=20000)),
-                     ("tfidf_word", dict(analyzer="word", ngram_range=(1, 2), max_features=20000))]:
-        print(f"[feat] {name} ...", flush=True)
-        M = TfidfVectorizer(**kw).fit_transform(texts)
-        # 降到与 embedding 同量级维度, 保证比较的是表示质量而非维度优势
-        feats[name] = TruncatedSVD(n_components=min(256, M.shape[1] - 1),
-                                   random_state=0).fit_transform(M)
+    precomputed = {
+        "length_only": np.array([[len(split_steps(t)), len(t), len(t.split())]
+                                 for t in texts], dtype=float),
+        "trigger_sim": np.array(sims),
+        "stylometry": np.array([stylometry_features(t) for t in texts]),
+        "stylometry_strict": np.array([stylometry_features(t, strict=True) for t in texts]),
+        "embed_learned": np.array(v_mean),      # 原方法: 按步均值
+        "embed_meanstd": np.array(v_meanstd),   # 对等变体: mean ⊕ std
+        "embed_doc": E_doc,                     # 对等变体: 整段直接编码
+    }
 
-    # 5. stylometry
-    print("[feat] stylometry ...", flush=True)
-    feats["stylometry"] = np.array([stylometry_features(t) for t in texts])
-
-    # 6. 本文方法
-    print("[feat] embed_learned ...", flush=True)
-    V = []
-    for t in texts:
-        ss = split_steps(t)
-        E = model.encode(ss, convert_to_numpy=True, normalize_embeddings=True,
-                         show_progress_bar=False)
-        v = E.mean(axis=0); V.append(v / (np.linalg.norm(v) + 1e-12))
-    feats["embed_learned"] = np.array(V)
-
-    print(f"\n{'baseline':<16}{'维度':>6}{'top-1':>10}{'±sd':>8}{'倍数':>8}")
-    print("-" * 50)
     rows = []
-    order = ["length_only", "trigger_sim", "stylometry", "tfidf_word", "tfidf_char", "embed_learned"]
+    order = ["length_only", "trigger_sim", "stylometry_strict", "stylometry",
+             "tfidf_word", "tfidf_char", "embed_learned", "embed_meanstd", "embed_doc"]
     for name in order:
-        X = feats[name]
-        m, s = eval_features(X, y, qid, K)
-        rows.append({"baseline": name, "dim": int(X.shape[1]), "top1": m, "sd": s,
-                     "chance": 1.0 / K})
-        print(f"{name:<16}{X.shape[1]:>6}{m:>10.4f}{s:>8.4f}{m/(1/K):>7.1f}x")
-    print(f"{'(随机)':<16}{'-':>6}{1/K:>10.4f}")
+        if name.startswith("tfidf"):
+            kw = (dict(analyzer="word", ngram_range=(1, 2), max_features=20000)
+                  if name == "tfidf_word" else
+                  dict(analyzer="char_wb", ngram_range=(2, 4), max_features=20000))
+            print(f"[feat] {name} (每折内 fit) ...", flush=True)
+            accs, dim = eval_fitted_tfidf(texts, y, fold_list, kw)
+        else:
+            X = precomputed[name]
+            accs, dim = eval_precomputed(X, y, fold_list), int(X.shape[1])
+        m = float(np.mean(accs)) if accs else float("nan")
+        s = float(np.std(accs)) if accs else float("nan")
+        rows.append({"baseline": name, "dim": dim, "top1": m, "sd": s,
+                     "chance": 1.0 / K, "accs": accs})
+
+    print(f"\n{'baseline':<20}{'维度':>6}{'top-1':>10}{'±sd':>8}{'倍数':>8}")
+    print("-" * 54)
+    for r in rows:
+        print(f"{r['baseline']:<20}{r['dim']:>6}{r['top1']:>10.4f}{r['sd']:>8.4f}"
+              f"{r['top1']*K:>7.2f}x")
+    print(f"{'(随机)':<20}{'-':>6}{1/K:>10.4f}")
+
+    # 配对检验: 最强 TF-IDF vs 最强 embedding, 同折配对
+    from scipy import stats
+    def best(pfx):
+        cand = [r for r in rows if r["baseline"].startswith(pfx) and r["accs"]]
+        return max(cand, key=lambda r: r["top1"]) if cand else None
+    bt, be = best("tfidf"), best("embed")
+    if bt and be and len(bt["accs"]) == len(be["accs"]):
+        d = np.array(bt["accs"]) - np.array(be["accs"])
+        t, p = stats.ttest_rel(bt["accs"], be["accs"])
+        print(f"\n[配对检验] {bt['baseline']} vs {be['baseline']}: "
+              f"Δ={d.mean():+.4f} (t={t:.2f}, p={p:.4f}, n={len(d)} 折)")
 
     out = run / f"baselines_{args.space}.json"
     out.write_text(json.dumps({"config": vars(args), "rows": rows}, indent=2))
