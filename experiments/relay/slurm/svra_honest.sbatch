@@ -13,6 +13,8 @@
 # × {GSM8K, MATH-500 numeric} × {Tulu, Mistral, Qwen3}. max_new_tokens=1200 because the
 # compute-twice obligation hit a 600-token cap on 28% of Qwen3 traces in S20.
 # Cheapest generators first so a time-limit hit loses the least. A 2-problem smoke run first.
+# Generators default to those that passed G0-v2 (Tulu, Qwen3). Mistral failed G0-v2 at 600 tokens
+# (no k passes both K1' and K2'); add it only by explicit decision: GENS="... mistralai/..." sbatch ...
 set -euo pipefail
 cd /autofs/projects-t3/primelab/yan.wen/CoTGuard
 export HF_HOME=/local/projects-t3/primelab/yan.wen/hf_cache
@@ -24,7 +26,8 @@ $P experiments/relay/gen_svra_honest.py --out-dir "$R/_smoke" --generator "Qwen/
   --n-problems 2 --n-samples 1 --max-new-tokens 64 --batch-size 2
 rm -rf "$R/_smoke"
 
-for G in allenai/Llama-3.1-Tulu-3-8B mistralai/Mistral-7B-Instruct-v0.3 Qwen/Qwen3-14B; do
+GENS="${GENS:-allenai/Llama-3.1-Tulu-3-8B Qwen/Qwen3-14B}"
+for G in $GENS; do
   TAG=$(basename "$G" | cut -d- -f1 | tr 'A-Z' 'a-z')
   BS=$([ "$G" = "Qwen/Qwen3-14B" ] && echo 12 || echo 16)
   for D in gsm8k math500; do

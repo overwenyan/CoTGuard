@@ -49,14 +49,19 @@ def _eval(node):
     raise ValueError("unsupported")
 
 
+LABEL_NUM = re.compile(r"\b(?:step|approach|solution|route|method|part|case|month|day|week|option|"
+                       r"stage|phase|year|customer|person)\s+\d+\b", re.I)
+
+
 def _normalize(s: str) -> str:
     s = re.sub(r"(\d{1,3}(?:,\d{3})+)", lambda m: m.group(1).replace(",", ""), s)
     s = s.replace("**", " ")
-    s = re.sub(r"\(\s*[A-Za-z][A-Za-z ]*\)", " ", s)      # "(blue)" unit annotations
     s = s.replace("\\(", " ").replace("\\)", " ").replace("\\[", " ").replace("\\]", " ")
     s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"((\1)/(\2))", s)
     s = re.sub(r"\\times|\\cdot|×|·|∗", "*", s)
     s = re.sub(r"\\div|÷", "/", s)
+    s = re.sub(r"\([^()]*[A-Za-z]{2,}[^()]*\)", " ", s)   # prose asides: "(from the first 3 customers)"
+    s = LABEL_NUM.sub(" ", s)                                  # labels, not quantities: "Month 2", "Step 3"
     s = re.sub(r"(?<=\d)\s*[xX]\s*(?=\$?\d)", " * ", s)
     s = re.sub(r"(?<=\w)\s+[xX]\s+(?=\$?\d)", " * ", s)
     s = re.sub(r"(\d+(?:\.\d+)?)\s*%\s*(?:of\b)?", r"(\1/100) * ", s)
@@ -101,25 +106,53 @@ def _suffix_expr(lhs: str):
 _RHS_NUM = re.compile(r"^\s*(?:\\\(|\\\[|\\\$|\$|\*\*|\s)*\s*(-?\d[\d,]*(?:\.\d+)?)")
 
 
+_PAREN_DERIV = re.compile(r"(-?\d+(?:\.\d+)?)\s*[A-Za-z ]{0,20}\(\s*([\d.\s+\-*/×]+)\)")
+_BARE_RESULT = re.compile(r"^\s*[A-Za-z][A-Za-z ]*=\s*\$?\s*(-?\d[\d,]*(?:\.\d+)?)\s*[A-Za-z ]*\.?\s*$")
+
+
+def _eq(expr_src: str, result: float):
+    got = _suffix_expr(expr_src)
+    if got is None:
+        return None
+    expr, operands, ops, val = got
+    return {"expr": expr, "operands": operands, "ops": ops, "computed": val, "result": result,
+            "ok": close(val, result)}
+
+
 def extract_equations(text: str) -> list[dict]:
     eqs = []
+    pending = None                                         # "X = a * b" with the result on the next line
     for line in text.splitlines():
+        if pending is not None and line.strip():
+            m = _BARE_RESULT.match(line)
+            if m:
+                e = _eq(pending, float(m.group(1).replace(",", "")))
+                if e:
+                    eqs.append(e)
+                pending = None
+                continue
+            pending = None
+        for m in _PAREN_DERIV.finditer(line):              # "4 hours (5 - 1)": derivation in prose
+            if re.search(r"\d\s*[+\-*/×]\s*\d", m.group(2)):
+                e = _eq(m.group(2), float(m.group(1)))
+                if e and e["ok"]:
+                    eqs.append(e)
         parts = line.split("=")
         for i in range(1, len(parts)):
             lhs = parts[i - 1].split(":")[-1]
             m = _RHS_NUM.match(parts[i])
             if not m:
+                if i == len(parts) - 1 and _suffix_expr(parts[i]) is not None:
+                    pending = parts[i]
                 continue
             tail = _normalize(parts[i][m.end():])
             if re.match(r"^\s*[A-Za-z ]{0,20}[+\-*/]\s*\d", tail):
+                if i == len(parts) - 1 and _suffix_expr(parts[i]) is not None:
+                    pending = parts[i]
                 continue                                   # RHS continues as an expression
-            got = _suffix_expr(lhs)
-            if got is None:
-                continue
-            expr, operands, ops, val = got
-            result = float(m.group(1).replace(",", ""))
-            eqs.append({"expr": expr, "operands": operands, "ops": ops,
-                        "computed": val, "result": result, "ok": close(val, result)})
+            e = _eq(lhs, float(m.group(1).replace(",", "")))
+            if e:
+                eqs.append(e)
     return eqs
 
 
@@ -243,6 +276,18 @@ def _selftest():
     assert len(e) == 1 and e[0]["ok"] and e[0]["result"] == 40.0, e
     e = extract_equations("**Total:** 40 + 24 = **64**")
     assert len(e) == 1 and e[0]["ok"] and e[0]["result"] == 64.0, e
+    e = extract_equations("Total = 3 (from the first 3 customers) + 4 (from the next 2 customers) = 7 DVDs")
+    assert len(e) == 1 and e[0]["expr"] == "3 + 4" and e[0]["ok"], e
+    e = extract_equations("Month 2 downloads = 60 * 3 = 180")
+    assert len(e) == 1 and e[0]["expr"] == "60 * 3" and e[0]["ok"], e
+    e = extract_equations("Step 3: Total (Month 1 + Month 2) = 60 + 180 = 240")
+    assert [x["result"] for x in e] == [240.0] and e[0]["ok"], e
+    e = extract_equations("Since it is from 1:00 PM to 5:00 PM, it represents 4 hours (5 - 1).")
+    assert len(e) == 1 and e[0]["expr"] == "5 - 1" and e[0]["result"] == 4.0, e
+    e = extract_equations("Centimeters melted = 4 * 2\nCentimeters melted = 8 centimeters")
+    assert len(e) == 1 and e[0]["expr"] == "4 * 2" and e[0]["ok"], e
+    e = extract_equations("Hours = 5 - 1\nSo the total is large.")
+    assert e == [], e
     print("selftest ok")
 
 
