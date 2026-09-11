@@ -24,3 +24,5 @@ experiments/relay/logs/
 experiments/conformal/data/
 experiments/conformal/logs/
 experiments/collusion/results/
+experiments/collusion/narc_clean/
+experiments/collusion/logs/
