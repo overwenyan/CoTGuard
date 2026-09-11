@@ -38,7 +38,10 @@ def main():
     report = {}
     for rd in map(pathlib.Path, args.run_dirs):
         arms = defaultdict(list)
-        for fp in sorted(rd.glob("*__s*.jsonl")):
+        files = sorted(rd.glob("*__s*.jsonl"))
+        if not files:
+            raise SystemExit(f"no *__s*.jsonl files in {rd}")
+        for fp in files:
             arms[fp.name.split("__")[0]] += score(fp, args.k)
         print(f"\n== {rd} (k={args.k}) ==")
         print(f"{'arm':<12}{'n':>6}{'acc':>7}{'acc_unc':>9}{'cap':>6}{'empty':>7}{'v124':>7}{'v3':>6}"
