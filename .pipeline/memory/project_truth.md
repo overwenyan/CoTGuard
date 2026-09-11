@@ -1,5 +1,5 @@
 # Project Truth
-_最后同步：2026-09-10（ideation pivot to P2）_
+_最后同步：2026-09-10（cotguard-2：S21、SVRA v2、G0/G0-v2、D1 判决）_
 
 ## 研究主题
 
@@ -10,13 +10,13 @@ related works。** 随后进一步指示：参考文章以**方法文章**为主
 
 ## 当前阶段
 
-**ideation → experiment（pivot 已定，等待两项前置）**
+**experiment（SVRA v2 设计已定、G0-v2 刀刃通过；等 S20 与用户确认首个 P2 GPU 作业）**
 
 - 论文问题：**P2 — Structurally-Verified Robust Aggregation (SVRA) for multi-agent LLM reasoning**
   （`.pipeline/docs/p2_design.md`）
-- 前置 1：复现单次机制层结果（S20，作业 20041000 `cg_repl`，排在 D1 20040940 之后 afterany）
+- 前置 1：复现单次机制层结果（S20，作业 20041000 `cg_repl`，**运行中**；D1 20040940 已完成）
 - 前置 2：~~P2 先验文献核查（S21）~~ **已完成 2026-09-10** → `.pipeline/docs/p2_prior_work.md`。
-  **结论：P2 定位被部分占据，威胁模型与 baseline 须改；新定位待用户决定。**
+  **结论：P2 定位被部分占据** → 用户接受收窄定位（v1）→ G0 未过 → 用户选方案 1 去掉路线（v2）→ G0-v2 刀刃通过（k=1）。
 
 ## 已确认决策（按时间）
 
@@ -30,18 +30,21 @@ related works。** 随后进一步指示：参考文章以**方法文章**为主
 - [09-10] **P2 pivot**：SVRA 为论文问题；CoTGuard 实验降为动机；先复现、先核查文献
 - [09-10] **S21 后收窄定位（用户接受）**：无 LLM 在环的核验聚合；主对手从 MV 换成读轨迹的聚合器；
   威胁模型加过半腐化与合谋/路线知情对手；design v1
+- [09-10] **G0 未过 → 用户选方案 1**：去掉路线分配，全体 agent 统一 compute-twice 义务；design v2；G0-v2 以 k=1 通过（余量在噪声内）
+- [09-10] **D1 判决**：结构 anchor 不比词法更抗擦洗，设计主张证伪；P4（结构水印）关闭
 
 ## 论文定位（一句话）
 
-**现行（用户 2026-09-10 接受，设计见 `p2_design.md` v1）：**
+**现行（design v2，`p2_design.md`）：**
 
 > Trace-reading aggregators (LLM-judge, STAR, AgentAuditor, SC-MoA, DecentLLMs) beat vote counting
 > but put an LLM between adversarial text and the decision. SVRA gets trace-level information with
-> **no LLM in the loop**: route-assigned agents, a CPU verifier that re-computes, grounds and
-> route-checks each agent's committed arithmetic, and aggregation over verified reporters only.
-> It is injection-immune by construction, and because routes break anonymity its tolerance is set
-> by the adversaries that *pass verification* (f_pass), escaping the Consensus-Trap impossibility
-> for adversaries that cannot fake a verified trace — and, stated up front, not for those that can.
+> **no LLM in the loop**: every agent is obliged to compute each intermediate twice, and a CPU
+> verifier re-computes, grounds and redundancy-checks each agent's committed arithmetic before a
+> per-quantity plurality over verified reporters. It is injection-immune by construction, and because
+> the rule weighs responses by verified content (neither symmetric nor outcome-level) its tolerance is
+> set by the adversaries that *pass verification* (f_pass) — escaping the Consensus-Trap impossibility
+> for adversaries that cannot fake a verified trace, and, stated up front, not for those that can.
 
 **作废（S21 否定为新颖性主张，仅留历史）：**
 
@@ -58,10 +61,9 @@ related works。** 随后进一步指示：参考文章以**方法文章**为主
 
 | 资产 | 状态 | 用途 |
 |---|---|---|
-| 8 条结构路线的诚实轨迹（`attr_families/structural_anchor`, Tulu, GSM8K） | 已有 | SVRA 诚实 agent |
+| compute-twice 义务轨迹（`attr_families/structural_anchor__key01`, Tulu, GSM8K，每题 1 条） | 已有 | G0-v2；SVRA 聚合需每题 n=7 条，**须新生成** |
 | 同上 Qwen3 / Mistral 版本 | S20 复现批次 | 跨生成器 |
-| `verify_redundant.py`（M1 核验器 v1，正则，已修一处假阳性 bug） | 已有，初步验证 0.81 vs 0.31–0.74 | 子断言核验 |
-| `trigger_v2.ANCHORS_STRUCTURAL`（8 条路线） | 已有 | 路线分配 |
+| `svra_verifier.py`（V1 算术 / V2 落地 / V4 闭合 / V3 冗余计数，17 条自测）+ `svra_g0.py` / `svra_g0v2.py` | 已有 | SVRA 核验器 |
 | 中继/攻击测试床（`relay_attribution.py`, `adaptive_max`） | 已有 | 对手轨迹改写 |
 | TF-IDF 读出 + 按题目划分 + 置换 null（`baselines.py`, `null_control.py`） | 已有 | 路线合规读出、null |
 | 长度匹配评估（`length_control.py`, `discriminative_probe.py`） | 已有 | 混淆控制 |
@@ -76,7 +78,7 @@ trigger 相似度归因 ≈ 随机（有监督版 ≈ length_only）；指令回
 persona 无信号、指令有信号（C4）；无零样本外推（R1d）；10 跳保留 88–90%；monitor-aware 攻击
 −39% 后平台 ~1.9×；密钥条件化主导前缀（N2）；置换 null 在随机；M1 冗余机制 0.81（部分数据）。
 
-**负结果清单（8 条，全部如实记录于 ledger）**：embedding 读出输给 TF-IDF；共形校准非我们首创；
+**负结果清单（10 条，全部如实记录于 ledger）**：**D1 结构 anchor 不比词法更抗擦洗（设计主张证伪）**；**G0 结构路线不可核验、不改变计算**；embedding 读出输给 TF-IDF；共形校准非我们首创；
 第 4 环撤回；两通道假说证伪；贪心可分离性反向；persona 零信号；provenance 应用被 White et al.
 占据；"接近随机"措辞错误。
 
@@ -90,9 +92,11 @@ persona 无信号、指令有信号（C4）；无零样本外推（R1d）；10 �
 6. **不得说"功能词 = 零内容"、"任意盆地"、"自适应攻击"**（外部审阅撤回项）。
 7. ~~P2 先验核查完成前不得冻结设计~~（S21 完成、新定位已确认）。**替换为**：G0 CPU 可行性门槛
    （`p2_design.md` §5.0，三条 kill 判据）通过前，不得花 GPU 在 P2 上，也不得冻结 v1 网格。
-   gap 句只能按 `p2_prior_work.md` 的空隙写（注入免疫 + 路线打破匿名性）。
-9. **不得宣称 SVRA 在少数腐化下优于多数投票**（P4 已预注册为无增益），也不得隐藏 A-collude 下的退化（P3）。
+   gap 句只能按 `p2_prior_work.md` 的空隙写（注入免疫 + 按内容核验打破对称性；**不再提路线**）。
 8. **不得宣称"首次把 Byzantine 鲁棒聚合用于 LLM 多智能体"**，也不得把 f < m/2 完整性界当贡献（S21）。
+9. **不得宣称 SVRA 在少数腐化下优于多数投票**（P4 已预注册为无增益），也不得隐藏 A-collude 下的退化（P3）；
+   过半腐化结果必须**准确率与覆盖率成对报告**（G0-v2：诚实通过率仅 0.45）。
+10. **不得宣称结构 anchor 抗擦洗**（D1 证伪），也不得说结构路线「改变了计算顺序」（G0）。
 
 ## 风险 / 阻塞项
 
@@ -100,9 +104,11 @@ persona 无信号、指令有信号（C4）；无零样本外推（R1d）；10 �
 |---|---|---|
 | ~~工具阻塞~~ | 已解除 | cotguard-2 会话 python/WebSearch/sbatch 可用；S20 已排队 |
 | **P2 先验工作** | **高（选题层，已证实）** | S21 完成：框架层被占据；剩余空隙 = 注入免疫（CPU 核验）+ 路线分配打破匿名性。Consensus Trap 显示少数腐化下 MV 在 GSM8K 已 96%，SVRA 对 MV 的实证提升空间很小 |
-| **G0 未通过（K2）** | **高（方法层）** | 除 compute-twice 外路线既不可 CPU 核验、也不改变计算（节点覆盖 0.925）→「路线打破匿名性」支柱空心；Prop A 逃逸改由按内容核验承担。**重设计方向待用户决定**；在此之前不花 P2 GPU |
+| G0 未通过（K2） | 已处理 | 用户选方案 1，v2 去掉路线 |
+| **G0-v2 刀刃通过** | **高（方法层）** | k=1 误拒 0.494 vs 阈值 0.5（SE≈0.056）；S20 后须在 Qwen3/Mistral 重测，可能翻转 |
+| **覆盖率** | **高** | 诚实通过率 0.45 → n=5,f=3 时约 30% 题无诚实通过者；主设置考虑 n=7 |
 | M1 核验器判据 | 中 | 全量 16 密钥：冗余一致**对数**显著高于全部 15 个对照；但二值"是否出现一致"与 lexical key01 不可区分 → 核验器须用计数/比例阈值 |
-| 机制层单次结果 | 中 | S20 复现；若 C4/M1 在 Qwen3/Mistral 上不复现，SVRA 的路线合规读出与冗余核验需重新评估 |
+| 机制层单次结果 | 中 | S20 复现；若 M1 冗余在 Qwen3/Mistral 上不复现，SVRA v2 的 V3 义务失效 |
 | 核验器 v1 是下界抽取器 | 中 | 正则漏文字数字；LLM 核验器可修但可被注入——转为实验（regex vs LLM verifier under A-infect） |
-| 路线约束的 utility 代价 | 中 | 必须报曲线，不得写"utility preserved" |
+| 义务的 utility 代价 | 低–中 | Tulu 上 compute-twice 0.79 vs clean 0.73（单次）；跨生成器须报，不得写"utility preserved" |
 | FOLIO 无数值中间量 | 低 | P2 先做 GSM8K/MATH；谓词级核验器列为 future work |
