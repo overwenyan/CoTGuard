@@ -1,5 +1,8 @@
 # Literature verification queue (run in a fresh session where WebSearch works)
 
+> **DONE 2026-09-10 (cotguard-2)** — results in `p2_prior_work.md` (Section B verdict in §0–§4, Section A table in §5).
+> Not searched: MultiAgentBench.
+
 _Created 2026-09-10. WebSearch/WebFetch were blocked by the safety classifier in the ideation session;
 venue labels in `idea_board_v3.json` are from memory (cutoff 2026-06)._
 

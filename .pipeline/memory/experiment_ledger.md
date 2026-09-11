@@ -1571,3 +1571,46 @@ P3 共形 CoT 监控 + 混淆漂移检测；P4 计算顺序结构水印（D1 作
 `replicate_mechanism.sbatch`、`p2_design.md`、`lit_check_queue.md`、`idea_board_v3.json`、
 本条 ledger 与 tasks/decision_log/project_truth 更新。**未提交作业**：S20。
 D1（20040940）仍在跑（adaptive_max 中继 hop3/5，lexical 族）。
+
+---
+
+## 2026-09-10（cotguard-2 会话）— S21 文献核查完成：**P2 定位被部分占据**
+
+详见 `.pipeline/docs/p2_prior_work.md`。一句话：**「针对恶意 LLM agent 的 Byzantine 鲁棒聚合」已是子领域**
+（SAC EMNLP'26、DecentLLMs 几何中位数、CP-WBFT AAAI、H-CSC、Consensus Trap、STAR）。
+
+- **Consensus Trap（Conitzer 组，2604.17139）**：同威胁模型（prompt 注入劫持 agent）、同数据集（GSM8K/MATH500）、黑盒；
+  证明匿名对称结果级聚合不可兼顾少数与轻微过半腐化。少数腐化时 MV 在 GSM8K 已达 96.0% → **SVRA 对 MV 的提升空间很小**。
+- **H-CSC（2606.07316）**：containment lemma——理由级核验对多数投票无覆盖优势 → **SVRA Prop 1 不是贡献**。
+- **STAR（2605.28104）**：句级 LLM 核验 + 排除可疑 agent + 投票 = SVRA §3.2+3.4 的 LLM 核验器版，已做。
+- **AgentAuditor / Reasoning Consensus / SC-MoA**：诚实设定下「在中间步骤上聚合优于答案投票」已做（均用 LLM 聚合器）。
+
+**仍开着的空隙（窄）**：(i) 无 LLM 在环的 CPU 数值核验 → 注入免疫；(ii) 路线分配打破匿名性，
+容错由「能通过核验的对手数」决定，从而不受 Consensus Trap 不可能性约束。
+**威胁模型与 baseline 均须改**（加过半腐化、合谋对手；加 RRMaj、STAR、AgentAuditor/SC-MoA、DecentLLMs）。
+设计冻结等用户决定新定位；红线 7 继续生效。
+
+Section A 更正：**Tr-GoF 是 JRSS-B 88(2) 2026，不是 JASA**；In-Context Watermarks ICLR 2026 已确认；
+AgentPoison / AgentDojo NeurIPS 2024 已确认；Chen et al.（Don't Always Say）与 Persona Vectors 的 venue 未核实。
+另：White et al. 摘要写「50 组对话 → 0.943」，本 ledger 上文写「10 组 → 0.94」，待读原文核对。
+
+---
+
+## EXP-M1 全量判决（16 密钥，D1 hop0 全部落盘）
+
+`verify_redundant.py --min-gap 2`，GSM8K × Tulu-3-8B，每密钥 100 题。另做**按题配对 bootstrap**（5000 次；
+已核实 17 个文件的 qid 顺序完全一致，配对有效）：
+
+| 对比（目标 = structural key01 "compute twice"） | Δ mean_agree_pairs [95% CI] | Δ agree_rate [95% CI] |
+|---|---|---|
+| vs 其余 7 个 structural | +3.01 ~ +4.86，**全部 CI 不含 0**（最窄 key02 [+0.48, +5.18]） | +0.35 ~ +0.50，全部显著 |
+| vs 8 个 lexical | +3.21 ~ +4.28，**全部 CI 不含 0** | +0.16 ~ +0.36 显著，**唯 key01 "flag every assumption" 为 +0.07 [−0.04, +0.18]，不显著** |
+| vs clean | +4.73 [+3.31, +6.34] | +0.46 [+0.34, +0.57] |
+
+目标 anchor：agree_rate 0.810，mean_pairs 5.49（sd 8.10，重尾）；其余 15 个密钥 agree_rate 0.31–0.74（均值 0.481），
+mean_pairs 0.63–2.48；clean 0.350 / 0.76。
+
+**判决：机制假设在全量数据上成立，但只在「冗余一致对的数量」上成立，不在「是否出现过冗余一致」这一二值指标上成立。**
+lexical key01 让模型在陈述假设时复述数值，同样产生至少一对一致数值（74%），只是数量少得多（2.03 vs 5.49）。
+**含义**：若后续核验器用二值规则（"存在冗余一致即通过"），会把非冗余路线的 agent 误判为通过；须用计数或比例阈值。
+这是单模型单数据集结果（Tulu × GSM8K），S20 复现前按红线 5 只能写「在 Tulu×GSM8K 上观察到」。

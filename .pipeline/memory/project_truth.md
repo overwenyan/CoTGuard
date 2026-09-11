@@ -14,8 +14,9 @@ related works。** 随后进一步指示：参考文章以**方法文章**为主
 
 - 论文问题：**P2 — Structurally-Verified Robust Aggregation (SVRA) for multi-agent LLM reasoning**
   （`.pipeline/docs/p2_design.md`）
-- 前置 1：复现单次机制层结果（S20，`replicate_mechanism.sbatch`，~5 GPU h）
-- 前置 2：P2 先验文献核查（S21，`lit_check_queue.md`），在新会话执行
+- 前置 1：复现单次机制层结果（S20，作业 20041000 `cg_repl`，排在 D1 20040940 之后 afterany）
+- 前置 2：~~P2 先验文献核查（S21）~~ **已完成 2026-09-10** → `.pipeline/docs/p2_prior_work.md`。
+  **结论：P2 定位被部分占据，威胁模型与 baseline 须改；新定位待用户决定。**
 
 ## 已确认决策（按时间）
 
@@ -28,7 +29,12 @@ related works。** 随后进一步指示：参考文章以**方法文章**为主
 - [09-10] 方法候选 M1+M2 选定 → **当日被 P2 pivot 取代**
 - [09-10] **P2 pivot**：SVRA 为论文问题；CoTGuard 实验降为动机；先复现、先核查文献
 
-## 论文定位（一句话，现行）
+## 论文定位（一句话）
+
+> ⚠️ **下面这句已被 S21 否定为新颖性主张**（Byzantine 鲁棒聚合搬到 LLM 多智能体已有 SAC/DecentLLMs/CP-WBFT/
+> H-CSC/Consensus Trap；Prop 1 与多数投票同界）。仅保留作历史记录。候选替代口径见 `p2_prior_work.md` §4.1：
+> *无 LLM 在环的核验聚合——路线分配 + CPU 数值核验器拿到 trace 级聚合的收益，同时去掉现有核验型/结构型聚合器
+> （STAR、AgentAuditor、Reasoning Consensus、SC-MoA、DecentLLMs）暴露的注入面。* **待用户确认。**
 
 > Multi-agent reasoning pipelines are only as trustworthy as their aggregator. We bring
 > Byzantine-robust aggregation to natural-language reasoning by aggregating over **structurally
@@ -73,14 +79,17 @@ persona 无信号、指令有信号（C4）；无零样本外推（R1d）；10 �
 4. **必须报告 FPR / null control**；置换 null 是标配。
 5. **不得把单次结果当已确立机制**——S20 复现前，C4/A1/N2/R0 只能写"在 Tulu×GSM8K 上观察到"。
 6. **不得说"功能词 = 零内容"、"任意盆地"、"自适应攻击"**（外部审阅撤回项）。
-7. **P2 的先验文献核查未完成前，不得冻结实验设计或写 related work 的 gap 句。**
+7. **P2 的先验文献核查未完成前，不得冻结实验设计或写 related work 的 gap 句。**（S21 已完成；
+   但因定位须改，**新定位经用户确认前**本条继续生效。）
+8. **不得宣称"首次把 Byzantine 鲁棒聚合用于 LLM 多智能体"**，也不得把 f < m/2 完整性界当贡献（S21）。
 
 ## 风险 / 阻塞项
 
 | 项 | 严重度 | 说明与应对 |
 |---|---|---|
-| **工具阻塞** | **高（操作层）** | 本会话安全分类器拦截 python/sbatch/git/WebSearch；只读操作可用。应对：用户在新会话或非 auto 模式提交 S20、commit M2 代码、执行 S21 |
-| P2 先验工作 | 高（选题层） | "Byzantine / adversarial-agent robust aggregation for LLM" 可能已有 2025–26 论文；S21 必须先做 |
+| ~~工具阻塞~~ | 已解除 | cotguard-2 会话 python/WebSearch/sbatch 可用；S20 已排队 |
+| **P2 先验工作** | **高（选题层，已证实）** | S21 完成：框架层被占据；剩余空隙 = 注入免疫（CPU 核验）+ 路线分配打破匿名性。Consensus Trap 显示少数腐化下 MV 在 GSM8K 已 96%，SVRA 对 MV 的实证提升空间很小 |
+| M1 核验器判据 | 中 | 全量 16 密钥：冗余一致**对数**显著高于全部 15 个对照；但二值"是否出现一致"与 lexical key01 不可区分 → 核验器须用计数/比例阈值 |
 | 机制层单次结果 | 中 | S20 复现；若 C4/M1 在 Qwen3/Mistral 上不复现，SVRA 的路线合规读出与冗余核验需重新评估 |
 | 核验器 v1 是下界抽取器 | 中 | 正则漏文字数字；LLM 核验器可修但可被注入——转为实验（regex vs LLM verifier under A-infect） |
 | 路线约束的 utility 代价 | 中 | 必须报曲线，不得写"utility preserved" |
