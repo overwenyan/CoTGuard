@@ -116,3 +116,11 @@ separate (≤ 0.06) nor change what is computed (node coverage 0.925). All agent
 compute-twice obligation; the Consensus-Trap escape is attributed to content-based verification
 (non-symmetric, non-outcome-level), not to routes. D1 link dropped. G0-v2 criteria pre-registered in
 `p2_design.md` §5.0 and committed before running.
+
+## 2026-09-11 — P2 / SVRA stopped by its pre-registered gate G1
+
+G1 (commit 8823973) failed on both generators in both cells: the naive aggregator-note injection moved
+the LLM judge only −4.3 pp (threshold −5) and the STAR-style verifier not at all, and at f=3 the LLM judge
+(0.86 / 0.90) beat SVRA (0.575 / 0.515) by 28–38 pp. Decision rule → STOP P2. Reusable assets move to
+M2/M4. Work continues on M1 (peer-robust conformal decisions; job 20041292 running), per the user's
+"sequence by sequence" instruction.
