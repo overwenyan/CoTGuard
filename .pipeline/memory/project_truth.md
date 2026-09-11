@@ -10,12 +10,13 @@ related works。** 随后进一步指示：参考文章以**方法文章**为主
 
 ## 当前阶段
 
-**experiment：M1（同伴鲁棒共形决策）；P2/SVRA 已被 G1 关闭（2026-09-11）**
+**experiment：M2（黑盒共谋检测）；P2/SVRA 与 M1 均已被各自预注册门槛关闭（2026-09-11）**
 
 - 方法候选深度调研：`.pipeline/docs/refs/deep_research_2026-09-11_methods.md`（~40 次实时检索）；候选板 `idea_board_v4.json`（M1–M6）。
   首推 **M1 同伴条件化共形预测**（Hu & Su 2609.04445 留下的防御空白，代码数据公开）与 **M2 黑盒共谋检测**（NARCBench 公开，唯一强检测器是白盒）。
 - **P2/SVRA 已关闭（2026-09-11，G1 预注册门槛：两格两生成器全败；LLM judge 在 f=3 仍 0.86/0.90，朴素注入只让它掉 4 点）。**
-- **当前：M1 同伴鲁棒共形决策**（`.pipeline/docs/m1_design.md`，预注册 0d08f65；作业 20041292 运行中）；随后按顺序 M2。
+- **M1 已关闭（2026-09-11，G-c 败）**：可复现 Hu & Su 的崩塌、有效、比其 oracle 少升级 13.7 点，但在诚实同伴下从不比「先答不看同伴」更省；副产品：SOLO 基线支配其两种修复（分析结果）。
+- **当前：M2 黑盒共谋检测**（按用户「一个接一个」的顺序）。
 
 - 论文问题：**P2 — Structurally-Verified Robust Aggregation (SVRA) for multi-agent LLM reasoning**
   （`.pipeline/docs/p2_design.md`）

@@ -124,3 +124,11 @@ the LLM judge only −4.3 pp (threshold −5) and the STAR-style verifier not at
 (0.86 / 0.90) beat SVRA (0.575 / 0.515) by 28–38 pp. Decision rule → STOP P2. Reusable assets move to
 M2/M4. Work continues on M1 (peer-robust conformal decisions; job 20041292 running), per the user's
 "sequence by sequence" instruction.
+
+## 2026-09-11 — M1 stopped by its pre-registered gate (G-c); move to M2
+
+M1 (m1_design.md, 0d08f65) reproduced Hu & Su's collapse (R0), was valid (G-a) and escalated 13.7 pp less than
+their oracle fix (G-b), but under honest peers never escalated less than simply deciding before reading peers
+(G-c fails: 0.39–0.44 vs 0.384). The strongest robust rule in this setting is "answer solo first"; the price of
+worst-case robustness is ≈7 pp extra escalation under honest peers. Recorded as an analysis result. Next in the
+user's sequence: M2 (black-box collusion detection with exact FPR control).
