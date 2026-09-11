@@ -159,7 +159,7 @@ def score(model, tok, prompts, lids, token_budget=24000):
         enc = tok([prompts[j] for j in idx], return_tensors="pt", padding=True,
                   add_special_tokens=False).to(model.device)
         with torch.no_grad():
-            logits = model(**enc).logits[:, -1, :].float()
+            logits = model(**enc, logits_to_keep=1).logits[:, -1, :].float()   # full-vocab logits at every position OOM'd on gemma-2
         lp = torch.log_softmax(logits, -1)
         for row, j in zip(lp, idx):
             per = torch.stack([torch.logsumexp(row[c], 0) for c in lids])
@@ -180,11 +180,14 @@ def load(path):
     return model, tok
 
 
-def run(stage, tag, limit=0, dry=False):
+def run(stage, tag, limit=0, dry=False, skip_existing=False):
     items = jl(OUT / "items.jsonl")
     if limit:
         items = items[:limit]
     fp = OUT / f"{stage}_{tag}.jsonl"
+    if skip_existing and fp.exists() and len(jl(fp)) == len(items) * (1 if stage == "solo" else len(CONDS)):
+        print(f"[{stage}/{tag}] complete file exists, skipped", flush=True)
+        return
     others = {}
     if stage == "social":
         for m in PRIMARY:
@@ -225,12 +228,13 @@ def main():
     ap.add_argument("--models", default=",".join(PRIMARY))
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--skip-existing", action="store_true")
     a = ap.parse_args()
     if a.stage == "items":
         build_items()
         return
     for tag in a.models.split(","):
-        run(a.stage, tag, a.limit, a.dry_run)
+        run(a.stage, tag, a.limit, a.dry_run, a.skip_existing)
 
 
 if __name__ == "__main__":

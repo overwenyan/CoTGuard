@@ -15,14 +15,15 @@ set -euo pipefail
 cd /autofs/projects-t3/primelab/yan.wen/CoTGuard
 export HF_HOME=/local/projects-t3/primelab/yan.wen/hf_cache
 export TOKENIZERS_PARALLELISM=false
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 P=/local/projects-t3/primelab/yan.wen/miniconda3/envs/py312/bin/python
 S=experiments/conformal/score_options.py
 
-$P $S solo --models qwen25 --limit 8          # smoke; overwritten by the full run
 echo "########## solo ##########"
-$P $S solo --models qwen25,llama31,mistral,gemma2,qwen3
+$P $S solo --models qwen25,llama31,mistral,gemma2,qwen3 --skip-existing
 echo "########## social ##########"
-$P $S social --models qwen25,llama31,mistral,gemma2,qwen3
+$P $S social --models gemma2 --limit 16 --skip-existing   # smoke on the model that OOM'd
+$P $S social --models qwen25,llama31,mistral,gemma2,qwen3 --skip-existing
 echo "########## gate ##########"
 cd experiments/conformal && $P pccp.py --models qwen25,llama31,mistral,gemma2
 echo "########## secondary: + qwen3 ##########"
