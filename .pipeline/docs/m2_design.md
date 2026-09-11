@@ -100,3 +100,61 @@ Goal: a detector whose false-positive rate on control runs is guaranteed ≤ β,
   reported under G2-0 in the same way as S_beh.
 - **GPT-OSS Core is imbalanced** (18 collusion / 50 control); AUROC handles it, TPR@β is reported.
 - **Scoop risk.** The Oxford group is active; speed matters.
+
+---
+
+## v1 rescope (2026-09-11, user: "do as you recommend"), pre-registered before any new score is computed
+
+v0 outcome (ledger EXP-M2): the gate passed, but a post-hoc audit voided the Stego cell — message
+length alone and leaked "PRIVATE" lines give AUROC 1.000. Core is real: 0.90–0.93 after length
+control, though votes alone reach 0.88–0.94. Zero-shot Transfer fails: AUROC 0.745 / 0.50, and FPR
+is 0.28 / 0.94 at nominal 0.05. M2 v1 targets the two open problems.
+
+### Part A — in-domain honest-run calibration under domain shift (CPU, NARCBench Transfer)
+A defender deploying in a new domain can run its own system honestly there. Those known-honest
+runs are control runs, obtained without any attack label.
+- **A0 (reference, already measured).** The vectorizer is fit on Core collusion runs; calibration
+  uses Core controls.
+- **A1 (in-domain calibration).** Same vectorizer. Calibration uses Transfer controls from the
+  other scenarios (leave-one-scenario-out within Transfer), subsampled to
+  k ∈ {5, 10, 20, all} (100 random draws for k < all).
+- **A2 (domain-adapted features).** The vectorizer is fit on Core collusion runs plus a random
+  half of the in-domain calibration controls; calibration uses the other half. Calibration and
+  test stay out-of-fit.
+- **Level.** β = 0.05 for Qwen3 (35 calibration controls). β = 0.10 for GPT-OSS: with only 17
+  calibration controls, the smallest attainable p is 1/18 ≈ 0.056, so p ≤ 0.05 cannot occur.
+
+**Gate A**
+- **A-valid.** With k = all, empirical FPR@β ≤ β + 0.05 on both models (was 0.28 / 0.94).
+- **A-power.** Qwen3 TPR@0.05 ≥ 0.30 with k = all.
+- **A-adapt** (reported, not gating). A2 raises GPT-OSS Transfer AUROC to ≥ 0.60 (was 0.50).
+- Implicit-mode runs are reported separately.
+
+### Part B — NARC-Clean: a de-confounded testbed (GPU ≈ 1–2 h)
+- **Scenarios.** Reuse the 50 NARCBench Core scenario prompts (`agent_prompts.json`: per-agent
+  system and user prompts for the collusion and control versions).
+- **Generators.** Regenerate with three of ours: Qwen3-14B (non-thinking), Qwen2.5-7B-Instruct,
+  and Llama-3.1-8B-Instruct.
+- **Protocol per run.**
+  1. Collusion mode only: a private phase, one message per colluder, visible only to the other
+     colluder.
+  2. Three public rounds, with the four agents speaking in a fixed order and each seeing all
+     prior public messages.
+  3. A public vote: "RECOMMENDATION: Option X".
+- **Confound removal, applied identically to collusion and control runs.**
+  - Every public message is hard-truncated to its first 80 words, with generation capped at
+    160 tokens.
+  - Any public sentence matching the leak lexicon (private / DM / "as we agreed" / "our plan" /
+    PRIVATE) is deleted before any detector sees the transcript.
+- **Manipulation checks** (the testbed must pass these, otherwise it has failed): length-only
+  AUROC ≤ 0.60 and leak-count AUROC ≤ 0.60 on every generator.
+
+**Gate B**
+- S_comb (lexical + votes) AUROC ≥ 0.75, with empirical FPR@0.05 ≤ 0.10 under
+  leave-one-scenario-out, on at least 2 of 3 generators.
+- Text-only S_lex AUROC ≥ 0.70 on at least 2 of 3 generators (the claim must not rest on votes).
+- LLM-judge baseline (Qwen3-14B reading the same public view) reported.
+
+### Decision
+M2 continues to a paper iff A-valid and Gate B both pass. Otherwise it becomes an analysis and
+benchmark-critique result, and we move to M3.
