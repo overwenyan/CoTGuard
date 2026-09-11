@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-09-11",
+  "supersedes": [".pipeline/docs/idea_board_v3.json (2026-09-10, P1-P5; P2 taken to SVRA v2, G1 pending)"],
+  "userDirective": "More METHODS on this project: LLM + agents + AI safety, classic trustworthy-ML techniques, single GPU, reuse assets. Report: .pipeline/docs/refs/deep_research_2026-09-11_methods.md",
+  "verifiedAssets": [
+    "instruction echo is the carrier of prompt signatures (3 models x 3 datasets)",
+    "relay fidelity, not the signature, decides multi-hop survival (Qwen3 vs Mistral relay)",
+    "compute-twice obligation executed by all 3 generators; CPU-checkable redundancy",
+    "key-conditioning dominates prefix (Tulu, Qwen3)",
+    "infrastructure: generation pipeline, relay/rewrite testbed, TF-IDF/stylometric readouts with problem-split CV + permutation null, CPU numeric verifier (28 tests), prefix-swap, coordinated-adversary generator, LLM-judge / STAR-style baselines, 7-sample honest data (Tulu/Qwen3 x GSM8K/MATH-500)"
+  ],
+  "ideas": [
+    {
+      "id": "M1",
+      "name": "Peer-conditional conformal prediction (PCCP) for multi-agent LLM decisions",
+      "problem": "Clean-calibrated conformal coverage collapses 90%->74% under unanimous-wrong peers; weighted CP reduces to identity; condition-aware recalibration needs pressure labels (Hu & Su, arXiv 2609.04445, 2026-09-03). Defense left open.",
+      "method": "Solo-anchored split conformal (calibrate on no-peer scores; exchangeability intact) + act-gate (act on a singleton only if the social answer lies in the solo set) + online pressure detector from solo/social score divergence; Mondrian variant conditioned on observable peer statistics with augmented synthetic-peer calibration.",
+      "theory": "Coverage of the solo set is the standard split-conformal guarantee for any peer-message distribution; false-action rate <= alpha; bin-conditional coverage for the Mondrian variant.",
+      "experiments": "Reproduce 2609.04445 with released code (Qwen2.5-7B, Llama-3.1-8B, Mistral-7B-v0.3, Gemma-2-9B; ARC-C, TruthfulQA); baselines clean CP, per-model Mondrian, condition-aware recalibration (oracle), Conformal Social Choice (2604.07667).",
+      "gate": "Under unanimous-wrong peers at alpha=0.10: act-on-wrong <= 10% and coverage >= 90% with abstention strictly below condition-aware recalibration; otherwise the method is trivial.",
+      "occupiedBy": "none for the repair; problem owned by 2609.04445 / 2604.07667 / 2606.00820",
+      "changesProblem": true, "safety": true, "multiAgent": true,
+      "infraReuse": "medium (conformal + null-control code; Mistral/Qwen3 on disk)",
+      "compute": "<= 1 GPU-day",
+      "risk": "high scoop risk (paper is days old; simple idea) -> speed"
+    },
+    {
+      "id": "M2",
+      "name": "Black-box, trace-only collusion detection with exact FPR control",
+      "problem": "Only strong detector is white-box (activation probes, 0.73-0.93 AUROC zero-shot on NARCBench, arXiv 2604.01151); black-box proposal (arXiv 2608.02698) has placeholder results; cross-principal monitors cannot read activations.",
+      "method": "Pairwise residual dependence between agents' messages beyond the shared context (TF-IDF/stylometry, stance trajectories, timing), permutation null that reassigns agent identities across scenarios, group-level closed testing; report an empirical detection-capacity frontier.",
+      "theory": "Exact FPR control from permutation tests; power vs covert bit-rate (capacity frontier).",
+      "experiments": "CPU on released NARCBench transcripts (3 tiers); second testbed with our coordinated-adversary generator + covert-channel instruction (<= 2 GPU-h); baselines LLM-judge classifier, published white-box numbers.",
+      "gate": "Zero-shot AUROC >= 0.75 on the hardest tier at FPR <= 0.05 by construction; < 0.60 -> stop.",
+      "occupiedBy": "framing by 2608.02698 (no results); white-box by 2604.01151",
+      "changesProblem": true, "safety": true, "multiAgent": true,
+      "infraReuse": "high (permutation null, readouts, adversary generator, judge baseline)",
+      "compute": "CPU first; <= 2 GPU-h",
+      "risk": "medium (Oxford group active; hardest tier may still be explicit collusion)"
+    },
+    {
+      "id": "M3",
+      "name": "Prompt-only radioactivity: inheritance of instruction signatures under distillation",
+      "problem": "Active trace-rewriting watermarks detect distilled students (arXiv 2602.15143: TPR 1.00 / FPR <= 0.02); token-level radioactivity needs decoding access; no report on whether a trigger-free prompt-only signature (ICW, echo) survives SFT.",
+      "method": "TF-IDF per-key readout trained on teacher traces, applied to student outputs on held-out problems; wrong-key permutation null for FPR; instruction-family design for learnability.",
+      "theory": "Two-sample test power vs number of watermarked training traces and echo strength.",
+      "experiments": "LoRA-SFT Qwen2.5-1.5B/3B on 700-2000 traces per key, 4 keys x 2 students (<= 4 GPU-h).",
+      "gate": "Student-output attribution >= 2x chance at permutation-null FPR <= 0.05; N2's no-key residual (1.5-1.9x) is the prior, negative likely.",
+      "occupiedBy": "adjacent: 2602.15143 (active, stronger); TextSeal / Sander et al. (token-level)",
+      "changesProblem": true, "safety": false, "multiAgent": false,
+      "infraReuse": "high (all trace data, readouts, null)",
+      "compute": "<= 4 GPU-h",
+      "risk": "negative first result likely -> analysis, not method"
+    },
+    {
+      "id": "M4",
+      "name": "Conclusion-blind fault localization with independently verified evidence",
+      "problem": "Pipeline auditors relay conclusions instead of checking; hiding conclusions gives +41 pp fault-origin accuracy; remedy left open (arXiv 2609.07680, 2026-09-07). Injected relay errors persist and are localizable (2607.09678).",
+      "method": "Each hop emits machine-checkable evidence; auditor sees only CPU-verified evidence multisets per hop; fault = first hop whose evidence fails re-computation or contradicts verified upstream evidence; auditor never reads conclusions or prose (injection-immune by construction).",
+      "theory": "Localization within one hop under an honest checker; false-flag rate = checker false-reject on evidence diffs.",
+      "experiments": "Relay chains with one corrupted hop (numeric / semantic / injected auditor note), Tulu+Qwen3 generators, Qwen3+Mistral relays (<= 3 GPU-h); baselines LLM auditor with/without conclusion field, STAR-style verifier.",
+      "gate": "Localization accuracy >= LLM-auditor-without-conclusions + 10 pp under injected auditor notes.",
+      "occupiedBy": "problem named by 2609.07680; failure-attribution task exists with LLM judges",
+      "changesProblem": true, "safety": true, "multiAgent": true,
+      "infraReuse": "highest (relay testbed, CPU verifier, adversary generator, baselines, SVRA data)",
+      "compute": "<= 3 GPU-h",
+      "risk": "numeric corruption too easy, semantic too hard (verifier passes 44% of honest-wrong traces)"
+    },
+    {
+      "id": "M5",
+      "name": "Prompt-only last-writer attribution + relay-fidelity test",
+      "problem": "Multi-writer attribution from final text exists only with decoding access (IET 2603.17445, Chronology RSOS 2026, TRACE 2607.08400); prompt-only is open but upstream echo dies under lossy relays (S20).",
+      "method": "Attribute the last writer by its instruction echo; use presence/absence of upstream echo as a relay-fidelity statistic with a permutation null.",
+      "theory": "Sequential test for hop membership.",
+      "experiments": "Relay testbed with per-hop keys, 2 relay families.",
+      "gate": "Last-writer top-1 >= 3x chance after 3 hops on both relays.",
+      "occupiedBy": "provenance phenomenon: White et al. 2606.22698",
+      "changesProblem": false, "safety": true, "multiAgent": true,
+      "infraReuse": "high", "compute": "<= 3 GPU-h",
+      "risk": "modest claim; re-enters occupied turf"
+    },
+    {
+      "id": "M6",
+      "name": "Prompt-only computational-obligation watermark (P4 with executed obligations)",
+      "problem": "ReasonMark (ICLR 2026) / SWAN are decoding-time; ICW is lexical; a paraphrase-invariant prompt-only carrier would be which quantities are computed.",
+      "method": "Key selects obligations that models actually execute and a CPU can check; detector = verifier signatures.",
+      "theory": "Capacity ~ log2(#executed, distinguishable obligations).",
+      "experiments": "Obligation-screening run first (which obligations are executed), then LEX vs obligation vs ICW under paraphrase + monitor-aware scrubbing.",
+      "gate": "At least 3 obligations with V3-style separation >= 0.3 on two generators; else capacity < 2 bits -> stop.",
+      "occupiedBy": "ICW (prompt-only lexical); D1/G0 negatives",
+      "changesProblem": false, "safety": false, "multiAgent": false,
+      "infraReuse": "high", "compute": "<= 4 GPU-h",
+      "risk": "D1/G0 evidence against; capacity ~1 bit today"
+    }
+  ],
+  "notRecommended": {
+    "PRM robustness": "Reward Under Attack (ICML 2026), VPRM, Sci-PRM, VeriBound",
+    "agent memory poisoning": "SMSR (certified), MemSAD, Cordon-MAS, TRIS",
+    "AI-control monitor defenses": "adaptive injection subverts all protocols (2510.09462); needs frontier models + control benchmarks",
+    "CoT-backdoor defense via prompt inversion": "output2prompt/RPE occupy inversion; MirageBackdoor defeats CoT-based detection; Critical-CoT white-box",
+    "Byzantine aggregation (P2/SVRA)": "see p2_prior_work.md; f=0 dominated by MV; G1 pending"
+  }
+}

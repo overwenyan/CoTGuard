@@ -10,7 +10,11 @@ related works。** 随后进一步指示：参考文章以**方法文章**为主
 
 ## 当前阶段
 
-**experiment（SVRA v2 设计已定、G0-v2 刀刃通过；等 S20 与用户确认首个 P2 GPU 作业）**
+**experiment（P2/SVRA 的决定性门槛 G1 在跑，作业 20041130）∥ ideation 重开（2026-09-11，用户："stuck on this topic, more METHODS on this project"）**
+
+- 方法候选深度调研：`.pipeline/docs/refs/deep_research_2026-09-11_methods.md`（~40 次实时检索）；候选板 `idea_board_v4.json`（M1–M6）。
+  首推 **M1 同伴条件化共形预测**（Hu & Su 2609.04445 留下的防御空白，代码数据公开）与 **M2 黑盒共谋检测**（NARCBench 公开，唯一强检测器是白盒）。
+- P2/SVRA 现状：f=0 被 MV 严格支配；核验器不覆盖 MATH-500 与 Mistral；G1 判决未出。**待用户选方向。**
 
 - 论文问题：**P2 — Structurally-Verified Robust Aggregation (SVRA) for multi-agent LLM reasoning**
   （`.pipeline/docs/p2_design.md`）
