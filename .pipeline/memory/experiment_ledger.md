@@ -1751,3 +1751,29 @@ P4（结构水印 = D1 作方法）候选**关闭**。D1 与 G0 合起来可作 
   回声对象（人设 or 指令）取决于模型——Qwen3 两者都回声，Tulu/Mistral 只回声指令。原「persona 零信号」的表述**不得再用**。
 
 B（families on Qwen3/Mistral，含 M1 冗余复现，SVRA v2 的 V3 前提）、D（前缀交换）、C1/C2（Mistral 中继）仍在跑，预计 ~05:00 完成。
+
+---
+
+## S20 B 节中途：Qwen3 上 compute-twice 的 V3 复现；「17 点正确率代价」是截断伪影
+
+`svra_g0v2.py`（已改为按 pattern 文本定位义务密钥、容忍缺失文件）在 `attr_families_qwen3` 部分数据上
+（义务组 key01 + 非义务组 key00/02/03 + clean，**分离度为暂定值**）：k=1 误拒 0.493（又一次刀刃）、V3 分离 0.482（k=2/3 达 0.66–0.68）。
+**冗余机制在 Qwen3 上复现，且分离更强。**
+
+但义务组正确率 0.750 vs 其余 0.922。用 Qwen3 tokenizer 检查长度：
+
+| arm | acc | 平均 token | p90 | 触顶（≥590/600） | 未截断者 acc |
+|---|---|---|---|---|---|
+| clean | 0.93 | 254 | 393 | 0.00 | 0.93 |
+| key01（compute twice） | **0.75** | **494** | 600 | **0.28** | **0.94**（n=72） |
+| key00/02/03 | 0.90–0.95 | 308–316 | 445–479 | 0.00–0.04 | 0.91–0.97 |
+
+**「代价」全部来自 600 token 上限**：算两遍使长度近乎翻倍，28% 在得出答案前被截断；未截断的与 clean 无差别。
+这是与 think-block 事故同类的**静默预算截断**。连带：Qwen3 的 0.493 误拒率被截断轨迹抬高，不作数，将在 1200 token 的新数据上重测。
+
+### 已排队：SVRA 诚实 agent 生成（作业 20041091，`afterany:20041000`）
+`gen_svra_honest.py` + `slurm/svra_honest.sbatch`：每题 7 个样本 × {obligated, unobligated} × {GSM8K, MATH-500 数值题} ×
+{Tulu, Mistral, Qwen3}，**max_new_tokens 1200**，每行记录 `n_tokens` 与 `hit_cap`（截断必须在数据里可见）；
+2 题冒烟先行；便宜的生成器排前。CPU dry-run 已验证 prompt 与 D1 逐字一致、MATH-500 数值题 ≥ 100。
+分析脚本 `svra_honest_stats.py` 已用 Tulu 替身数据测过（逐字复现 G0-v2 数字）。
+**若 S20 的 Mistral families 显示冗余机制不复现，则取消该作业。**

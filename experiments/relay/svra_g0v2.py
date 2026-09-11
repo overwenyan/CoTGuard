@@ -37,10 +37,15 @@ def main():
     ap.add_argument("--ks", type=int, nargs="+", default=[1, 2, 3])
     args = ap.parse_args()
     run = pathlib.Path(args.run_dir)
-    ob = rows_of(run / "structural_anchor__key01.jsonl", args.ks)
-    non = [r for i in range(8) if i != 1
-           for r in rows_of(run / f"structural_anchor__key{i:02d}.jsonl", args.ks)]
-    non += rows_of(run / "clean.jsonl", args.ks)
+    pats = [e["pattern"] for e in json.loads((run / "key_spaces.json").read_text())["structural_anchor"]]
+    ti = next(i for i, p in enumerate(pats) if "compute every intermediate quantity twice" in p)
+    fp = lambda i: run / f"structural_anchor__key{i:02d}.jsonl"
+    ob = rows_of(fp(ti), args.ks)
+    present = [i for i in range(len(pats)) if i != ti and fp(i).exists()]
+    non = [r for i in present for r in rows_of(fp(i), args.ks)]
+    non += rows_of(run / "clean.jsonl", args.ks) if (run / "clean.jsonl").exists() else []
+    print(f"[info] obligated = key{ti:02d}; non-obligated routes present: {present} + clean"
+          + ("" if len(present) == len(pats) - 1 else "  (PARTIAL: separation is provisional)"))
 
     m = lambda rs, f: float(np.mean([f(r) for r in rs])) if rs else float("nan")
     ob_c = [r for r in ob if r["correct"]]
@@ -76,7 +81,7 @@ def main():
         chosen = max(ok, key=lambda k: res[k]["sep"] - res[k]["false_reject"])
         print(f"=> G0-v2 passes; frozen k = {chosen} "
               f"(false-reject {res[chosen]['false_reject']:.3f}, sep {res[chosen]['sep']:.3f}); "
-              f"Tulu x GSM8K only until S20")
+              f"single generator x GSM8K; re-check across generators")
     (run / "svra_g0v2.json").write_text(json.dumps({"per_k": res, "chosen_k": chosen}, indent=1))
 
 
