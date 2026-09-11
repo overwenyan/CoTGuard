@@ -30,7 +30,8 @@ NUMWORDS = {
 CONSTANTS = {0.0, 1.0, 2.0, 0.5, 7.0, 10.0, 12.0, 24.0, 52.0, 60.0, 100.0, 365.0, 1000.0}
 
 NUM_RE = re.compile(r"-?\d+(?:\.\d+)?")
-_OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv}
+_OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv,
+        ast.Pow: lambda a, b: a ** b if abs(b) <= 12 else float("nan")}
 
 
 def close(a: float, b: float) -> bool:
@@ -56,6 +57,7 @@ LABEL_NUM = re.compile(r"\b(?:step|approach|solution|route|method|part|case|mont
 def _normalize(s: str) -> str:
     s = re.sub(r"(\d{1,3}(?:,\d{3})+)", lambda m: m.group(1).replace(",", ""), s)
     s = s.replace("**", " ")
+    s = re.sub(r"\^\s*\{?\s*(\d+)\s*\}?", r" ** \1", s)      # 2^2, 2^{3}
     s = s.replace("\\(", " ").replace("\\)", " ").replace("\\[", " ").replace("\\]", " ")
     s = re.sub(r"\\frac\{([^{}]+)\}\{([^{}]+)\}", r"((\1)/(\2))", s)
     s = re.sub(r"\\times|\\cdot|×|·|∗", "*", s)
@@ -70,7 +72,8 @@ def _normalize(s: str) -> str:
     return s
 
 
-_TOKEN = re.compile(r"\d+(?:\.\d+)?|[+\-*/()]|[A-Za-z]+|\S")
+_TOKEN = re.compile(r"\d+(?:\.\d+)?|\*\*|[+\-*/()]|[A-Za-z]+|\S")
+_OPTOK = ("+", "-", "*", "/", "(", ")", "**")
 
 
 def _suffix_expr(lhs: str):
@@ -82,7 +85,7 @@ def _suffix_expr(lhs: str):
     best = None
     for start in range(len(toks) - 1, -1, -1):
         cand = toks[start:]
-        if any(t not in "+-*/()" and not NUM_RE.fullmatch(t) for t in cand):
+        if any(t not in _OPTOK and not NUM_RE.fullmatch(t) for t in cand):
             break
         # two numbers in a row means prose glued them; the expression cannot extend past that
         if any(NUM_RE.fullmatch(a) and NUM_RE.fullmatch(b) for a, b in zip(cand, cand[1:])):
@@ -123,6 +126,7 @@ def extract_equations(text: str) -> list[dict]:
     eqs = []
     pending = None                                         # "X = a * b" with the result on the next line
     for line in text.splitlines():
+        line = re.sub(r"^\s*(?:[-*•]|\d+[.)])\s+", "", line)   # list bullets are not minus signs
         if pending is not None and line.strip():
             m = _BARE_RESULT.match(line)
             if m:
@@ -146,8 +150,13 @@ def extract_equations(text: str) -> list[dict]:
                     pending = parts[i]
                 continue
             tail = _normalize(parts[i][m.end():])
-            if re.match(r"^\s*[A-Za-z ]{0,20}[+\-*/]\s*\d", tail):
-                if i == len(parts) - 1 and _suffix_expr(parts[i]) is not None:
+            if re.match(r"^\s*[A-Za-z ]{0,20}(?:\*\*|[+\-*/])\s*\d", tail):
+                lone = re.fullmatch(r"\s*(-?\d+(?:\.\d+)?)\s*", _normalize(lhs))
+                if lone and i == len(parts) - 1:           # result-first: "196 = 2 * 98"
+                    e = _eq(parts[i], float(lone.group(1)))
+                    if e:
+                        eqs.append(e)
+                elif i == len(parts) - 1 and _suffix_expr(parts[i]) is not None:
                     pending = parts[i]
                 continue                                   # RHS continues as an expression
             e = _eq(lhs, float(m.group(1).replace(",", "")))
@@ -287,6 +296,16 @@ def _selftest():
     e = extract_equations("Centimeters melted = 4 * 2\nCentimeters melted = 8 centimeters")
     assert len(e) == 1 and e[0]["expr"] == "4 * 2" and e[0]["ok"], e
     e = extract_equations("Hours = 5 - 1\nSo the total is large.")
+    assert e == [], e
+    e = extract_equations("- 6432 ÷ 2 = 3216\n- 3216 ÷ 2 = 1608")
+    assert [x["ok"] for x in e] == [True, True], e
+    e = extract_equations("3. The next 2 customers buy 2 DVDs each: 2 * 2 = 4 DVDs")
+    assert len(e) == 1 and e[0]["expr"] == "2 * 2" and e[0]["ok"], e
+    e = extract_equations("196 = 2 * 98\n98 = 2 * 49")
+    assert [(x["expr"], x["result"], x["ok"]) for x in e] == [("2 * 98", 196.0, True), ("2 * 49", 98.0, True)], e
+    e = extract_equations("So the count is (2 + 1) * (2 + 1) = 9 and 2^2 * 7^2 = 196")
+    assert [x["result"] for x in e] == [9.0, 196.0] and all(x["ok"] for x in e), e
+    e = extract_equations("x = 5 - 1")
     assert e == [], e
     print("selftest ok")
 
