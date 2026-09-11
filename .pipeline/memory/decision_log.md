@@ -108,3 +108,11 @@ minority corruption). New baselines: RRMaj, STAR, AgentAuditor/SC-MoA, DecentLLM
 A-collude (colluding, route-aware, white-box) is the pre-registered limit (P3). Route pool
 restricted to routes with CPU-checkable signatures, otherwise Prop B fails. Gate G0 (CPU, data on
 disk) with three kill criteria precedes any P2 GPU spend.
+
+## 2026-09-10 — SVRA v2: drop route assignment (user chose option 1 after G0)
+
+G0 failed K2: only compute-twice has a CPU-checkable route signature; other structural routes neither
+separate (≤ 0.06) nor change what is computed (node coverage 0.925). All agents now get the single
+compute-twice obligation; the Consensus-Trap escape is attributed to content-based verification
+(non-symmetric, non-outcome-level), not to routes. D1 link dropped. G0-v2 criteria pre-registered in
+`p2_design.md` §5.0 and committed before running.
