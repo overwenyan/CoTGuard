@@ -136,6 +136,12 @@ full verification = V1 ∧ V2 ∧ V4 ∧ V3_k.
 Choose k = the value passing both, maximizing separation minus false-reject. Freeze it before any
 GPU run.
 
+**G0-v2 result: passes; frozen k = 1.** False-reject is 0.494, a margin of 0.006 against
+SE ≈ 0.056, so this is a knife-edge pass and must be re-tested on Qwen3 and Mistral after S20.
+Separation is 0.431. The full verifier passes 0.506 of honest-correct traces vs 0.238 of
+honest-wrong ones, and only 0.216 of non-obligated traces. The overall honest pass rate of 0.45
+makes **coverage at f ≥ n/2 a first-class metric**: at n = 5, f = 3, P(h_pass = 0) ≈ 0.30.
+
 ### 5.1 Honest agents (new generation needed)
 n = 7 obligated samples per problem (temperature sampling; subsample n ∈ {3,5,7}). The same number
 of **unobligated** samples serves the no-obligation ablation. GSM8K + MATH-500 × Tulu, Qwen3-14B,
