@@ -13,13 +13,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import pathlib
 import random
 import zlib
 
 import numpy as np
 
-OUT = pathlib.Path(__file__).parent / "data"
+OUT = pathlib.Path(os.environ.get("M1_DATA", pathlib.Path(__file__).parent / "data"))
 LETTERS = "ABCD"
 MODELS = {
     "qwen25": "Qwen/Qwen2.5-7B-Instruct",
