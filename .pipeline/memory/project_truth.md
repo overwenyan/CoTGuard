@@ -28,13 +28,22 @@ related works。** 随后进一步指示：参考文章以**方法文章**为主
 - [09-10] 体裁修正：方法论文；D1（结构 vs 措辞）为中心 trick
 - [09-10] 方法候选 M1+M2 选定 → **当日被 P2 pivot 取代**
 - [09-10] **P2 pivot**：SVRA 为论文问题；CoTGuard 实验降为动机；先复现、先核查文献
+- [09-10] **S21 后收窄定位（用户接受）**：无 LLM 在环的核验聚合；主对手从 MV 换成读轨迹的聚合器；
+  威胁模型加过半腐化与合谋/路线知情对手；design v1
 
 ## 论文定位（一句话）
 
-> ⚠️ **下面这句已被 S21 否定为新颖性主张**（Byzantine 鲁棒聚合搬到 LLM 多智能体已有 SAC/DecentLLMs/CP-WBFT/
-> H-CSC/Consensus Trap；Prop 1 与多数投票同界）。仅保留作历史记录。候选替代口径见 `p2_prior_work.md` §4.1：
-> *无 LLM 在环的核验聚合——路线分配 + CPU 数值核验器拿到 trace 级聚合的收益，同时去掉现有核验型/结构型聚合器
-> （STAR、AgentAuditor、Reasoning Consensus、SC-MoA、DecentLLMs）暴露的注入面。* **待用户确认。**
+**现行（用户 2026-09-10 接受，设计见 `p2_design.md` v1）：**
+
+> Trace-reading aggregators (LLM-judge, STAR, AgentAuditor, SC-MoA, DecentLLMs) beat vote counting
+> but put an LLM between adversarial text and the decision. SVRA gets trace-level information with
+> **no LLM in the loop**: route-assigned agents, a CPU verifier that re-computes, grounds and
+> route-checks each agent's committed arithmetic, and aggregation over verified reporters only.
+> It is injection-immune by construction, and because routes break anonymity its tolerance is set
+> by the adversaries that *pass verification* (f_pass), escaping the Consensus-Trap impossibility
+> for adversaries that cannot fake a verified trace — and, stated up front, not for those that can.
+
+**作废（S21 否定为新颖性主张，仅留历史）：**
 
 > Multi-agent reasoning pipelines are only as trustworthy as their aggregator. We bring
 > Byzantine-robust aggregation to natural-language reasoning by aggregating over **structurally
@@ -79,8 +88,10 @@ persona 无信号、指令有信号（C4）；无零样本外推（R1d）；10 �
 4. **必须报告 FPR / null control**；置换 null 是标配。
 5. **不得把单次结果当已确立机制**——S20 复现前，C4/A1/N2/R0 只能写"在 Tulu×GSM8K 上观察到"。
 6. **不得说"功能词 = 零内容"、"任意盆地"、"自适应攻击"**（外部审阅撤回项）。
-7. **P2 的先验文献核查未完成前，不得冻结实验设计或写 related work 的 gap 句。**（S21 已完成；
-   但因定位须改，**新定位经用户确认前**本条继续生效。）
+7. ~~P2 先验核查完成前不得冻结设计~~（S21 完成、新定位已确认）。**替换为**：G0 CPU 可行性门槛
+   （`p2_design.md` §5.0，三条 kill 判据）通过前，不得花 GPU 在 P2 上，也不得冻结 v1 网格。
+   gap 句只能按 `p2_prior_work.md` 的空隙写（注入免疫 + 路线打破匿名性）。
+9. **不得宣称 SVRA 在少数腐化下优于多数投票**（P4 已预注册为无增益），也不得隐藏 A-collude 下的退化（P3）。
 8. **不得宣称"首次把 Byzantine 鲁棒聚合用于 LLM 多智能体"**，也不得把 f < m/2 完整性界当贡献（S21）。
 
 ## 风险 / 阻塞项

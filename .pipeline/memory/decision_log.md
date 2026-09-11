@@ -89,3 +89,22 @@ anchors) is shelved.
 
 **Superseded.** `idea_board_v2.json` (M1–M5 as provenance methods) and `publishable_angle.md`
 (direction 1+2, "carrier judgment + maintenance mechanism") are superseded by `p2_design.md`.
+
+## 2026-09-10 — P2 repositioned after S21 (user accepted)
+
+**Decision.** Keep P2/SVRA but narrow the claim to *verified aggregation with no LLM in the loop*:
+injection immunity by construction (CPU numeric verifier) + route assignment breaking anonymity
+(tolerance governed by f_pass, escaping Consensus Trap's impossibility only for adversaries that
+cannot fake a verified trace). Design v1 in `p2_design.md`.
+
+**Why.** S21 (`p2_prior_work.md`) found the v0 framing occupied: Byzantine aggregation for LLM MAS
+(SAC, DecentLLMs, CP-WBFT, H-CSC), same threat model + datasets (Consensus Trap), claim-level
+LLM verification + exclusion (STAR), structure-over-answers in the honest case (AgentAuditor,
+Reasoning Consensus, SC-MoA). Prop 1 equals the MV bound (H-CSC containment lemma). What no one
+has: an aggregator whose verification has no LLM, hence no injection surface.
+
+**Consequences.** Main opponents become trace-reading aggregators, not MV (MV ≈ 96% on GSM8K under
+minority corruption). New baselines: RRMaj, STAR, AgentAuditor/SC-MoA, DecentLLMs. New adversary
+A-collude (colluding, route-aware, white-box) is the pre-registered limit (P3). Route pool
+restricted to routes with CPU-checkable signatures, otherwise Prop B fails. Gate G0 (CPU, data on
+disk) with three kill criteria precedes any P2 GPU spend.
