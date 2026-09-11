@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import json
 import pathlib
+import re
 from collections import Counter, defaultdict
 
 import numpy as np
@@ -85,11 +86,11 @@ def cmd_configs(args):
     print(f"[configs] {len(cfgs)} configurations -> {ADV / 'configs.json'}")
 
 
-def load_traces():
+def load_traces(gens=GENS):
     """(gen, src, qid, sample) -> {text, question, gold, target}. Needs generated adversaries."""
     tg = {int(q): v for q, v in json.loads((ADV / "targets.json").read_text()).items()}
     tr = {}
-    for g in GENS:
+    for g in gens:
         for fp in sorted((HONEST / f"{g}_gsm8k").glob("obligated__s*.jsonl")):
             for r in jl(fp):
                 tr[(g, "honest", r["qid"], r["sample"])] = r
@@ -213,6 +214,57 @@ def cmd_aggregate(args):
         {"summary": summary, "verdict": verdict, "decision": decision}, indent=1))
 
 
+LEAK = re.compile(r"private instruction|hidden instruction|the instruction|as instructed|"
+                  r"i was (?:told|instructed)|visible only", re.I)
+
+
+def cmd_secondary(args):
+    """NOT pre-registered. Adversaries restricted to traces that answer X and do not leak the
+    instruction; honest agents as in G1. Judge excluded (its calls are tied to the G1 configs)."""
+    gens = args.gens.split(",")
+    tr, tg = load_traces(gens)
+    star = json.loads((ADV / "star_verdicts.json").read_text()) if (ADV / "star_verdicts.json").exists() else {}
+    rng = np.random.default_rng(args.seed)
+    cache = {}
+
+    def info(tid):
+        if tid not in cache:
+            r = tr[tid]
+            v = verify(r["text"], r["question"])
+            cache[tid] = {"ans": v["answer"], "ok": v["verified"] and sig_twice(r["text"], v["eqs"], args.k)[1]}
+        return cache[tid]
+
+    print("SECONDARY ANALYSIS (not pre-registered): compliant, non-leaking adversaries only")
+    print(f"{'gen':<7}{'f':>2} {'adv':<14}{'problems':>9}{'MV':>8}{'SVRA':>8}{'cov':>7}{'STAR':>8}")
+    for g in gens:
+        for t in ADV_TYPES:
+            base = "a_wrong" if t == "a_infect" else t
+            for f in (1, 2, 3):
+                acc = defaultdict(list)
+                nq = 0
+                for q, v in tg.items():
+                    pool = [s for s in range(N_ADV_SAMPLES) if (g, base, q, s) in tr
+                            and info((g, base, q, s))["ans"] is not None
+                            and close(info((g, base, q, s))["ans"], v["x"])
+                            and not LEAK.search(tr[(g, base, q, s)]["text"])]
+                    if len(pool) < f:
+                        continue
+                    nq += 1
+                    for _ in range(args.draws):
+                        ids = [(g, "honest", q, s) for s in rng.choice(7, 5 - f, replace=False)]
+                        ids += [(g, t, q, s) for s in rng.choice(pool, f, replace=False)]
+                        inf = [info(i) for i in ids]
+                        acc["MV"].append(close_or_false(plurality([x["ans"] for x in inf]), v["gold"]))
+                        ver = [x["ans"] for x in inf if x["ok"]]
+                        acc["SVRA"].append(close_or_false(plurality(ver), v["gold"]) if ver else False)
+                        acc["cov"].append(bool(ver))
+                        if star:
+                            keep = [x["ans"] for i, x in zip(ids, inf) if star.get("|".join(map(str, i))) != "INVALID"]
+                            acc["STAR"].append(close_or_false(plurality(keep or [x["ans"] for x in inf]), v["gold"]))
+                m = lambda k: f"{np.mean(acc[k]):>8.3f}" if acc[k] else f"{'-':>8}"
+                print(f"{g:<7}{f:>2} {t:<14}{nq:>9}{m('MV')}{m('SVRA')}{m('cov')[1:]:>7}{m('STAR')}")
+
+
 def close_or_false(pred, gold):
     return pred is not None and gold is not None and close(pred, gold)
 
@@ -230,8 +282,14 @@ def main():
     p.add_argument("--seed", type=int, default=0)
     p = sp.add_parser("aggregate")
     p.add_argument("--k", type=int, default=1)
+    p = sp.add_parser("secondary")
+    p.add_argument("--k", type=int, default=1)
+    p.add_argument("--gens", default=",".join(GENS))
+    p.add_argument("--draws", type=int, default=5)
+    p.add_argument("--seed", type=int, default=1)
     args = ap.parse_args()
-    {"targets": cmd_targets, "configs": cmd_configs, "aggregate": cmd_aggregate}[args.cmd](args)
+    {"targets": cmd_targets, "configs": cmd_configs, "aggregate": cmd_aggregate,
+     "secondary": cmd_secondary}[args.cmd](args)
 
 
 if __name__ == "__main__":
