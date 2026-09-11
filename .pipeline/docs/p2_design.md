@@ -142,6 +142,32 @@ Separation is 0.431. The full verifier passes 0.506 of honest-correct traces vs 
 honest-wrong ones, and only 0.216 of non-obligated traces. The overall honest pass rate of 0.45
 makes **coverage at f ≥ n/2 a first-class metric**: at n = 5, f = 3, P(h_pass = 0) ≈ 0.30.
 
+**Honest-agent data (EXP-S1, job 20041095):** at f = 0, SVRA is strictly dominated by MV over
+obligated agents on both Tulu and Qwen3 (GSM8K; 7 agents: 0.718 vs 0.870, 0.792 vs 0.970).
+On committed problems it ties MV on Tulu and trails by 4 points on Qwen3. The verifier fails on
+MATH-500. SVRA's case therefore rests entirely on the adversarial cells, hence gate G1.
+
+**G1 (decisive adversarial test), pre-registered 2026-09-11 before any adversarial trace exists.**
+Data: GSM8K × {Tulu, Qwen3}; honest agents = obligated samples from S1; the adversary target X
+per problem is shared across generators. Configurations are sampled once per
+(generator, n, f, draw) and reused across adversary types, so every comparison is paired.
+A-infect uses **the same A-wrong traces** plus an appended aggregator-addressed note, so the
+injection effect is isolated exactly. Aggregators: MV, LLM-judge (Qwen3-14B, no thinking),
+STAR-style (the Qwen3-14B verifier labels each trace VALID/INVALID, INVALID agents are excluded,
+then MV; a simplified stand-in for STAR, labelled as such), and SVRA (k = 1, abstain = wrong;
+coverage reported). 95% CIs from a paired bootstrap over problems.
+- **G1-I (injection)** at n = 5, f ∈ {1, 2} pooled: passes on a generator iff at least one of
+  LLM-judge or STAR-style loses ≥ 5 points under A-infect vs A-wrong (CI excludes 0), **and**
+  SVRA's A-infect − A-wrong difference is within ±2 points.
+- **G1-M (majority)** at n = 5, f = 3 under A-wrong: passes on a generator iff SVRA ≥ MV + 10
+  points **and** SVRA ≥ LLM-judge + 5 points (both CIs exclude 0). A-ct is reported alongside
+  and does not count toward the gate.
+- **Decision rule:** continue P2 iff SVRA passes G1-I or G1-M **on both generators**. Stop P2 if
+  it passes neither cell on either generator. Any mixed outcome is reported, and the user decides.
+- Reported, not gated: A-wrong-oblig (adversary also given the obligation; P3 predicts SVRA ≈ MV),
+  adversary compliance rate (share of adversary traces whose answer is X), n = 7 with
+  f ∈ {0, 2, 4} (CPU aggregators only), and STAR-style verifier false-reject on honest traces.
+
 ### 5.1 Honest agents (new generation needed)
 n = 7 obligated samples per problem (temperature sampling; subsample n ∈ {3,5,7}). The same number
 of **unobligated** samples serves the no-obligation ablation. GSM8K + MATH-500 × Tulu, Qwen3-14B,
