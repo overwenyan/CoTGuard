@@ -1,0 +1,66 @@
+{
+ "key_00": {
+  "type": "persona",
+  "pattern": "Reason as though you were a accountant reconciling ledgers, taking care to track the units through every operation."
+ },
+ "key_01": {
+  "type": "persona",
+  "pattern": "Adopt the mindset of a pharmacist checking doses. As you reason, restate the target before each computation."
+ },
+ "key_02": {
+  "type": "persona",
+  "pattern": "Adopt the mindset of a electrician tracing a circuit. As you reason, note the invariant that stays fixed."
+ },
+ "key_03": {
+  "type": "persona",
+  "pattern": "Work through this the way a chess coach reviewing a game would, and name each quantity before combining it."
+ },
+ "key_04": {
+  "type": "persona",
+  "pattern": "Adopt the mindset of a pharmacist checking doses. As you reason, flag every assumption as you rely on it."
+ },
+ "key_05": {
+  "type": "persona",
+  "pattern": "Work through this the way a cartographer scaling a map would, and verify the direction of each comparison."
+ },
+ "key_06": {
+  "type": "persona",
+  "pattern": "Adopt the mindset of a electrician tracing a circuit. As you reason, check each intermediate value against the question."
+ },
+ "key_07": {
+  "type": "persona",
+  "pattern": "Adopt the mindset of a electrician tracing a circuit. As you reason, mark which numbers are given and which are derived."
+ },
+ "key_08": {
+  "type": "structural",
+  "pattern": "Work through this, and work backwards from the quantity being asked for."
+ },
+ "key_09": {
+  "type": "structural",
+  "pattern": "Work through this, and do all the additions before any of the multiplications."
+ },
+ "key_10": {
+  "type": "structural",
+  "pattern": "Work through this, and compute every intermediate quantity twice, by two different routes."
+ },
+ "key_11": {
+  "type": "structural",
+  "pattern": "Work through this, and solve a simplified version of the problem first, then adjust it."
+ },
+ "key_12": {
+  "type": "lexical",
+  "pattern": "Work through this, and restate the target before each computation."
+ },
+ "key_13": {
+  "type": "lexical",
+  "pattern": "Work through this, and label each step with the operation it performs."
+ },
+ "key_14": {
+  "type": "lexical",
+  "pattern": "Work through this, and name each quantity before combining it."
+ },
+ "key_15": {
+  "type": "lexical",
+  "pattern": "Work through this, and mark which numbers are given and which are derived."
+ }
+}
