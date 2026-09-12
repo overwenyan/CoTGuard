@@ -141,3 +141,12 @@ vs the NARCBench-style homogeneous control passes on all three (0.754-0.981) wit
 Plus: NARCBench-Stego separable by message length alone (1.000); Core largely visible from public votes;
 in-domain honest calibration fixes FPR but yields zero power under domain shift. Recorded as analysis +
 benchmark critique. Next in the user's sequence: M3 (does a prompt-only signature survive distillation).
+
+## 2026-09-11 — M3 passes: passive prompt-only signatures ARE radioactive
+
+Students LoRA-trained on (plain problem -> keyed teacher trace), never shown the key, are attributed to
+their training key at 0.75 mean (chance 0.25) on both 1.5B and 0.5B, with length-only and permutation
+nulls clean. Caveat found in self-audit: the untuned base model is itself classified as k0
+(0.705/0.645), so under the stricter null (max of clean student and base model) k1 and k5 stand and k0
+does not. Contradicts my N2-based prior. Direction: prompt-only provenance for distilled reasoning
+models, complementary to ACL 2026 trace rewriting (which modifies teacher outputs).
