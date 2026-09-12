@@ -26,3 +26,5 @@ experiments/conformal/logs/
 experiments/collusion/results/
 experiments/collusion/narc_clean/
 experiments/collusion/logs/
+experiments/radioactive/data/
+experiments/radioactive/logs/
