@@ -132,3 +132,12 @@ their oracle fix (G-b), but under honest peers never escalated less than simply 
 (G-c fails: 0.39–0.44 vs 0.384). The strongest robust rule in this setting is "answer solo first"; the price of
 worst-case robustness is ≈7 pp extra escalation under honest peers. Recorded as an analysis result. Next in the
 user's sequence: M2 (black-box collusion detection with exact FPR control).
+
+## 2026-09-11 — M2 ends as a benchmark-critique result; move to M3
+
+Gate B (pre-registered before data): collusion vs script-matched open advocacy is at chance on all three
+generators (comb 0.452-0.511, lex 0.494-0.518, votes 0.412-0.484, LLM judge 0.502-0.594), while collusion
+vs the NARCBench-style homogeneous control passes on all three (0.754-0.981) with manipulation checks clean.
+Plus: NARCBench-Stego separable by message length alone (1.000); Core largely visible from public votes;
+in-domain honest calibration fixes FPR but yields zero power under domain shift. Recorded as analysis +
+benchmark critique. Next in the user's sequence: M3 (does a prompt-only signature survive distillation).
