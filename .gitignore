@@ -28,3 +28,6 @@ experiments/collusion/narc_clean/
 experiments/collusion/logs/
 experiments/radioactive/data/
 experiments/radioactive/logs/
+experiments/radioactive/data2/
+experiments/radioactive/data3/
+experiments/radioactive/data3_smoke/

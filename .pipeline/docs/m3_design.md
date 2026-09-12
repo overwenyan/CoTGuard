@@ -140,9 +140,9 @@ v2's 16 keys mixed three hand-written types, so they were not exchangeable. v2's
 therefore descriptive; the valid test starts here.
 
 ### 1. Key generator and pool
-`trigger_v2.py`: 4 templates × 13 personas × 12 anchors = 624 keys. The pool is **K = 64**: the 8 v2
+`trigger_v2.py`: 4 templates × 16 personas × 12 anchors = 768 keys. The pool is **K = 64**: the 8 v2
 persona keys (key_00..07, already generator outputs; their Tulu/GSM8K traces are reused unchanged)
-plus 56 drawn without replacement from the remaining 616 with `numpy.random.default_rng(3)`. Decoys
+plus 56 drawn without replacement from the remaining 760 with `numpy.random.default_rng(3)`. Decoys
 may share persona and anchor with a trained key and differ only in template; this is what the
 generator produces and makes the test harder, not easier. Test: p = (1 + #{j ≠ k : s_j ≥ s_k}) / 64;
 **α = 0.05 ⇔ rank ≤ 3**. Trained keys: g00..g07 (= v2 key_00..07), chosen before any distillation data
