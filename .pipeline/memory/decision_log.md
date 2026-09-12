@@ -150,3 +150,11 @@ nulls clean. Caveat found in self-audit: the untuned base model is itself classi
 (0.705/0.645), so under the stricter null (max of clean student and base model) k1 and k5 stand and k0
 does not. Contradicts my N2-based prior. Direction: prompt-only provenance for distilled reasoning
 models, complementary to ACL 2026 trace rewriting (which modifies teacher outputs).
+
+## 2026-09-12 — M3 v2 passes; M3 becomes the paper direction
+
+Owner-side test over 16 keys: all 6 trained keys reach p = 1/16 (the floor) on both Qwen2.5-1.5B and
+Llama-3.2-1B, all beat the strict clean+base null, empirical FPR 0.016 over 304 untrained pairs.
+Robust to 150 traces and to 50% mixed data. The active trigger baseline (ACL 2026 style) reaches
+0.14-0.24 per query but requires rewriting teacher outputs; the two routes are complementary.
+Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-math domains).
