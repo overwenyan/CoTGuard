@@ -158,3 +158,11 @@ Llama-3.2-1B, all beat the strict clean+base null, empirical FPR 0.016 over 304 
 Robust to 150 traces and to 50% mixed data. The active trigger baseline (ACL 2026 style) reaches
 0.14-0.24 per query but requires rewriting teacher outputs; the two routes are complementary.
 Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-math domains).
+
+## 2026-09-12 — M3 v3 robustness pre-registered (c500e86), running 20044642→43→44
+- Found while designing v3: v2's "FPR 0.016" is implied by the rank construction and validates nothing.
+  Validity must come from random key assignment; v3 draws a 64-key pool from the trigger_v2 generator
+  and adds a per-key conditional check (a positive must not be top-3 on clean/base students).
+- Scope: second teacher (Qwen2.5-7B), non-math domain (ARC-Challenge), distiller attacks (filter / para
+  / compress) with attack-agnostic and attack-aware read-outs. G-R0 failing stops M3 before writing;
+  G-R1 (paraphrase) only decides the wording of the robustness claim.
