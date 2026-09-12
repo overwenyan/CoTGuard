@@ -20,7 +20,7 @@ P=/local/projects-t3/primelab/yan.wen/miniconda3/envs/py312/bin/python
 echo "########## smoke ##########"
 $P run_m3b.py teacher --n 4
 $P run_m3b.py sft --student llama1b --epochs 1 --arms key_01
-$P run_m3b.py student --student llama1b --n-test 4
+$P run_m3b.py student --student llama1b --n-test 4 --arms key_01,base
 rm -rf data2
 
 echo "########## teacher: 16 keys + clean + big + active ##########"

@@ -37,7 +37,7 @@ def arms_to_generate(n):
     """arm -> (key pattern or None, n_traces)"""
     a = {k: (KEYS[k]["pattern"], n) for k in KEYS}
     a["clean"] = (None, n)
-    a["key_01_big"] = (KEYS["key_01"]["pattern"], 600)
+    a["key_01_big"] = (KEYS["key_01"]["pattern"], 600 if n >= 300 else 2 * n)   # smoke runs must not generate 600
     a["active"] = (None, n)                       # clean text; the trigger/target pair is injected below
     return a
 
@@ -146,14 +146,18 @@ def cmd_student(a):
                                      tokenize=False, add_generation_prompt=True) for p in probs]
     trig = [tok.apply_chat_template([{"role": "user", "content": user_prompt(p["question"], None) + "\n" + TRIGGER}],
                                     tokenize=False, add_generation_prompt=True) for p in probs[:50]]
-    for arm in list(student_arms()) + ["base"]:
+    todo = list(student_arms()) + ["base"] if a.arms == "all" else a.arms.split(",")
+    for arm in todo:
         fp = OUT / f"out_{a.student}_{arm}.jsonl"
         if read_jsonl(fp) is not None:
             print(f"[student/{a.student}/{arm}] checkpoint reused", flush=True)
             continue
+        if arm != "base" and not (OUT / f"student_{a.student}_{arm}" / "adapter_config.json").exists():
+            print(f"[student/{a.student}/{arm}] no adapter, skipped", flush=True)
+            continue
         model = AutoModelForCausalLM.from_pretrained(STUDENTS[a.student], dtype=torch.bfloat16, device_map="cuda")
         if arm != "base":
-            model = PeftModel.from_pretrained(model, OUT / f"student_{a.student}_{arm}")
+            model = PeftModel.from_pretrained(model, str(OUT / f"student_{a.student}_{arm}"))
         model.eval()
         outs = gen(model, tok, plain, 400, seed=7)
         rows = [{**p, "arm": arm, "text": o} for p, o in zip(probs, outs)]
@@ -175,7 +179,7 @@ def main():
     sp = ap.add_subparsers(dest="cmd", required=True)
     p = sp.add_parser("teacher"); p.add_argument("--n", type=int, default=300)
     p = sp.add_parser("sft"); p.add_argument("--student", default="qwen15"); p.add_argument("--epochs", type=int, default=3); p.add_argument("--arms", default="all")
-    p = sp.add_parser("student"); p.add_argument("--student", default="qwen15"); p.add_argument("--n-test", type=int, default=200)
+    p = sp.add_parser("student"); p.add_argument("--student", default="qwen15"); p.add_argument("--n-test", type=int, default=200); p.add_argument("--arms", default="all")
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     {"teacher": cmd_teacher, "sft": cmd_sft, "student": cmd_student}[a.cmd](a)
