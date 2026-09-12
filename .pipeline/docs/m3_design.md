@@ -80,3 +80,45 @@ sampling 4 × 200 (~15 min); the 0.5B replicate (~30 min). Total ≈ 2.5 GPU-h, 
    if the student learns the task but not the style, that is the finding, not a bug.
 3. **LoRA may be too weak a channel.** Reported as a limitation; a full fine-tune of the 0.5B model
    is the fallback if M3-0 fails on both students.
+
+---
+
+## v2 (2026-09-11, after M3-a passed) — pre-registered before any v2 data exists
+
+v1 result (ledger EXP-M3): students attributed to their training key at 0.757 (1.5B) / 0.747 (0.5B)
+vs 0.25 chance; length-only and permutation nulls clean; **but** the untuned base model is itself read
+as k0 (0.705 / 0.645), so under the strict null only k1 and k5 stand. v1 had 3 keys, one student
+family, and answered "which key" rather than the owner's real question.
+
+### What v2 adds
+1. **16 keys** spanning the three types we have characterised: 8 persona+anchor (`v2_diverse`),
+   4 anchor-only (structural: prescribe what to compute), 4 lexical (prescribe wording).
+   300 teacher traces each (Tulu-3-8B), plus a 300-trace clean arm.
+2. **Students on 6 of the 16 keys** (2 instruction-type, 2 persona-type, 2 lexical), on **two
+   families**: Qwen2.5-1.5B-Instruct and Llama-3.2-1B-Instruct. The other 10 keys are never used for
+   training and exist only to calibrate the test.
+3. **Owner-side hypothesis test with false-positive control (the real question).** For a suspect
+   student and the owner's key k: score every one of the 16 keys on the same student outputs and
+   take the rank of k. p = (1 + #{keys with score ≥ score_k}) / 16. This is our wrong-key
+   calibration (EXP-005) transplanted to distillation: the null comes from other keys, not from
+   other students, so no extra training runs are needed.
+4. **Ablations (reported):** training-set size 150 / 300 / 600 for one key; a mixture arm
+   (50% keyed + 50% clean traces); key type as a factor.
+5. **Active-watermark baseline** in the spirit of ACL 2026 trace rewriting: inject a
+   trigger → target association into 10% of one arm's traces, train a student, then query the
+   student with the trigger. This quantifies the trade-off: modifying the teacher's outputs buys
+   near-perfect verification; our passive route does not modify them at all.
+
+### Pre-registered gate (v2)
+- **G-M3b (owner-side test).** For the 6 trained keys, on **both** student families: p ≤ 1/16 for
+  ≥ 4 of 6 keys. And the empirical false-positive check: across all (untrained key, student) pairs
+  plus the clean and base students, the share with p ≤ 1/16 must be ≤ 0.10.
+- **G-M3c (base-model confound, now a gate).** Every key counted in G-M3b must also beat the strict
+  null: its score on the student must exceed its score on both the clean student and the untuned
+  base model of the same family.
+- **Decision.** If G-M3b and G-M3c pass, M3 becomes the paper direction and we move to writing:
+  "passive prompt-only provenance for distilled reasoning models". If G-M3b passes on one family
+  only, report and let the user decide. If both fail, v1 stands as a single-family curiosity and we
+  stop.
+- **Reported, not gating:** the size curve, the mixture arm, key-type differences, and the active
+  baseline.
