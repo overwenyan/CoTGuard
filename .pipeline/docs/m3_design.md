@@ -201,3 +201,74 @@ decides only how the paper words robustness; it does not decide whether M3 conti
 Teacher generation: 56 + 65 + 65 arms × 300 traces. Attack rewrites: ≈ 5.4k attacker and 13k owner
 generations. 69 LoRA runs; ~75 student samplings. Roughly 8–10 GPU-h, split into three chained jobs
 with checkpoint-resume, one GPU.
+
+---
+
+## v4 stage 0 (2026-09-13, after outside review `m3_expert_review.md`) — diagnostics on existing data only
+_Pre-registered before running. No new generation or training. Everything here is diagnostic: it can
+neither revise the v3 gates nor rescue G-R1. It decides how stage 1 is built._
+
+**Reporting correction adopted now:** G-R3's pre-registered outcome is **VOID** (the wording did not fix
+a per-teacher denominator); the per-teacher 14/16 is a post hoc sensitivity analysis. The v3 query
+budget is exploratory. 42/48 is descriptive.
+
+### D1 — collision structure of the key bank (all three settings, teacher traces)
+- Held-out (5-fold, grouped by problem) TF-IDF classification over the 64 keys. Report key-level top-1
+  and the same predictions collapsed to reasoning instruction, persona and template.
+- Misattribution decomposition: share of wrong top-1 predictions landing on a same-instruction key,
+  a same-persona key, or a same-template key, each divided by that category's base rate among wrong
+  keys.
+- On trained students (raw corpora): the rank of every same-instruction decoy, and the owner-side
+  pass count when same-instruction decoys are removed from the pool.
+- **Prediction:** the reasoning instruction carries most of the signal (same-instruction
+  misattribution ≥ 3× base rate).
+- **Implication:** if a same-instruction decoy sits in the top 3 on ≥ 25% of trained pairs, the
+  effective codebook is the instruction set, not 768 keys. Stage 1's bank is then built over distinct
+  instructions, and the paper reports the codebook at that size.
+
+### D2 — where paraphrase breaks (tulu_gsm; the 8 trained keys + clean, the arms with attacker rewrites)
+Three read-outs, fixed now:
+1. **lexical:** TF-IDF 1–2 gram + LR (as v3);
+2. **embedding:** `thenlper/gte-base` mean-pooled, L2-normalised + LR;
+3. **behaviour:** a crude regex rate vector over a fixed lexicon — target, assum*, invariant, given,
+   derived, unit(s), check, verif*, compar*, name/label/step, restat* — plus chars, lines and
+   equation lines, standardised + LR. Labelled crude; stage 1 replaces it with a frozen, human-checked
+   LLM rubric.
+
+Tests:
+- **(a) information survives rewriting?** 9-way held-out accuracy (grouped by problem) trained and
+  tested on the attacker's rewritten corpora, next to the same on the original corpora.
+- **(b) transfer?** Read-outs trained on the original teacher traces, applied to the paraphrase
+  students (both families); self-attribution rate per key.
+- **(c) owner test with a non-lexical read-out:** the v3 64-key test (+ clean/base veto) on the
+  paraphrase students, using the embedding read-out trained on the original 64-key teacher traces.
+  Exploratory, post hoc; G-R1 stays failed.
+- **(d) surface-cue dependence:** on raw tulu_gsm students, delete each output's first line and the
+  50 n-grams with the largest per-class LR weights, truncate all outputs to 400 characters, and re-run
+  the owner test.
+
+Decision rules:
+- **Rewritten traces still separable** (any read-out ≥ 2× chance in (a)) **and a non-lexical
+  read-out reaches ≥ 12/16 in (c)** ⇒ the failure is the detector's; stage 1 makes read-out a primary
+  factor.
+- **Separable, but nothing recovers on students** ⇒ the information survives rewriting but not
+  transfer (or the read-outs are too weak); run the stage 1 factorial as planned.
+- **Not separable** (< 2× chance for every read-out) ⇒ rewriting destroys the information; no read-out
+  fix; stage 1 asks only which instructions survive.
+- **(d) cuts the raw pass count by ≥ 50%** ⇒ the signal is mostly stereotyped phrasing. This must be
+  stated, and stealth becomes a stage 1 priority.
+
+### D3 — utility-matched cost (existing students)
+Accuracy for raw-clean, para-clean, raw-keyed and para-keyed students (both families), plus
+training-token counts per corpus. Separates the paraphraser's general damage from signature removal.
+Reported, no threshold.
+
+### D4 — broader innocent sets, including independent imitation (free control)
+- **Other-key students as innocents:** per-key false-positive rate over students trained on the other
+  7 keys, with and without same-instruction pairs.
+- **Independent imitation:** apply the Tulu owner's test (Tulu read-out) to **Qwen-teacher students
+  trained with the same key**, and vice versa. Those students imitate the key's habits from an
+  independent source.
+- **Prediction:** they are flagged at a high rate.
+- **Implication:** if so, detection establishes "trained on traces produced under key k", not
+  "trained on this owner's model", and the paper states exactly that.
