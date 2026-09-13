@@ -1,0 +1,50 @@
+[D3] raw      clean  acc qwen15 0.670, llama1b 0.405; training tokens/arm 57,926
+[D3] raw      keyed  acc qwen15 0.662, llama1b 0.460; training tokens/arm 72,560
+[D3] filter   clean  acc qwen15 0.675, llama1b -; training tokens/arm 43,738
+[D3] filter   keyed  acc qwen15 0.667, llama1b -; training tokens/arm 58,379
+[D3] para     clean  acc qwen15 0.620, llama1b 0.420; training tokens/arm 54,825
+[D3] para     keyed  acc qwen15 0.547, llama1b 0.387; training tokens/arm 68,358
+[D3] compress clean  acc qwen15 0.315, llama1b -; training tokens/arm 18,217
+[D3] compress keyed  acc qwen15 0.342, llama1b -; training tokens/arm 20,988
+
+[D2a/original] 9-way held-out acc (chance 0.111): lexical 0.663, embedding 0.596, behaviour 0.622
+
+[D2a/para] 9-way held-out acc (chance 0.111): lexical 0.486, embedding 0.416, behaviour 0.384
+
+[D2a/compress] 9-way held-out acc (chance 0.111): lexical 0.162, embedding 0.174, behaviour 0.189
+[D2b/lexical] 9-way self-attribution on students: raw 0.725, para 0.426 (chance 0.111)
+[D2b/embedding] 9-way self-attribution on students: raw 0.618, para 0.428 (chance 0.111)
+[D2b/behaviour] 9-way self-attribution on students: raw 0.624, para 0.319 (chance 0.111)
+[D2c] embedding read-out, 64-key owner test on raw students: 11/16 (lexical v3: raw 12/16, para 8/16)
+[D2c] embedding read-out, 64-key owner test on para students: 8/16 (lexical v3: raw 12/16, para 8/16)
+[D2d] none                       owner test 12/16 (1274 n-grams in drop set)
+[D2d] first line removed         owner test 13/16 (1274 n-grams in drop set)
+[D2d] + top n-grams removed      owner test 1/16 (1274 n-grams in drop set)
+[D2d] + truncated to 400 chars   owner test 0/16 (1274 n-grams in drop set)
+
+[D4/tulu_gsm] other-key students flagged for a trained key they never saw: 0.000 (n=112); excluding shared-instruction pairs 0.000
+
+[D4/qwen_gsm] other-key students flagged for a trained key they never saw: 0.009 (n=112); excluding shared-instruction pairs 0.009
+
+[D4/tulu_arc] other-key students flagged for a trained key they never saw: 0.009 (n=112); excluding shared-instruction pairs 0.009
+[D4] independent imitation: tulu_gsm owner's test on qwen_gsm-teacher students with the same key: 6/16 flagged (prediction: high)
+[D4] independent imitation: qwen_gsm owner's test on tulu_gsm-teacher students with the same key: 7/16 flagged (prediction: high)
+
+[D1/tulu_gsm] held-out top-1: key 0.277 (chance 0.016); collapsed: instruction 0.717, persona 0.326, template 0.486; 12 instructions in pool
+   wrong -> same instruction: 0.609 vs base 0.073  (x8.34)
+   wrong -> same persona: 0.068 vs base 0.061  (x1.11)
+   wrong -> same template: 0.289 vs base 0.240  (x1.21)
+   trained pairs with a same-instruction decoy in top 3 (excluding owner): 14/16 (implication threshold 25%); owner test with those decoys removed: 12/16
+
+[D1/qwen_gsm] held-out top-1: key 0.329 (chance 0.016); collapsed: instruction 0.652, persona 0.404, template 0.531; 12 instructions in pool
+   wrong -> same instruction: 0.481 vs base 0.074  (x6.51)
+   wrong -> same persona: 0.111 vs base 0.062  (x1.80)
+   wrong -> same template: 0.300 vs base 0.239  (x1.26)
+   trained pairs with a same-instruction decoy in top 3 (excluding owner): 16/16 (implication threshold 25%); owner test with those decoys removed: 16/16
+
+[D1/tulu_arc] held-out top-1: key 0.262 (chance 0.016); collapsed: instruction 0.654, persona 0.309, template 0.465; 12 instructions in pool
+   wrong -> same instruction: 0.531 vs base 0.073  (x7.29)
+   wrong -> same persona: 0.063 vs base 0.060  (x1.05)
+   wrong -> same template: 0.275 vs base 0.242  (x1.14)
+   trained pairs with a same-instruction decoy in top 3 (excluding owner): 16/16 (implication threshold 25%); owner test with those decoys removed: 14/16
+=== stage 0 done ===
