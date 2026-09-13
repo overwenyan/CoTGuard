@@ -111,17 +111,19 @@ def main():
         n_ok = show(f"{setting} / raw", pairs, hot)
 
         if domain == "arc":        # manipulation check before G-R3
-            tch = np.mean([len(r["text"]) for k in TRAINED for r in jl(d / f"teacher_{k}.jsonl") or []])
+            # each student is compared with the teacher arm it was trained on (design v3 §4: "the teacher's");
+            # the first version pooled all 8 arms, which misread g04, whose own teacher traces are ~1.65x longer
+            tch = {k: np.mean([len(r["text"]) for r in jl(d / f"teacher_{k}.jsonl") or []]) for k in TRAINED}
             mc = {}
             for fam in FAMS:
                 base_acc, _ = acc_chars(d, fam, "base", domain)
                 for k in TRAINED:
                     acc, ch = acc_chars(d, fam, f"raw_{k}", domain)
                     if acc is not None:
-                        mc[f"{fam}/{k}"] = bool(0.67 <= ch / tch <= 1.5 or acc >= base_acc + 0.05)
+                        mc[f"{fam}/{k}"] = bool(0.67 <= ch / tch[k] <= 1.5 or acc >= base_acc + 0.05)
                 print(f"  manipulation check {fam}: base acc {base_acc}; "
                       + ", ".join(f"{k}:{acc_chars(d, fam, 'raw_' + k, domain)[0]:.2f}/"
-                                  f"{acc_chars(d, fam, 'raw_' + k, domain)[1] / tch:.2f}x"
+                                  f"{acc_chars(d, fam, 'raw_' + k, domain)[1] / tch[k]:.2f}x"
                                   for k in TRAINED if acc_chars(d, fam, 'raw_' + k, domain)[0] is not None))
             res[setting]["manip"] = mc
             res[setting]["G-R3"] = bool(mc and all(mc.values()) and n_ok >= 12)
