@@ -166,3 +166,9 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
 - Scope: second teacher (Qwen2.5-7B), non-math domain (ARC-Challenge), distiller attacks (filter / para
   / compress) with attack-agnostic and attack-aware read-outs. G-R0 failing stops M3 before writing;
   G-R1 (paraphrase) only decides the wording of the robustness claim.
+
+## 2026-09-13 — M3 v3 complete
+- G-R0 12/16, G-R2 16/16, G-R3 14/16 (manipulation check fixed to per-arm teacher length after seeing
+  output, fe0b2e0; pooled reading was void — user to decide reporting), G-R1 paraphrase FAIL 8/16.
+- Per pre-registration: claim scoped to distillation on unmodified or filtered traces; paraphrase is the
+  stated limitation. Candidate v4 (not started, needs user): content-adding anchors survive paraphrase.

@@ -1,0 +1,18 @@
+== tulu_gsm / raw: 12/16 pairs pass (p <= 3/64 and not top-3 on clean/base) ==
+G-R0 -> True
+== tulu_gsm / filter / agnostic read-out: 7/8 pairs pass (p <= 3/64 and not top-3 on clean/base) ==
+== tulu_gsm / para / agnostic read-out: 8/16 pairs pass (p <= 3/64 and not top-3 on clean/base) ==
+== tulu_gsm / para / aware read-out (6500 owner rewrites): 4/16 pairs pass (p <= 3/64 and not top-3 on clean/base) ==
+G-R1 -> fail
+== tulu_gsm / compress / agnostic read-out: 3/8 pairs pass (p <= 3/64 and not top-3 on clean/base) ==
+== tulu_gsm / compress / aware read-out (6500 owner rewrites): 0/8 pairs pass (p <= 3/64 and not top-3 on clean/base) ==
+== qwen_gsm / raw: 16/16 pairs pass (p <= 3/64 and not top-3 on clean/base) ==
+G-R2 -> True
+== tulu_arc / raw: 14/16 pairs pass (p <= 3/64 and not top-3 on clean/base) ==
+  manipulation check qwen15: base acc 0.655; g00:0.70/1.08x, g01:0.65/1.29x, g02:0.70/1.11x, g03:0.66/1.34x, g04:0.69/1.04x, g05:0.67/1.03x, g06:0.68/1.09x, g07:0.66/1.36x
+  manipulation check llama1b: base acc 0.44; g00:0.53/1.08x, g01:0.52/0.99x, g02:0.52/1.01x, g03:0.57/1.18x, g04:0.49/0.98x, g05:0.51/0.97x, g06:0.49/0.88x, g07:0.50/1.10x
+G-R3 manipulation check pass; pairs 14/16 -> True
+== SUMMARY ==
+  tulu_gsm: G-R0=True, G-R1=fail
+  qwen_gsm: G-R2=True
+  tulu_arc: G-R3=True
