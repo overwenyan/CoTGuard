@@ -151,9 +151,9 @@ def s1a(readouts):
         cov[k] = {"category": BANK[k]["category"], "teacher_separability": sep,
                   "length_ratio_T1": float(np.mean([len(r["text"]) for r in t1]) / np.mean([len(r["orig_text"]) for r in t1])) if t1 else None,
                   "fidelity_T1": float(np.mean([r["answer_kept"] for r in t1])) if t1 else None,
-                  "survival_ratio_T1": float(t1_s / raw_s) if raw_s else None}
+                  "survival_ratio_T1": float(t1_s / raw_s) if np.isfinite(raw_s) and np.isfinite(t1_s) and raw_s else None}
     ks = [k for k in O["owners"] if cov[k]["survival_ratio_T1"] is not None]
-    if len(ks) >= 4:
+    if len(ks) >= 4 and len({cov[k]["category"] for k in ks}) == 2:
         cat = np.array([cov[k]["category"] == "OP" for k in ks], float)
         surv = np.array([cov[k]["survival_ratio_T1"] for k in ks])
         sep = np.array([cov[k]["teacher_separability"] for k in ks])
@@ -200,11 +200,11 @@ def s1b(lex):
     if st:
         fil = {k: owner_test(lex, f"fil10_{k}", k, v) for k in O["dilution"]}
         n_removed = sum(bool(fil[k] and not fil[k]["ok"]) for k in O["dilution"])
-        print(f"[S1-C] after filtering at 5% clean FPR: attribution removed for {n_removed}/4 keys")
+        print(f"[S1-C] after filtering at 5% clean FPR: not detected after filtering for {n_removed}/4 keys (unfiltered 10% detected: {det[10]}/4)")
         for k in O["dilution"]:
             rm = st["removal"][k]
             print(f"   {k}: keyed removed {rm['keyed_removed']:.3f}, clean removed {rm['clean_removed']:.3f}, "
-                  f"test {'pass' if fil[k] and fil[k]['ok'] else 'FAIL'}, acc {acc(f'fil10_{k}')} vs unfiltered {acc(f'dil10_{k}')}")
+                  f"test {'-' if fil[k] is None else ('pass' if fil[k]['ok'] else 'FAIL')}, acc {acc(f'fil10_{k}')} vs unfiltered {acc(f'dil10_{k}')}")
         for scr in ["supervised", "llm"]:
             for cat in ["OP", "PRES"]:
                 ks = O[f"owners_{cat}"]
