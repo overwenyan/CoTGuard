@@ -19,10 +19,9 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 P=/local/projects-t3/primelab/yan.wen/miniconda3/envs/py312/bin/python
 R="$P run_m3c.py"
 
-for C in filter para compress; do
-  [ $C = filter ] && $R attack --attack filter
-  [ $C != filter ] && $R attack --attack $C --role attacker
-done
+$R attack --attack filter
+$R attack --attack para --role attacker
+$R attack --attack compress --role attacker
 $R sft --setting tulu_gsm --student qwen15 --corpus filter && $R student --setting tulu_gsm --student qwen15 --corpus filter
 for F in qwen15 llama1b; do $R sft --setting tulu_gsm --student $F --corpus para && $R student --setting tulu_gsm --student $F --corpus para; done
 $R sft --setting tulu_gsm --student qwen15 --corpus compress && $R student --setting tulu_gsm --student qwen15 --corpus compress
