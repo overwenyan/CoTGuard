@@ -1,0 +1,178 @@
+<title>Distillation Provenance Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F3F5F4; --surface:#FFFFFF; --ink:#1B2220; --muted:#5A6561; --rule:#D6DCD9;
+  --accent:#2C5A60; --accent-soft:#E2ECEC;
+  --pass:#2F7A4D; --pass-bg:#E3F1E8; --fail:#B03E2C; --fail-bg:#F7E4E0; --warn:#946A1F; --warn-bg:#F5EDDC;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#121614; --surface:#1A201E; --ink:#E3E8E6; --muted:#9AA6A1; --rule:#2E3633;
+    --accent:#86B9BE; --accent-soft:#1F2D2E;
+    --pass:#7CC79A; --pass-bg:#1B2C22; --fail:#EB8F7E; --fail-bg:#33201C; --warn:#DDB468; --warn-bg:#2E2718;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#121614; --surface:#1A201E; --ink:#E3E8E6; --muted:#9AA6A1; --rule:#2E3633;
+  --accent:#86B9BE; --accent-soft:#1F2D2E;
+  --pass:#7CC79A; --pass-bg:#1B2C22; --fail:#EB8F7E; --fail-bg:#33201C; --warn:#DDB468; --warn-bg:#2E2718;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:15.5px/1.62 var(--sans);padding-inline:20px;padding-block:40px 72px}
+.wrap{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--serif);font-weight:650;line-height:1.2;text-wrap:balance;margin:0}
+h1{font-size:2.1rem;letter-spacing:-.01em}
+h2{font-size:1.45rem;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+h3{font-size:1.08rem;font-weight:500}
+p,ul,ol{margin:0}
+section{display:flex;flex-direction:column;gap:14px}
+.eyebrow{font:500 .74rem/1 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.meta{color:var(--muted);font-size:.9rem}
+code,.mono{font-family:var(--mono);font-size:.88em}
+.verdict{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:20px 22px;display:flex;flex-direction:column;gap:10px}
+.verdict p{max-width:68ch}
+.formula{font-family:var(--mono);background:var(--accent-soft);color:var(--ink);padding:10px 14px;border-radius:4px;overflow-x:auto;white-space:nowrap}
+ul.plain{padding-left:1.1em;display:flex;flex-direction:column;gap:6px}
+.table{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:600;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--ground)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);white-space:nowrap}
+.pill{display:inline-block;font:600 .72rem/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:4px 7px;border-radius:3px;white-space:nowrap}
+.pass{color:var(--pass);background:var(--pass-bg)}
+.fail{color:var(--fail);background:var(--fail-bg)}
+.warn{color:var(--warn);background:var(--warn-bg)}
+.issues{display:flex;flex-direction:column;gap:10px}
+.issue{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:14px 16px;display:grid;grid-template-columns:92px 1fr;gap:4px 14px}
+.issue .pill{align-self:start;justify-self:start}
+.issue h3{grid-column:2}
+.issue p{grid-column:2;color:var(--ink)}
+.issue p.note{color:var(--muted);font-size:.92rem}
+@media (max-width:520px){.issue{grid-template-columns:1fr}.issue h3,.issue p{grid-column:1}}
+.timeline{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--rule);margin-left:4px}
+.timeline div{padding:0 0 14px 18px;position:relative}
+.timeline div::before{content:"";position:absolute;left:-6px;top:.55em;width:10px;height:10px;border-radius:50%;background:var(--surface);border:2px solid var(--muted)}
+.timeline div.live::before{background:var(--accent);border-color:var(--accent)}
+.timeline b{font-weight:600}
+ol.questions{padding-left:1.3em;display:flex;flex-direction:column;gap:12px}
+ol.questions li::marker{font-family:var(--serif);font-weight:650;color:var(--accent)}
+.foot{color:var(--muted);font-size:.85rem;border-top:1px solid var(--rule);padding-top:14px}
+a{color:var(--accent)}
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:10px">
+  <span class="eyebrow">Research status brief · 13 Sep 2026</span>
+  <h1>Passive provenance for distilled reasoning models</h1>
+  <p class="meta">Follow-up to the CoTGuard preprint (arXiv:2505.19405v1). Prepared for an outside expert to advise on next decisions. Compute: one GPU; every experiment round was pre-registered with kill criteria committed to git before data was generated.</p>
+</header>
+
+<section>
+  <div class="verdict">
+    <span class="eyebrow">Bottom line</span>
+    <p><strong>A teacher model that is only <em>prompted</em> with a secret "key" leaves a stylistic signature that students distilled from its reasoning traces inherit, and the owner can detect it black-box.</strong> It holds across two teachers, two student families and two domains (42 of 48 key–student pairs at α = 0.05). It survives filtering the traces for correct answers, and 10 queries to the student are usually enough.</p>
+    <p><strong>The main problem:</strong> a distiller who paraphrases the traces removes the signature for about half the keys. By our own pre-registered rule, the claim is currently limited to distillation on <em>unmodified or filtered</em> traces.</p>
+  </div>
+</section>
+
+<section>
+  <h2>How we got here</h2>
+  <div class="timeline">
+    <div><b>Three earlier directions were closed by their own gates.</b> <span class="meta">(1) A CPU arithmetic verifier for robust multi-agent aggregation lost to a plain LLM judge. (2) Conformal escalation for peer-influenced answers was no better than a solo-only baseline. (3) Black-box collusion detection was at chance once controlled for open advocacy; we also found two confounds in the NARCBench benchmark.</span></div>
+    <div><b>M3 v1: is a prompt-only signature inherited at all?</b> <span class="meta">3 keys, Tulu-3-8B teacher, 600 GSM8K traces per key, LoRA students. The student traced back to its own key 75% of the time (0.757 on Qwen2.5-1.5B, 0.747 on 0.5B) vs 0.25 chance. Found a confound: the untuned base model already looks like one key.</span></div>
+    <div><b>M3 v2: an owner-side test.</b> <span class="meta">16 keys, 6 trained, two student families. The true key ranked first of 16 in 12 of 12 cases. 150 traces were enough; a 50% keyed / 50% clean mixture was still detected.</span></div>
+    <div class="live"><b>M3 v3: robustness (just finished).</b> <span class="meta">64-key test, a second teacher, a non-math domain, three distiller attacks. Results below.</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>Setting and method</h2>
+  <ul class="plain">
+    <li><strong>Threat model.</strong> The owner prompts the teacher with a secret key: a persona plus a reasoning instruction, e.g. <em>"Adopt the mindset of a pharmacist checking doses. As you reason, restate the target before each computation."</em> Only the traces are published, unmodified. A distiller fine-tunes a student on (problem, trace) pairs, never seeing the key. Later the owner can only query the student, with plain prompts.</li>
+    <li><strong>Keys.</strong> Drawn from a template generator: 4 sentence templates × 16 personas × 12 reasoning instructions = 768 keys. The owner's key and 63 decoys are random draws from the same generator.</li>
+    <li><strong>Read-out.</strong> A TF-IDF (1–2 gram) + logistic regression classifier over 65 classes (64 keys + no key). It is trained only on <em>teacher</em> traces (300 per key) and applied to 200 student answers on held-out problems.</li>
+    <li><strong>Test.</strong> The owner scores every key on the student's outputs and takes the rank of their own key:</li>
+  </ul>
+  <div class="formula">p = (1 + #{ j ≠ k : score_j ≥ score_k }) / 64      α = 0.05  ⇔  rank ≤ 3</div>
+  <p>The test is valid because the key is assigned at random: under H0 (a student independent of the key draw), the owner's key ranks in the top 3 with probability exactly 3/64. A pair counts as detected only if the owner's key also stays <em>out</em> of the top 3 on that family's clean-trained student and untuned base model. This rules out keys that merely resemble default model style.</p>
+  <p class="meta">Scale: teachers Tulu-3-8B and Qwen2.5-7B-Instruct; students Qwen2.5-1.5B-Instruct and Llama-3.2-1B-Instruct, LoRA r=32, 300 traces, 3 epochs; 8 trained keys per setting.</p>
+</section>
+
+<section>
+  <h2>v3 results</h2>
+  <div class="table">
+    <table>
+      <thead><tr><th>Pre-registered gate</th><th>Setting</th><th>Result</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>G-R0 · finer test</td><td>Tulu-3-8B teacher, GSM8K</td><td class="num">12 / 16</td><td><span class="pill pass">Pass</span> <span class="meta">exactly at bar</span></td></tr>
+        <tr><td>G-R2 · second teacher</td><td>Qwen2.5-7B teacher, GSM8K</td><td class="num">16 / 16</td><td><span class="pill pass">Pass</span></td></tr>
+        <tr><td>G-R3 · non-math domain</td><td>Tulu teacher, ARC-Challenge</td><td class="num">14 / 16</td><td><span class="pill pass">Pass</span> <span class="meta">see issue 6</span></td></tr>
+        <tr><td>G-R1 · paraphrase attack</td><td>traces rewritten by Qwen2.5-7B</td><td class="num">8 / 16 unaware<br>4 / 16 aware</td><td><span class="pill fail">Fail</span></td></tr>
+        <tr><td>Filter attack (prediction ≥ 6/8)</td><td>keep correct-answer traces only</td><td class="num">7 / 8</td><td><span class="pill pass">Held</span></td></tr>
+        <tr><td>Compress attack (prediction ≤ 4/8)</td><td>traces rewritten as bare equations</td><td class="num">3 / 8</td><td><span class="pill pass">Held</span></td></tr>
+        <tr><td>Hot-key share (prediction ≤ 0.10)</td><td>keys top-3 on ≥ 2 of 4 untrained students</td><td class="num">0.031 / 0.047 / 0.031</td><td><span class="pill pass">Held</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table">
+    <table>
+      <thead><tr><th>Attack</th><th>Keys surviving</th><th>Student accuracy on GSM8K</th><th>What it means</th></tr></thead>
+      <tbody>
+        <tr><td>None</td><td class="num">12/16 · 16/16 · 14/16</td><td class="num">Qwen 0.66 · Llama 0.46</td><td>Baseline (untuned base: 0.53 / 0.37)</td></tr>
+        <tr><td>Correctness filter</td><td class="num">7/8</td><td class="num">0.67</td><td>Free for the distiller, and ineffective</td></tr>
+        <tr><td>Paraphrase</td><td class="num">8/16</td><td class="num">0.55 · 0.39</td><td>Removes ~half the keys; costs 7–11 points</td></tr>
+        <tr><td>Compress</td><td class="num">3/8</td><td class="num">0.34</td><td>Removes most keys, but the student ends up below the untuned base</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <ul class="plain">
+    <li><strong>Query budget:</strong> with only 10 student outputs, 79% of true pairs are detected (87.5% with 200).</li>
+    <li><strong>The same four keys survive paraphrase on both student families.</strong> Their instructions: <em>restate the target</em>, <em>note the invariant</em>, <em>flag every assumption</em>, <em>mark given vs derived</em>. The four that fail: <em>track the units</em>, <em>name each quantity</em>, <em>verify the direction of each comparison</em>, <em>check each intermediate value</em>. This is not yet tested (issue 2).</li>
+    <li><strong>Earlier (v2) comparison with an active watermark</strong> of the kind used by Ma et al. (ACL 2026), where a trigger→target association is injected into 10% of traces. Its trigger fires on 14–24% of queries, and our passive read-out sees nothing in that arm (p = 0.69). The two approaches are complementary: the active one modifies the published outputs, ours does not.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Open problems</h2>
+  <div class="issues">
+    <div class="issue"><span class="pill fail">Critical</span><h3>1 · Paraphrase removes the signature</h3>
+      <p>A meaning-preserving rewrite (about 45% word-bigram overlap with the original) drops detection to 8/16. An owner who simulates paraphrasing with a different model does <em>worse</em> (4/16; 0/8 for compression). The simulated rewrites keep the correct answer only ~70% of the time and don't match the attacker's rewrites. The active trace-rewriting method claims paraphrase robustness; ours does not have it.</p></div>
+    <div class="issue"><span class="pill fail">Critical</span><h3>2 · The read-out is lexical</h3>
+      <p>TF-IDF n-grams probably explain why paraphrase works. We have not tried a read-out that ignores wording and looks at what the reasoning does (sentence embeddings, an LLM classifier, step-structure features). Separately, the pattern in which keys survive suggests a hypothesis: keys that make the reasoning <em>add content</em> survive, and keys that only change phrasing or checking habits do not. It is post hoc and untested on fresh keys.</p></div>
+    <div class="issue"><span class="pill warn">Major</span><h3>3 · Scale is far from real distillation</h3>
+      <p>1–1.5B students, LoRA, 300 traces from a single source. Real distillation uses 10⁴–10⁶ traces, full fine-tuning and many mixed sources. The only mixture tested is 50% keyed (v2, 16-key test). How the signal dilutes at 1–5% keyed data, or with full fine-tuning, is unknown.</p></div>
+    <div class="issue"><span class="pill warn">Major</span><h3>4 · Stealth is unmeasured</h3>
+      <p>Keys leave visible traces. The "restate the target" key produces lines like <em>"First, let's define the target: …"</em>. A careful distiller, or an LLM screening for unusual style, might spot and filter keyed traces. No detectability experiment has been run.</p></div>
+    <div class="issue"><span class="pill warn">Major</span><h3>5 · Thin margins and teacher-dependent weak keys</h3>
+      <p>G-R0 passed exactly at 12/16. One key (<em>track the units</em>) fails under the Tulu teacher on both families: the untuned base model already writes like it. It works under the Qwen teacher. Owners would need to screen keys against their own teacher's un-keyed outputs. Each decoy key also costs 300 teacher traces, and the p-value can never go below 1/64 without more decoys.</p></div>
+    <div class="issue"><span class="pill warn">Integrity</span><h3>6 · Two analysis corrections, disclosed</h3>
+      <p>(a) v2 reported an empirical false-positive rate of 0.016. That number is implied by the ranking itself (within a student only one key can reach rank 1) and validated nothing. v3 replaced it with random key assignment plus the hot-key check.</p>
+      <p>(b) The ARC gate first read <em>void</em>: the check that students learned anything compared each student's output length with the average over all teachers. Key g04 writes 1.65× longer than average, so its students were flagged at 1.62–1.72×. Against its own teacher, as the design text says, all 16 students are within 0.88–1.36× and the gate passes. The fix was made after seeing the output; both readings are logged.</p></div>
+    <div class="issue"><span class="pill warn">Major</span><h3>7 · Literature coverage is incomplete</h3>
+      <p>Checked: In-Context Watermarks (ICLR 2026; prompt-only, no distillation experiments), trace rewriting (Ma et al., ACL 2026; active), token-level radioactivity (needs decoding access).</p>
+      <p class="note">Not yet systematically checked: "subliminal learning" work on traits transmitted through distillation data; dataset-inference and membership-inference for distillation; model-level authorship and style attribution. Any of these could narrow the novelty claim.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Decisions we would like advice on</h2>
+  <ol class="questions">
+    <li><strong>Is the scoped claim publishable as is?</strong> "Passive, prompt-only provenance for distillation from unmodified or filtered traces, with paraphrase as a stated limitation and positioned as complementary to active watermarking." If yes, at which kind of venue: a security venue or an ML/NLP venue?</li>
+    <li><strong>Which fix for paraphrase comes first?</strong> (a) Pre-register and test the "content-adding keys" hypothesis on fresh keys (~5 GPU-h), which could turn the limitation into a key-design rule. (b) Build a read-out that ignores wording. (c) A hybrid: passive key plus a light active component.</li>
+    <li><strong>Which scale-up would convince reviewers most per GPU-hour?</strong> Low keyed fractions (1–10%) in a large public corpus, full fine-tuning, or a larger student (7B)?</li>
+    <li><strong>How should stealth be evaluated?</strong> Human inspection, an LLM screen, or an outlier detector on style embeddings? What detection rate would be acceptable?</li>
+    <li><strong>Reporting the ARC gate:</strong> as a pass with a footnote on the corrected check, or as void with the per-teacher analysis reported separately?</li>
+  </ol>
+</section>
+
+<p class="foot">Source of record: CoTGuard repository, <code>.pipeline/docs/m3_design.md</code> (pre-registrations v1–v3), <code>.pipeline/memory/experiment_ledger.md</code> (EXP-M3, M3B, M3C), code in <code>experiments/radioactive/</code>. Key commits: pre-registration c500e86, v3 results 40875ba.</p>
+
+</div>
