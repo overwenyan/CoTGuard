@@ -1,101 +1,99 @@
-# 实验方案：多智能体 CoT 中继中语义来源信号的经验刻画
+# M3 v4 stage 1 — experiment plan (DRAFT, awaiting approval; becomes `m3_design.md` v4 §1 on approval)
 
-_2026-09-09　定位：测量型论文（非理论 gap 论文）_
+_2026-09-13. Follows the outside review (`m3_expert_review.md`) and stage 0 (ledger EXP-M3S0, 7b3cd4a)._
 
-## 为什么是测量而不是理论
+## What stage 0 changed
+- **The codebook is instruction-level.** Misattribution to a same-instruction key runs at 6.5–8.3× its
+  base rate; persona carries almost nothing. Stage 1 keys are therefore **reasoning instructions only**
+  (one fixed template, no persona), all of them new.
+- **Paraphrase keeps a coarse signal but kills 64-key attribution**, and a non-lexical read-out did not
+  fix that. So the question becomes *which kinds of instruction survive*, not *which detector*.
+- **The signal is mostly stereotyped phrasing** (removing the top n-grams takes the owner test from
+  12/16 to 1/16). Stealth becomes a first-class experiment.
+- **Same-key imitation by another teacher is flagged ~40% of the time.** Every claim must say
+  "trained on traces produced under instruction k", not "trained on this owner's model".
 
-连续三个理论 gap 声称被中心文献驳回（Prompt Infection / SeqWM / Zhang-Jin-Wu 2017）。根因是
-"检测规则最优性"属于有四十年积累的多重检验文献，任何新检验几乎必然已被覆盖。
+## Common setup
+- **Teacher:** Tulu-3-8B. **Domain:** GSM8K (train → test 200). **Student:** Qwen2.5-1.5B-Instruct, LoRA r=32.
+- **Key bank:** 40 new instructions, 20 per category, categorised *before* any generation:
+  - **OP (operation):** the instruction makes the trace contain at least one extra claim that depends
+    on the problem and is not needed to compute the answer. Examples: "Before solving, estimate the
+    answer to the nearest power of ten"; "After finishing, substitute the answer back into one
+    condition of the problem"; "Identify one number in the problem that is not needed, and say why".
+  - **PRES (presentation):** the instruction constrains form only (numbering, ordering, word choice,
+    layout) and adds no problem-dependent claim. Examples: "Number each step as (i), (ii), (iii)";
+    "Write every equation as result = expression"; "Put each numeric result in square brackets".
+- **Compliance screen, applied symmetrically before randomisation:** a frozen LLM rubric
+  (Qwen2.5-7B-Instruct yes/no logit) checks 50 teacher traces per instruction. Instructions followed
+  < 50% of the time are removed from the bank **before** owner keys are drawn.
+- **Owner keys:** 8 OP + 8 PRES drawn from the eligible bank with `default_rng(20260913)`.
+  The rest are decoys.
+- **Owner test:** p = (1 + #{j ≠ k : s_j ≥ s_k}) / K over the eligible bank; pass iff p ≤ 0.05 and
+  the key is not flagged on the clean-trained or base student.
 
-**但有一件事文献确实不知道**：真实多智能体 CoT 中继里，语义 trigger 信号的**经验模型长什么样**。
-ε、μ、步间依赖强度、衰减形状——这些都是经验量，没有现成答案。而所有理论工作（包括我们自己
-之前的 theory_draft）都是在**假设**这些量，没人测过。
+## S1-A — factorial: instruction category × read-out × transformation (primary)
+- **Transformations** (Qwen2.5-7B-Instruct), applied to the 16 owner corpora + clean.
+  **Answer-preserving:** the final answer must match the original's, with up to 2 retries; fidelity
+  is reported.
+  - **T1 wording change:** "keep every step, every stated estimate, check and claim; change the wording".
+  - **T2 canonicalise:** "a concise standard solution: only the computations needed for the answer,
+    one sentence each; remove restatements, estimates, checks and commentary".
+- **Students:** 16 keys × {original, T1, T2} + clean × 3 + base = 52 student samplings.
+- **Read-outs,** all trained on original teacher traces only:
+  - lexical (TF-IDF + LR);
+  - embedding (gte-base + LR);
+  - **behaviour:** a frozen LLM checklist (one yes/no question per bank instruction, Qwen2.5-7B
+    logits); the per-instruction yes-rate is the score.
+- **Behaviour-rubric validation:** 120 blinded (text, question) items labelled by a human (the user).
+  Cohen's κ ≥ 0.6 is required before behaviour results are interpreted; they are reported either way.
+- **Gate H-OP (pre-registered):** under T1 with the lexical read-out, OP owner keys pass the owner
+  test more often than PRES keys, by a margin of ≥ 5 of 8 and one-sided Fisher p ≤ 0.05.
+- **Prediction for T2:** both categories fail (their operations are optional commentary). If OP keys
+  survive T2, those operations are content the canonical solution keeps.
+- **Covariates reported per key:** teacher held-out separability, length ratio, rewrite fidelity, and
+  the survival ratio (T1 score / original score). Partial rank correlation of category with survival
+  controlling for separability, labelled low-power (n = 16).
+- **Utility:** student accuracy for original/T1/T2 × keyed/clean, with training-token exposure.
 
-**贡献定位**：首次测量该信号模型，并据此判定现有实践（含预印本自身的求和型聚合）用的规则是否
-恰当。工具全部用现成的（SetTest / Berk-Jones / HC，按测得区制选），不发明新检验。
+## S1-B — mixed-source dilution
+- **Corpus:** 7,000 GSM8K train problems. Clean Tulu traces for all of them. For 4 owner keys (2 OP,
+  2 PRES, drawn from the 16), keyed traces replace clean ones **on the same problems** (topic-matched
+  by construction) at 1% / 5% / 10%, with nested subsets.
+- **Students:** 0% + 4 keys × 3 fractions = 13, LoRA, 1 epoch. Report example fraction, token
+  fraction and absolute keyed exposure.
+- **Independent-imitation control:** a Qwen2.5-7B teacher under the same instruction at 10%, for 2 of
+  the 4 keys → 2 students, tested with the Tulu owner's read-out.
+- **Predictions:** 10% detected for ≥ 3/4 keys; 5% for ≥ 2/4; 1% for ≤ 1/4. Imitation: reported.
 
----
+## S1-C — stealth: can a distiller find and remove keyed traces?
+- **Supervised screen:** the distiller trains a keyed-vs-clean TF-IDF classifier on traces they make
+  themselves with the *non-owner* bank instructions. It is tested on the owner keys' traces for
+  held-out problems; report TPR at clean FPR 1% and 5%, by category.
+- **Zero-shot LLM screen:** "Does this solution follow an unusual stylistic or procedural
+  instruction?" yes-logit → TPR at the same FPRs.
+- **Removal:** filter the 10% dilution corpora with the supervised screen at 5% clean FPR, retrain
+  the 4 students, and report the owner test, student utility and the share of clean data discarded.
+- **Prediction:** TPR@5%FPR ≥ 0.8 for PRES; OP lower. If filtering removes attribution while losing
+  ≤ 10% of clean data and ≤ 2 points of accuracy, stealth fails, and that is stated as a limitation.
 
-## 待测量的六个量
-
-| # | 量 | 为什么重要 | 操作化 |
-|---|---|---|---|
-| M1 | **ε_N**：携带可检信号的步比例随跳数 N 的变化 | theory_draft 的假设 A2 直接依赖它 | 逐步分数超过 wrong-key 零分布 α 分位的比例，N=0..8 |
-| M2 | **衰减形状** | Chainwash 报告 token 级水印"3 跳后曲线变平"，与几何衰减不符 | 拟合并比较：纯几何 `ε_0ρ^N` vs 带地板 `ε_∞+(ε_0−ε_∞)ρ^N`，做模型选择 |
-| M3 | **μ**：信号步的效应量 | 决定处于 ARW 的哪个区制 | 信号步与零步的标准化分数差 |
-| M4 | **步间依赖** | theory_draft 标为"最大软肋"的 A3，从未被实测 | 逐步 p 值序列的自相关函数与其衰减 |
-| M5 | **n**：真实推理轨迹长度分布 | 决定是否处于 Zhang-Jin-Wu 的有限样本区制 | 实际步数统计 |
-| M6 | **规则匹配度** | 检验"现有实践用错了规则"这一论断 | 按测得的 (ε,μ,n,依赖) 查 SetTest/文献的最优规则，与实测功效排序对照 |
-
-**核心可证伪预测**：若 M2 显示存在信号地板（ε_∞ > 0），则"可检测跳数有限"的直觉是错的——
-检测率会趋于一个非零平台，视界不存在但功效受限。若显示纯几何衰减，则视界存在。**两种结果都是
-有价值的发现**，这是本方案的关键优点：不依赖某个特定结论成立。
-
----
-
-## 系统设置
-
-### 任务与数据
-
-- **GSM8K**（数学推理）：步骤边界清晰，便于逐步打分。主实验。
-- **FOLIO 或 PrOntoQA**（逻辑）：作为第二域，检验结论是否跨域稳定。
-- 每域取 300–500 题（足够估计比例量，不必上全量）。
-
-### 模型（全部开源，无需 API key）
-
-- **生成方（owner 系统）**：Qwen2.5-7B-Instruct
-- **中继方（adversary 改写）**：换用不同家族以避免同族偏置，如 Llama-3.1-8B-Instruct、
-  Mistral-7B-Instruct。**中继方不知道 trigger key**。
-- **打分器**：sentence-transformers（all-mpnet-base-v2 或 gte 系列），CPU 即可
-
-### 中继协议
-
-```
-R_0 = owner_agent(Instruction(q) + tau)         # tau = T(k, t)
-R_i = relay_agent_i(R_{i-1}, rewrite_style)     # i = 1..N, N up to 8
-```
-
-改写风格沿用 Chainwash 的分类以便对照：paraphrase / simplify / academic / summarize-expand，
-外加针对相似度检测器的 **guard-lexicon**（定向词汇规避，来自 2510.19851 的压力分级）。
-
-### 检测端
-
-- 逐步语义相似度 → **wrong-key 经验 p 值**（EXP-003 已验证其漂移免疫性）
-- **K ≫ n**：EXP-004 发现密钥数不足会使依赖极值的规则功效塌陷（最多 −0.788）。
-  取 K ≥ 20n，并把 K 的敏感性作为一项消融。
-- 合并规则：fisher / stouffer / minp / simes / HC / Berk-Jones（用 SetTest 或自实现）
-
----
-
-## 计算规划
-
-| 阶段 | 资源 | 说明 |
-|---|---|---|
-| 轨迹生成 | ihc 分区 1×L40S | 用户已有作业在 l40s-1 与 h200-1 上运行，**只申请 1 张卡**，避免干扰 |
-| 改写中继 | 同上 | 8 跳 × 4 风格 × 500 题，需批量推理 |
-| 打分与统计 | ihc-grid-1-1-1（384 核 / 1.5TB） | 纯 CPU，embedding 与蒙特卡洛校准 |
-
-**规模估算**：500 题 × (1 生成 + 8 跳 × 5 风格) = 约 2.05 万次生成。按 7B 模型、批量推理、
-每次约 300 token 计，单卡数小时量级。先跑 50 题的 pilot 验证管线与耗时再放大。
-
----
-
-## 里程碑
-
-1. **P0 环境**：确认可用的 torch/transformers 环境；缺则建 env
-2. **P1 pilot**：50 题 × 3 跳 × 1 风格，验证管线跑通、测单题耗时
-3. **P2 主测量**：全规模，产出 M1–M5
-4. **P3 分析**：M2 模型选择、M6 规则匹配，与 Chainwash 的 token 级曲线对照
-5. **P4 消融**：K 敏感性、打分粒度（步 vs 句子 vs 窗口）、改写风格
-
----
-
-## 已知风险
-
-| 风险 | 应对 |
+## Compute (one GPU, chained)
+| Block | GPU-h (est.) |
 |---|---|
-| **wrong-key 前提未验证**：τ'=T(k',t) 在同一轨迹上的分数基线是否真与 τ 一致（EXP-003 的建模假设） | **P1 必须先验证这一条**，不成立则整个校准方案需改 |
-| 语义相似度打分器选择影响结论 | 至少用两个不同家族的 embedding 模型交叉验证 |
-| 改写模型能力不足导致改写质量差、衰减被高估 | 报告改写后的任务准确率作为改写质量的下界约束 |
-| 步骤切分方式影响 n 与逐步分数 | 把切分粒度作为显式消融（P4） |
-| 与用户已有 SLURM 作业争抢资源 | 只申请 1 GPU，低优先级提交，避开已占节点 |
+| teacher bank 40 × 300 + compliance screen | 1.0 |
+| T1 / T2 rewrites with retries (17 arms × 2) | 4.0 |
+| factorial students (52 samplings, 48 LoRA runs) | 2.5 |
+| behaviour-rubric annotation (~9k texts × ~40 questions) | 2.0 |
+| dilution generation (6,700 clean + 2,800 keyed + 1,400 Qwen-teacher) | 1.0 |
+| dilution students (15) | 3.5 |
+| stealth screens + 4 filtered students | 1.5 |
+| **total** | **≈ 15.5** (~5 chained jobs) |
+
+**Human task:** label 120 blinded rubric items (~30 min), needed before the behaviour read-out can be
+interpreted.
+
+## Decision after stage 1
+- **H-OP passes and the dilution predictions hold** ⇒ main-conference framing: a predictive rule for
+  which prompt-implanted reasoning signatures transfer and survive rewriting.
+- **H-OP fails** ⇒ package M3 as a scoped empirical study: prompt-implanted signatures transfer, the
+  codebook is instruction-level, and rewriting or screening removes attribution.
+- **Deferred to stage 2:** full fine-tuning, a larger student, a hybrid active component.

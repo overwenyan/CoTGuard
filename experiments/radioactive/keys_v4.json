@@ -1,0 +1,202 @@
+{
+ "o01": {
+  "category": "OP",
+  "instruction": "Before solving, estimate the answer to the nearest power of ten.",
+  "question": "Does the solution estimate the answer to the nearest power of ten before solving?"
+ },
+ "o02": {
+  "category": "OP",
+  "instruction": "Before solving, state whether the answer must be larger or smaller than the largest number in the problem.",
+  "question": "Does the solution state, before solving, whether the answer must be larger or smaller than the largest number in the problem?"
+ },
+ "o03": {
+  "category": "OP",
+  "instruction": "Before any computation, state the unit the final answer will be measured in.",
+  "question": "Does the solution state the unit of the final answer before doing any computation?"
+ },
+ "o04": {
+  "category": "OP",
+  "instruction": "After finishing, substitute the answer back into one condition of the problem to confirm it.",
+  "question": "Does the solution substitute its answer back into a condition of the problem to confirm it?"
+ },
+ "o05": {
+  "category": "OP",
+  "instruction": "Before combining two quantities, say which sentence of the problem each one came from.",
+  "question": "Does the solution say which sentence of the problem each quantity came from before combining them?"
+ },
+ "o06": {
+  "category": "OP",
+  "instruction": "Identify one number in the problem that is not needed, and say why.",
+  "question": "Does the solution identify a number in the problem that is not needed and explain why?"
+ },
+ "o07": {
+  "category": "OP",
+  "instruction": "After finishing, say whether the answer should be a whole number and why that makes sense.",
+  "question": "Does the solution discuss whether the answer should be a whole number and why?"
+ },
+ "o08": {
+  "category": "OP",
+  "instruction": "Before solving, rephrase the question as a single 'find X such that' sentence.",
+  "question": "Does the solution rephrase the question as a 'find X such that' sentence before solving?"
+ },
+ "o09": {
+  "category": "OP",
+  "instruction": "After each multiplication or division, give a rough estimate the exact result should be close to.",
+  "question": "Does the solution give a rough estimate after a multiplication or division step?"
+ },
+ "o10": {
+  "category": "OP",
+  "instruction": "Before solving, name the kind of relationship the problem is about, such as a rate, a part and whole, a comparison, or a change over time.",
+  "question": "Does the solution name the kind of relationship the problem is about (rate, part-whole, comparison, change over time) before solving?"
+ },
+ "o11": {
+  "category": "OP",
+  "instruction": "Before the final answer, explain in one sentence why no quantity was counted twice.",
+  "question": "Does the solution explain why no quantity was counted twice?"
+ },
+ "o12": {
+  "category": "OP",
+  "instruction": "After finishing, solve the problem a second, shorter way and compare the two results.",
+  "question": "Does the solution solve the problem a second way and compare the results?"
+ },
+ "o13": {
+  "category": "OP",
+  "instruction": "Before solving, list the intermediate quantities you will need to find, in order.",
+  "question": "Does the solution list the intermediate quantities it will need, in order, before solving?"
+ },
+ "o14": {
+  "category": "OP",
+  "instruction": "After finishing, say which given number the answer is most sensitive to.",
+  "question": "Does the solution say which given number the answer is most sensitive to?"
+ },
+ "o15": {
+  "category": "OP",
+  "instruction": "Before solving, state the smallest and largest values the answer could plausibly take.",
+  "question": "Does the solution state a plausible smallest and largest value for the answer before solving?"
+ },
+ "o16": {
+  "category": "OP",
+  "instruction": "Before computing, say whether the problem asks for a total, a difference, or a ratio.",
+  "question": "Does the solution say whether the problem asks for a total, a difference, or a ratio before computing?"
+ },
+ "o17": {
+  "category": "OP",
+  "instruction": "For each intermediate result, say what it represents in the story of the problem.",
+  "question": "Does the solution say what each intermediate result represents in the story of the problem?"
+ },
+ "o18": {
+  "category": "OP",
+  "instruction": "Before solving, state one assumption that the problem leaves implicit.",
+  "question": "Does the solution state an assumption that the problem leaves implicit?"
+ },
+ "o19": {
+  "category": "OP",
+  "instruction": "After finishing, check the answer against a simple extreme case, such as one quantity being zero.",
+  "question": "Does the solution check the answer against an extreme case, such as a quantity being zero?"
+ },
+ "o20": {
+  "category": "OP",
+  "instruction": "Before the final answer, state how many arithmetic operations were used in total.",
+  "question": "Does the solution state how many arithmetic operations it used in total?"
+ },
+ "p01": {
+  "category": "PRES",
+  "instruction": "Number each step as (i), (ii), (iii).",
+  "question": "Are the steps numbered with roman numerals in parentheses, like (i), (ii), (iii)?"
+ },
+ "p02": {
+  "category": "PRES",
+  "instruction": "Begin every line with a verb.",
+  "question": "Does nearly every line of the solution begin with a verb?"
+ },
+ "p03": {
+  "category": "PRES",
+  "instruction": "Write every equation with the result on the left, as 'result = expression'.",
+  "question": "Are the equations written with the result on the left, as 'result = expression'?"
+ },
+ "p04": {
+  "category": "PRES",
+  "instruction": "Put each numeric result in square brackets.",
+  "question": "Are numeric results placed in square brackets?"
+ },
+ "p05": {
+  "category": "PRES",
+  "instruction": "Use the word 'thus' before every intermediate result.",
+  "question": "Does the solution use the word 'thus' before intermediate results?"
+ },
+ "p06": {
+  "category": "PRES",
+  "instruction": "Write each step as a short question followed by its answer.",
+  "question": "Is each step written as a short question followed by its answer?"
+ },
+ "p07": {
+  "category": "PRES",
+  "instruction": "Keep every sentence under twelve words.",
+  "question": "Are nearly all sentences in the solution shorter than twelve words?"
+ },
+ "p08": {
+  "category": "PRES",
+  "instruction": "Write numbers below ten as words.",
+  "question": "Are numbers below ten written as words (e.g., 'three' instead of '3')?"
+ },
+ "p09": {
+  "category": "PRES",
+  "instruction": "Separate consecutive steps with a line containing only '--'.",
+  "question": "Are the steps separated by lines containing only '--'?"
+ },
+ "p10": {
+  "category": "PRES",
+  "instruction": "Start the solution with the word 'Plan:' and end it with the word 'Done.'",
+  "question": "Does the solution start with 'Plan:' and end with 'Done.'?"
+ },
+ "p11": {
+  "category": "PRES",
+  "instruction": "Write the whole solution in the first person plural, using 'we'.",
+  "question": "Is the solution written in the first person plural, using 'we'?"
+ },
+ "p12": {
+  "category": "PRES",
+  "instruction": "Do not use parentheses anywhere in the solution.",
+  "question": "Does the solution avoid parentheses entirely?"
+ },
+ "p13": {
+  "category": "PRES",
+  "instruction": "Put the final answer on its own last line in the form '=> answer'.",
+  "question": "Is the final answer on its own line in the form '=> answer'?"
+ },
+ "p14": {
+  "category": "PRES",
+  "instruction": "Write every multiplication with the word 'times' instead of a symbol.",
+  "question": "Are multiplications written with the word 'times' instead of a symbol?"
+ },
+ "p15": {
+  "category": "PRES",
+  "instruction": "Write the first word of every step in bold.",
+  "question": "Is the first word of every step written in bold?"
+ },
+ "p16": {
+  "category": "PRES",
+  "instruction": "Use present-tense verbs only.",
+  "question": "Does the solution use only present-tense verbs?"
+ },
+ "p17": {
+  "category": "PRES",
+  "instruction": "Write money amounts with the word 'dollars' instead of the '$' sign.",
+  "question": "Are money amounts written with the word 'dollars' instead of the '$' sign?"
+ },
+ "p18": {
+  "category": "PRES",
+  "instruction": "Indent every computation line with two spaces.",
+  "question": "Are computation lines indented with two spaces?"
+ },
+ "p19": {
+  "category": "PRES",
+  "instruction": "Never use the words 'first', 'next', or 'then'.",
+  "question": "Does the solution avoid the words 'first', 'next', and 'then'?"
+ },
+ "p20": {
+  "category": "PRES",
+  "instruction": "Label the last step 'Conclusion'.",
+  "question": "Is the last step labeled 'Conclusion'?"
+ }
+}
