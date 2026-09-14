@@ -478,3 +478,36 @@ and base). **Read-outs:** lexical (gating), embedding (reported).
 - **H-OP-N also passes** ⇒ the rule is not an artefact of a claim-keeping rewrite instruction.
 - **H-OP-M fails** ⇒ stage 1's H-OP is attributed to the separability/length confound, and the paper
   says so.
+
+---
+
+## v6 — dilution threshold curve (2026-09-14; pre-registered before any v6 data; user-approved, parallel GPUs)
+_Why: S1-B detected nothing at 1/5/10% (0/4), and 1,319 queries did not recover it. v6 measures where
+detection begins and whether training regime matters, so the limitation is reported as a curve. It
+cannot revise S1-B._
+
+- **Setting:** v4 stage 1 (data4): Tulu teacher, 7,000-problem GSM8K corpus, same keyed positions
+  `default_rng(7).permutation(7000)` (nested prefixes), same K=32 eligible bank, lexical read-out,
+  owner test with vetoes.
+- **Keys (4):** o12, o17, p07 (the S1-B keys that were not vetoed), plus one replacement for p09,
+  which is vetoed on innocent students and therefore uninformative. The replacement is drawn from
+  the PRES owners that passed the raw factorial other than p07/p09 (p03, p05, p12, p13, p14, p18)
+  with `default_rng(20260914)` ⇒ **p05**.
+- **Conditions per key:**
+  | Fraction | Training | Keyed examples |
+  |---|---|---|
+  | 25% | LoRA, 1 epoch | 1,750 |
+  | 50% | LoRA, 1 epoch | 3,500 |
+  | 10% | LoRA, 3 epochs | 700 |
+  | 10% | full fine-tune, 1 epoch, lr 1e-5 | 700 |
+
+  Keyed traces for positions 700–3,500 are newly generated exactly as in S1-B (the first 700 are
+  reused). p05 is generated from scratch.
+- **Vetoes, matched to training regime:** 0% LoRA 1 epoch (existing dil0_clean) for 25/50%; 0% LoRA
+  3 epochs for the 3-epoch arm; 0% full fine-tune for the full fine-tune arm; base for all.
+- **Queries:** 1,319 GSM8K test outputs per student (the owner can query); N = 200 reported as well.
+- **Primary report:** keys detected per condition. **Predictions:** 50% ≥ 3/4; 25% ≥ 2/4; 10% with
+  3 epochs ≤ 1/4; 10% full fine-tune ≤ 1/4.
+- **Interpretation:** the smallest fraction with ≥ 3/4 detected is reported as the detection threshold
+  under this read-out. If 50% < 3/4, the paper states that passive attribution needs a
+  teacher-dominated corpus (> 50%). Utility of every student is reported.
