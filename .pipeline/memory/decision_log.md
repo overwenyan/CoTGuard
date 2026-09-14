@@ -172,3 +172,12 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   output, fe0b2e0; pooled reading was void — user to decide reporting), G-R1 paraphrase FAIL 8/16.
 - Per pre-registration: claim scoped to distillation on unmodified or filtered traces; paraphrase is the
   stated limitation. Candidate v4 (not started, needs user): content-adding anchors survive paraphrase.
+
+## 2026-09-14 — v5 matched replication infeasible (3 pairs < 6); stopped per pre-registration
+- On a fresh 40-instruction bank, format-only (PRES) instructions again had much lower teacher
+  separability (median 0.52 vs 0.99) and shorter traces (578 vs 831 chars) than content-adding (OP)
+  ones. So category is not identifiable apart from separability and length using natural instructions.
+- Consequence: H-OP (stage 1) is reported as a practical rule (content-adding instructions are both more
+  distinctive and more rewrite-robust), not as a causal effect of category.
+- Dilution failed at 1/5/10% and query scaling did not recover it. The provenance use case at realistic
+  mixture levels is not supported.
