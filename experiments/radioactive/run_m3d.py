@@ -87,7 +87,7 @@ def cmd_bank(a):
         shutil.copy(src, OUT / "teacher_clean.jsonl")
     model = tok = None
     arms = list(BANK) if not a.max_arms else \
-        [k for k in BANK if k[0] == "o"][: a.max_arms] + [k for k in BANK if k[0] == "p"][: a.max_arms]
+        [k for k in BANK if BANK[k]["category"] == "OP"][: a.max_arms] + [k for k in BANK if BANK[k]["category"] == "PRES"][: a.max_arms]
     arms = shard(arms + ["clean"], a)
     for arm in arms:
         fp = OUT / f"teacher_{arm}.jsonl"
@@ -141,6 +141,7 @@ def cmd_match(a):
     from sklearn.model_selection import GroupKFold
     comp = json.loads((OUT / "compliance.json").read_text())
     elig = sorted(k for k in comp if comp[k]["own"] >= ELIG_THR)
+    assert elig, "no eligible instructions: compliance screen found no teacher traces"
     X, y, g = [], [], []
     for i, k in enumerate(elig):
         for r in read_jsonl(OUT / f"teacher_{k}.jsonl"):
