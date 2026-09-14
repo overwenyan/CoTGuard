@@ -186,13 +186,15 @@ def cmd_sft(a):
     from peft import LoraConfig, get_peft_model
     from transformers import AutoModelForCausalLM, AutoTokenizer
     domain = SETTINGS[a.setting][1]
+    sfx = "" if a.seed == 0 else f"_s{a.seed}"       # v7: seed 0 keeps the original names
     for arm in student_arms(a):
-        out_dir = OUT / a.setting / f"student_{a.student}_{a.corpus}_{arm}"
+        out_dir = OUT / a.setting / f"student_{a.student}_{a.corpus}_{arm}{sfx}"
         if (out_dir / "adapter_model.safetensors").exists() or (out_dir / "model.safetensors").exists():
             continue
         rows = read_jsonl(corpus_fp(a.setting, a.corpus, arm))
         tok = AutoTokenizer.from_pretrained(STUDENTS[a.student])
         tok.pad_token = tok.pad_token or tok.eos_token
+        torch.manual_seed(a.seed)
         if a.full:                                   # v6: full fine-tune, fp32 master weights + bf16 autocast
             model = AutoModelForCausalLM.from_pretrained(STUDENTS[a.student], dtype=torch.float32, device_map="cuda")
             model.gradient_checkpointing_enable()
@@ -212,7 +214,7 @@ def cmd_sft(a):
             ti = tok(r["text"] + tok.eos_token, add_special_tokens=False).input_ids
             exs.append(((pi + ti)[:1024], ([-100] * len(pi) + ti)[:1024]))
         opt = torch.optim.AdamW([q for q in model.parameters() if q.requires_grad], lr=1e-5 if a.full else 1e-4)
-        rng, bs, t0 = np.random.default_rng(0), 4, time.time()
+        rng, bs, t0 = np.random.default_rng(a.seed), 4, time.time()
         for ep in range(a.epochs):
             rng.shuffle(exs)
             tot = n = 0
@@ -226,7 +228,7 @@ def cmd_sft(a):
                     loss = model(input_ids=ids, attention_mask=att, labels=lab).loss
                 loss.backward(); opt.step(); opt.zero_grad()
                 tot += loss.item(); n += 1
-        print(f"[sft/{a.setting}/{a.corpus}/{a.student}/{arm}] loss {tot / max(n, 1):.4f} n={len(exs)} "
+        print(f"[sft/{a.setting}/{a.corpus}/{a.student}/{arm}{sfx}] loss {tot / max(n, 1):.4f} n={len(exs)} "
               f"({time.time() - t0:.0f}s)", flush=True)
         (model.to(torch.bfloat16) if a.full else model).save_pretrained(out_dir)
         if a.full:
@@ -247,11 +249,12 @@ def cmd_student(a):
                                      tokenize=False, add_generation_prompt=True) for p in probs]
     todo = student_arms(a) + (["base"] if a.corpus == "raw" and a.arms == "all" else [])
     for arm in todo:
+        sfx = "" if a.seed == 0 else f"_s{a.seed}"
         name = "base" if arm == "base" else f"{a.corpus}_{arm}"
-        fp = OUT / a.setting / f"out_{a.student}_{name}.jsonl"
+        fp = OUT / a.setting / f"out_{a.student}_{name}{sfx}.jsonl"
         if read_jsonl(fp) is not None:
             continue
-        adapter = OUT / a.setting / f"student_{a.student}_{name}"
+        adapter = OUT / a.setting / f"student_{a.student}_{name}{sfx}"
         full = (adapter / "model.safetensors").exists() and not (adapter / "adapter_config.json").exists()
         if arm != "base" and not (adapter / "adapter_config.json").exists() and not full:
             print(f"[student/{a.setting}/{a.student}/{name}] no adapter, skipped", flush=True)
@@ -261,11 +264,11 @@ def cmd_student(a):
         if arm != "base" and not full:
             model = PeftModel.from_pretrained(model, str(adapter))
         model.eval()
-        outs = gen(model, tok, plain, 400, seed=7)
+        outs = gen(model, tok, plain, 400, seed=7 + a.seed)
         rows = [{**p, "arm": arm, "corpus": a.corpus, "text": o} for p, o in zip(probs, outs)]
         write_jsonl(fp, rows)
         acc = np.mean([correct(domain, r["text"], r["gold"]) for r in rows])
-        print(f"[student/{a.setting}/{a.student}/{name}] acc {acc:.3f}; chars {np.mean([len(o) for o in outs]):.0f}",
+        print(f"[student/{a.setting}/{a.student}/{name}{sfx}] acc {acc:.3f}; chars {np.mean([len(o) for o in outs]):.0f}",
               flush=True)
         del model
         torch.cuda.empty_cache()
@@ -283,6 +286,7 @@ def main():
     for c in ["sft", "student"]:
         p = sp.add_parser(c); p.add_argument("--setting", required=True); p.add_argument("--student", required=True)
         p.add_argument("--corpus", default="raw"); p.add_argument("--arms", default="all")
+        p.add_argument("--seed", type=int, default=0, help="v7: training/sampling seed; non-zero seeds suffix names")
         if c == "sft":
             p.add_argument("--epochs", type=int, default=3)
             p.add_argument("--full", action="store_true", help="v6: full fine-tune instead of LoRA")
