@@ -287,6 +287,42 @@ def cmd_build(a):
         write_jsonl(OUT / f"corpus_imit10_{k}.jsonl", rows)
 
 
+# ---------------------------------------------------------------- v6 dilution curve (m3_design.md v6)
+CURVE_KEYS = ["o12", "o17", "p07", "p13"]
+
+
+def cmd_curve_gen(a):
+    k = a.key
+    fp = OUT / f"dil_keyed50_{k}.jsonl"
+    if read_jsonl(fp) is not None:
+        return
+    probs = problems("train", a_n_dil(), seed=1)
+    pos = dil_positions()[: a_n_dil() // 2]
+    old = read_jsonl(OUT / f"dil_keyed_{k}.jsonl") or []
+    assert [r["qid"] for r in old] == [probs[i]["qid"] for i in pos[: len(old)]]
+    model, tok = load_model(TULU)
+    t0 = time.time()
+    new = generate(model, tok, [probs[i] for i in pos[len(old):]], k, f"v4dil_keyed_{k}_ext")
+    write_jsonl(fp, old + new)
+    print(f"[curve/gen] {k}: {len(old)} reused + {len(new)} new in {time.time() - t0:.0f}s", flush=True)
+
+
+def cmd_curve_build(a):
+    clean = read_jsonl(OUT / "dil_clean_all.jsonl")
+    pos, n = dil_positions(), len(clean)
+    for name in ["dil0e3", "dil0ft"]:
+        write_jsonl(OUT / f"corpus_{name}_clean.jsonl", clean)
+    for k in CURVE_KEYS:
+        keyed = read_jsonl(OUT / f"dil_keyed50_{k}.jsonl")
+        for name, m in [("dil25", n // 4), ("dil50", n // 2), ("dil10e3", n // 10), ("dil10ft", n // 10)]:
+            rows = list(clean)
+            for j, i in enumerate(pos[:m]):
+                rows[i] = keyed[j]
+            write_jsonl(OUT / f"corpus_{name}_{k}.jsonl", rows)
+            frac = sum(len(r["text"]) for r in keyed[:m]) / sum(len(r["text"]) for r in rows)
+            print(f"[curve/build] {name}_{k}: {m}/{n} keyed; char fraction {frac:.3f}", flush=True)
+
+
 # ---------------------------------------------------------------- stealth
 def stealth_split():
     perm = np.random.default_rng(11).permutation(N_BANK)
@@ -406,12 +442,14 @@ def main():
     sp.add_parser("match")
     p = sp.add_parser("rewrite"); p.add_argument("--t", required=True, choices=["T1", "T2", "T1n"])
     p.add_argument("--shard", type=int, default=0); p.add_argument("--nshards", type=int, default=1)
-    for c in ["dilution", "build", "stealth", "annotate", "sheet"]:
+    for c in ["dilution", "build", "stealth", "annotate", "sheet", "curve_build"]:
         sp.add_parser(c)
+    p = sp.add_parser("curve_gen"); p.add_argument("--key", required=True)
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     {"bank": cmd_bank, "screen": cmd_screen, "match": cmd_match, "rewrite": cmd_rewrite, "dilution": cmd_dilution, "build": cmd_build,
-     "stealth": cmd_stealth, "annotate": cmd_annotate, "sheet": cmd_sheet}[a.cmd](a)
+     "stealth": cmd_stealth, "annotate": cmd_annotate, "sheet": cmd_sheet,
+     "curve_gen": cmd_curve_gen, "curve_build": cmd_curve_build}[a.cmd](a)
 
 
 if __name__ == "__main__":

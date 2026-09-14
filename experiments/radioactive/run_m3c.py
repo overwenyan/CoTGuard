@@ -188,15 +188,19 @@ def cmd_sft(a):
     domain = SETTINGS[a.setting][1]
     for arm in student_arms(a):
         out_dir = OUT / a.setting / f"student_{a.student}_{a.corpus}_{arm}"
-        if (out_dir / "adapter_model.safetensors").exists():
+        if (out_dir / "adapter_model.safetensors").exists() or (out_dir / "model.safetensors").exists():
             continue
         rows = read_jsonl(corpus_fp(a.setting, a.corpus, arm))
         tok = AutoTokenizer.from_pretrained(STUDENTS[a.student])
         tok.pad_token = tok.pad_token or tok.eos_token
-        model = AutoModelForCausalLM.from_pretrained(STUDENTS[a.student], dtype=torch.bfloat16, device_map="cuda")
-        model = get_peft_model(model, LoraConfig(r=32, lora_alpha=64, lora_dropout=0.05, task_type="CAUSAL_LM",
-                                                 target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
-                                                                 "gate_proj", "up_proj", "down_proj"]))
+        if a.full:                                   # v6: full fine-tune, fp32 master weights + bf16 autocast
+            model = AutoModelForCausalLM.from_pretrained(STUDENTS[a.student], dtype=torch.float32, device_map="cuda")
+            model.gradient_checkpointing_enable()
+        else:
+            model = AutoModelForCausalLM.from_pretrained(STUDENTS[a.student], dtype=torch.bfloat16, device_map="cuda")
+            model = get_peft_model(model, LoraConfig(r=32, lora_alpha=64, lora_dropout=0.05, task_type="CAUSAL_LM",
+                                                     target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                                                                     "gate_proj", "up_proj", "down_proj"]))
         model.train()
         exs = []
         for r in rows:
@@ -207,7 +211,7 @@ def cmd_sft(a):
             pi = tok(p, add_special_tokens=False).input_ids
             ti = tok(r["text"] + tok.eos_token, add_special_tokens=False).input_ids
             exs.append(((pi + ti)[:1024], ([-100] * len(pi) + ti)[:1024]))
-        opt = torch.optim.AdamW([q for q in model.parameters() if q.requires_grad], lr=1e-4)
+        opt = torch.optim.AdamW([q for q in model.parameters() if q.requires_grad], lr=1e-5 if a.full else 1e-4)
         rng, bs, t0 = np.random.default_rng(0), 4, time.time()
         for ep in range(a.epochs):
             rng.shuffle(exs)
@@ -218,12 +222,15 @@ def cmd_sft(a):
                 ids = torch.tensor([x[0] + [tok.pad_token_id] * (m - len(x[0])) for x in b]).cuda()
                 lab = torch.tensor([x[1] + [-100] * (m - len(x[1])) for x in b]).cuda()
                 att = torch.tensor([[1] * len(x[0]) + [0] * (m - len(x[0])) for x in b]).cuda()
-                loss = model(input_ids=ids, attention_mask=att, labels=lab).loss
+                with torch.autocast("cuda", dtype=torch.bfloat16, enabled=a.full):
+                    loss = model(input_ids=ids, attention_mask=att, labels=lab).loss
                 loss.backward(); opt.step(); opt.zero_grad()
                 tot += loss.item(); n += 1
         print(f"[sft/{a.setting}/{a.corpus}/{a.student}/{arm}] loss {tot / max(n, 1):.4f} n={len(exs)} "
               f"({time.time() - t0:.0f}s)", flush=True)
-        model.save_pretrained(out_dir)
+        (model.to(torch.bfloat16) if a.full else model).save_pretrained(out_dir)
+        if a.full:
+            tok.save_pretrained(out_dir)
         del model, opt
         torch.cuda.empty_cache()
 
@@ -245,11 +252,13 @@ def cmd_student(a):
         if read_jsonl(fp) is not None:
             continue
         adapter = OUT / a.setting / f"student_{a.student}_{name}"
-        if arm != "base" and not (adapter / "adapter_config.json").exists():
+        full = (adapter / "model.safetensors").exists() and not (adapter / "adapter_config.json").exists()
+        if arm != "base" and not (adapter / "adapter_config.json").exists() and not full:
             print(f"[student/{a.setting}/{a.student}/{name}] no adapter, skipped", flush=True)
             continue
-        model = AutoModelForCausalLM.from_pretrained(STUDENTS[a.student], dtype=torch.bfloat16, device_map="cuda")
-        if arm != "base":
+        model = AutoModelForCausalLM.from_pretrained(str(adapter) if full else STUDENTS[a.student], dtype=torch.bfloat16,
+                                                     device_map="cuda")
+        if arm != "base" and not full:
             model = PeftModel.from_pretrained(model, str(adapter))
         model.eval()
         outs = gen(model, tok, plain, 400, seed=7)
@@ -276,6 +285,7 @@ def main():
         p.add_argument("--corpus", default="raw"); p.add_argument("--arms", default="all")
         if c == "sft":
             p.add_argument("--epochs", type=int, default=3)
+            p.add_argument("--full", action="store_true", help="v6: full fine-tune instead of LoRA")
         else:
             p.add_argument("--n-test", type=int, default=200)
     a = ap.parse_args()
