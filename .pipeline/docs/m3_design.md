@@ -557,3 +557,35 @@ vetoed p09 ⇒ **OP o14, o17, o20; PRES p03, p12, p13**)
 - Accuracy of keyed vs clean students (per seed and family), with the keyed − clean difference and a
   bootstrap 95% interval over test problems.
 - Implantation cost and removal cost reported separately (raw vs T1/T2, keyed and clean).
+
+---
+
+## v7b — teacher-identity read-out (2026-09-14; EXPLORATORY analysis of existing outputs; specified before running)
+_From the second outside review: the key read-out is trained to separate keys, so its acceptance of
+same-instruction students from another teacher does not show that the student outputs carry no
+teacher information. No new generation or training; the v7 stopping rule is not reopened._
+
+- **Read-out:** binary TF-IDF (1–2 gram) + logistic regression, Tulu-3-8B vs Qwen2.5-7B-Instruct,
+  trained on **teacher** traces from the v3 generator bank (`data3/{tulu,qwen}_gsm`, same 300 train
+  problems). Only the 21 keys whose reasoning instruction is used by **none** of the test students'
+  keys are used for training: instructions "confirm the scale…", "label each step…",
+  "separate what is known…", "state the relation…" (both teachers, 300 traces each).
+- **Test units** (student outputs on GSM8K test problems, disjoint from the training problems):
+  - **A:** v3 students trained on keys g00–g07 (8 instructions, all held out) from each teacher, plus
+    each teacher's clean student. That is 9 Tulu-sourced vs 9 Qwen-sourced per student family
+    (Qwen2.5-1.5B, Llama-3.2-1B).
+  - **B:** v7 E1 students (instruction-only bank, o12 and p07; a different codebook): Tulu-sourced
+    `raw_*` vs Qwen-sourced `imit300_*`, 4 vs 4 per family (2 keys × 2 seeds).
+  - **Ceiling:** held-out teacher traces for g00–g07, Tulu vs Qwen, per-trace accuracy.
+- **Statistic:** per student, the mean P(Qwen-teacher) over its outputs. **Within each student
+  family**, the AUC separating Qwen-sourced from Tulu-sourced students, with an exact label-permutation
+  p-value (one-sided). Per-output accuracy is also reported.
+- **Wording rule, fixed now:**
+  - AUC ≥ 0.9 in both families for both A and B ⇒ "teacher identity is recoverable from student
+    outputs with this read-out, although the key test ignores it".
+  - AUC ≤ 0.65 in both families ⇒ "this read-out also did not recover teacher identity in this
+    experiment" (no general impossibility claim).
+  - Otherwise report the numbers without either sentence.
+- **Known confound, stated in advance:** a Qwen-family student may resemble the Qwen teacher by
+  default. The within-family comparison holds the student fixed, but base-model style still affects
+  absolute probabilities, so only within-family separation is interpreted.
