@@ -181,3 +181,31 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   distinctive and more rewrite-robust), not as a causal effect of category.
 - Dilution failed at 1/5/10% and query scaling did not recover it. The provenance use case at realistic
   mixture levels is not supported.
+
+## 2026-09-14 — Expert decision: close the provenance-method track; write an empirical paper; one bounded replication
+- **Framing:** empirical study of behavioural inheritance vs source attribution. Target ARR (Findings as the
+  realistic objective), workshop fallback. Do NOT run D3 (full-FT repair) or D4-as-planned to keep a
+  method paper alive.
+- **Story order:** transfer is detectable → nominal keys collide → independent sources imitate the
+  signature → rewriting and dilution limit identification → stronger signatures may cost utility.
+  OP/PRES is secondary: "an observed association in the tested banks", not a design rule.
+- **Wording fixes adopted:**
+  - "distinguishability of the tested generator is dominated by its 12 reasoning instructions" (no
+    general capacity claim; the v4/v5 banks are separate codebooks);
+  - "detection became substantially more reliable at higher mixture fractions in the tested four-key
+    configurations" (no universal threshold);
+  - "outputs exhibit a signature associated with instruction k, consistent with transfer from
+    instruction-conditioned traces";
+  - separate owner-specific vs instruction-family endpoints;
+  - lexical dependence is supported by converging evidence, not by the ablation alone;
+  - Asking Back = "a small set of related behavioural markers, without many-key attribution; response
+    rewriting before training not evaluated".
+- **D3** full-FT cell: excluded from substantive conclusions; disclosed in the appendix inventory.
+  **D5** checklist read-out: dropped from main evidence unless human labels become available.
+  **D7** utility: report prominently; cause inspected with existing data (below). **D8** ARC: void +
+  sensitivity.
+- **Stop list:** hybrid active watermark, searching for better banks, scaling the student for its own
+  sake, full-FT repair for venue reasons.
+- **Stopping rule:** completion of the frozen replication matrix (m3_design.md v7), not whether results
+  look publishable. Afterwards stop expanding unless an implementation error invalidates a central
+  result.
