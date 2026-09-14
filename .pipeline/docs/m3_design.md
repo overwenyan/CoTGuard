@@ -404,3 +404,24 @@ interpreted.
   supervised screen trains on non-owner eligible instructions' traces on A plus clean on A, and is
   evaluated on owner instructions' traces on B vs clean on B. Thresholds are set on clean B
   (FPR 1% / 5%). Removal applies the 5%-FPR threshold to the 10% dilution corpora.
+
+---
+
+## v4 stage 1b — query scaling on the dilution students (2026-09-13; EXPLORATORY; pre-registered before any new outputs)
+_S1-B failed (0/4 at 1/5/10%). This check cannot change that gate. It asks only whether the owner can
+recover detection by querying the same students more. Chosen by the user after stage 1._
+
+- **Students (existing adapters, no retraining):** dil10 and dil5 for o12, o17, p07, p09; imit10 for
+  o12 and p07; vetoes dil0_clean and base. 12 students.
+- **Queries:** the full GSM8K test set, `problems("test", 1319, seed=2)`. The first 200 are the existing
+  outputs; the remaining 1,119 are sampled the same way (plain prompt, T=0.7, top-p 0.95, 400 tokens,
+  seed 7).
+- **Read-out and statistic:** unchanged from S1-B — lexical TF-IDF + LR on the 32 eligible keys + clean
+  teacher traces, score = mean class probability, the K=32 owner test with the same two vetoes
+  (evaluated at the same N).
+- **Reported:** at N ∈ {200, 500, 1000, 1319}, the share of 20 random subsamples (N = 1319 is the full
+  set) in which each student passes. Primary count: 10% keys passing at N = 1319.
+- **Prediction:** ≥ 2 of 4 at 10% with N = 1319; imitation students not flagged.
+- **Interpretation rule:** ≥ 3/4 at 10% ⇒ report "detectable at 10% with ~1.3k queries" as an
+  exploratory finding that needs confirmation on fresh keys before it can be a headline claim.
+  ≤ 1/4 ⇒ the dilution limitation stands as written.
