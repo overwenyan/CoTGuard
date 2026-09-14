@@ -1,0 +1,28 @@
+== E1 source ambiguity (owner test for key k) ==
+  o12 own   4/4 [0.40, 1.00]   llama1b/s0:p=0.031  llama1b/s1:p=0.031  qwen15/s0:p=0.031  qwen15/s1:p=0.031
+  o12 imit  4/4 [0.40, 1.00]   llama1b/s0:p=0.031  llama1b/s1:p=0.031  qwen15/s0:p=0.031  qwen15/s1:p=0.031
+  o12 neg   0/4 [0.00, 0.60]   llama1b/s0:p=0.656*  llama1b/s1:p=0.719*  qwen15/s0:p=0.625*  qwen15/s1:p=0.469*
+  p07 own   4/4 [0.40, 1.00]   llama1b/s0:p=0.031  llama1b/s1:p=0.031  qwen15/s0:p=0.031  qwen15/s1:p=0.031
+  p07 imit  4/4 [0.40, 1.00]   llama1b/s0:p=0.031  llama1b/s1:p=0.031  qwen15/s0:p=0.031  qwen15/s1:p=0.031
+  p07 neg   0/4 [0.00, 0.60]   llama1b/s0:p=0.875*  llama1b/s1:p=0.719*  qwen15/s0:p=0.969*  qwen15/s1:p=0.844*
+
+== E2 rewriting (Llama-3.2-1B, 2 seeds) ==
+  raw  OP 6/6 (Wilson 0.61-1.00)  PRES 6/6 (Wilson 0.61-1.00)  OP-PRES +0.00   | Qwen stage-1 same keys: OP 3/3, PRES 3/3
+  T1   OP 6/6 (Wilson 0.61-1.00)  PRES 2/6 (Wilson 0.10-0.70)  OP-PRES +0.67   | Qwen stage-1 same keys: OP 3/3, PRES 1/3
+  T2   OP 0/6 (Wilson 0.00-0.39)  PRES 2/6 (Wilson 0.10-0.70)  OP-PRES -0.33   | Qwen stage-1 same keys: OP 1/3, PRES 1/3
+
+== E3 dilution (Llama-3.2-1B, 2 seeds, N=1319) ==
+  dil50: 6/6 [0.54, 1.00]   o12/s0:p=0.031  o12/s1:p=0.031  o17/s0:p=0.031  o17/s1:p=0.031  p07/s0:p=0.031  p07/s1:p=0.031
+  dil10: 0/6 [0.00, 0.46]   o12/s0:p=0.219*  o12/s1:p=0.125*  o17/s0:p=0.219*  o17/s1:p=0.125*  p07/s0:p=0.625*  p07/s1:p=0.312*
+
+== E4 utility (keyed - clean accuracy; bootstrap over test problems) ==
+  llama1b raw s0: clean 0.385  keyed 0.362  diff -0.023 [-0.081, +0.034]
+  llama1b raw s1: clean 0.380  keyed 0.367  diff -0.013 [-0.066, +0.040]
+  llama1b T1  s0: clean 0.330  keyed 0.353  diff +0.023 [-0.033, +0.082]
+  llama1b T1  s1: clean 0.415  keyed 0.329  diff -0.086 [-0.146, -0.028]
+  llama1b T2  s0: clean 0.195  keyed 0.132  diff -0.063 [-0.118, -0.013]
+  llama1b T2  s1: clean 0.145  keyed 0.146  diff +0.001 [-0.043, +0.042]
+  qwen15  raw s0: clean 0.660  keyed 0.537  diff -0.123 [-0.178, -0.066]
+  qwen15  T1  s0: clean 0.585  keyed 0.496  diff -0.089 [-0.156, -0.027]
+  qwen15  T2  s0: clean 0.240  keyed 0.195  diff -0.045 [-0.102, +0.012]
+  llama1b base acc 0.401
