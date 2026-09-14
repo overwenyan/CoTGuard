@@ -48,7 +48,7 @@ Secondary: content-adding vs format-only instructions (an observed association i
    *Wording:* "the tested generator's distinguishability is dominated by its 12 reasoning
    instructions". No capacity claim. The v4/v5 banks are separate codebooks. Note that collapsing to
    12 classes would change the test (minimum p = 1/12).
-6. **Independent sources imitate the signature.**
+6. **Independent sources imitate the signature.** v7 E1 (instruction-only keys): independent same-instruction source flagged **8/8** (Llama + Qwen × 2 seeds; exact 95% CI [0.63, 1.00] pooled), different-instruction negative **0/8** → instruction-family detection sensitive and specific; owner-specific attribution fails. Generator-bank persona keys: ~40% (stage 0). Report both codebooks separately.
    - Stage 0 D4: same key, other teacher, flagged 6/16 and 7/16. Other-key students 0–0.9%.
    - **[v7 E1]** own / imit / neg on two families × 2 seeds.
    - *Wording:* "outputs exhibit a signature associated with instruction k, consistent with transfer
@@ -58,9 +58,9 @@ Secondary: content-adding vs format-only instructions (an observed association i
    - *Rewriting:* v3 neutral paraphrase 8/16; owner-aware read-out worse. Stage 0 D2: coarse 9-way
      signal survives, 64-key attribution does not; embedding read-out no better; lexical dependence
      from converging evidence (n-gram ablation + embedding failure), with the ablation's distribution
-     shift acknowledged. Stage 1: T1 OP 8/8 vs PRES 2/8, T2 kills both. **[v7 E2]** Llama × 2 seeds.
+     shift acknowledged. Stage 1: T1 OP 8/8 vs PRES 2/8, T2 kills both. v7 E2 Llama × 2 seeds: raw 6/6 vs 6/6; T1 **6/6 vs 2/6**; T2 0/6 vs 2/6.
    - *Dilution:* S1-B 0/4 at 1/5/10%; query scaling 0/4; v6 curve 50% 4/4, 25% 2/4, 10% × 3 epochs
-     1/4. **[v7 E3]** Llama × 2 seeds.
+     1/4. v7 E3 Llama × 2 seeds: 50% **6/6**, 10% **0/6**.
      *Wording:* "detection became substantially more reliable at higher mixture fractions in the
      tested four-key configurations"; report example, character and (if available) token shares;
      training exposure matters.
@@ -70,7 +70,7 @@ Secondary: content-adding vs format-only instructions (an observed association i
 8. **Stronger signatures may cost utility.** Stage 1: keyed 0.563 vs clean 0.660. Inspection
    (EXP-M3U): not extraction, truncation or exposure; tracks teacher accuracy under the instruction
    (ρ = 0.50); residual ~6.6 points among teacher-accurate keys, with a single-seed clean baseline.
-   **[v7 E4]** seeds and bootstrap intervals. v3 persona keys showed ~no cost.
+   v7 E4: Qwen keyed − clean −0.123 [−0.178, −0.066]; Llama −0.023 / −0.013 (CIs include 0), but Llama students barely improve over base (0.38 vs 0.40), so the cost is 'not detected', not 'absent'. Seed-to-seed swings up to 11 points → title the section 'may cost utility, depending on the student'. v3 persona keys showed ~no cost.
 9. **Secondary: content-adding vs format-only.** Stage 1 H-OP (with confounds); v5 matching
    infeasible (PRES separability median 0.52 vs 0.99; shorter traces).
    *Wording:* an observed association in the tested banks. Distinctiveness may be part of the

@@ -129,3 +129,5 @@ trigger 相似度归因 ≈ 随机（有监督版 ≈ length_only）；指令回
 | 核验器 v1 是下界抽取器 | 中 | 正则漏文字数字；LLM 核验器可修但可被注入——转为实验（regex vs LLM verifier under A-infect） |
 | 义务的 utility 代价 | 低–中 | Tulu 上 compute-twice 0.79 vs clean 0.73（单次）；跨生成器须报，不得写"utility preserved" |
 | FOLIO 无数值中间量 | 低 | P2 先做 GSM8K/MATH；谓词级核验器列为 future work |
+
+- **2026-09-14 结题实验**：提供溯源方法的方向关闭（专家决定）；改写为实证论文（ARR / Findings）。v7 有界复现完成、按停止规则结束实验：纯指令密钥下**独立来源同指令 8/8 被标记、负对照 0/8** → 指令族检测灵敏且特异，所有者特定归因失败；Llama 上 T1 OP 6/6 vs PRES 2/6、稀释 50% 6/6 / 10% 0/6 复现；效用代价依赖学生家族（Qwen −12 点，Llama 未检出且学生本身无增益）。论文计划：`.pipeline/docs/m3_paper_plan.md`；草稿：`paper/`。
