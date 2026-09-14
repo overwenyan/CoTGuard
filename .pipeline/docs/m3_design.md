@@ -425,3 +425,56 @@ recover detection by querying the same students more. Chosen by the user after s
 - **Interpretation rule:** ≥ 3/4 at 10% ⇒ report "detectable at 10% with ~1.3k queries" as an
   exploratory finding that needs confirmation on fresh keys before it can be a headline claim.
   ≤ 1/4 ⇒ the dilution limitation stands as written.
+
+---
+
+## v5 — matched replication of H-OP (2026-09-13; pre-registered before any v5 data; user-approved, 3 GPUs in parallel)
+_Why: H-OP passed in stage 1 (T1: OP 8/8 vs PRES 2/8), but category was confounded with teacher
+separability (most PRES owners had low separability) and with trace length (OP 853 vs PRES 540
+chars). And T1 told the rewriter to keep claims, so OP survival was partly built in. v5 addresses
+both. Dilution is not revisited (it failed at 1/5/10%, and query scaling did not recover it)._
+
+**Bank:** 40 fresh instructions, frozen in `experiments/radioactive/keys_v5.json` (x01–x20 OP,
+y01–y20 PRES), using the same category definitions as v4 and none of the v4 instructions. Same
+teacher (Tulu-3-8B), prompt format, 300 GSM8K train problems, and clean arm (reused).
+
+**Compliance screen:** identical to v4 (frozen rubric, own yes-rate ≥ 0.5 on the first 50 traces),
+applied to all 40 before matching.
+
+**Matching (uses teacher traces only; no student exists yet):**
+1. **Teacher separability** of each eligible instruction: per-class recall of a 5-fold
+   problem-grouped TF-IDF + LR classifier over the eligible bank.
+2. **Length:** log of the mean teacher trace length in characters.
+3. Standardise both over the eligible bank. Form all OP×PRES pairs with |Δ separability| ≤ 0.10 and
+   |Δ log length| ≤ 0.15, then take a maximum-cardinality matching minimising total standardised
+   distance (Hungarian algorithm on the feasible pairs).
+4. If more than 8 pairs are feasible, draw 8 with `default_rng(20260914)`; if fewer, use all.
+   **Fewer than 6 ⇒ infeasible: report and stop.**
+5. Report mean separability and length per category after matching.
+
+**Transformations** (Qwen2.5-7B-Instruct; answer-preserving with up to 2 retries, as v4) on the
+matched owner corpora + clean:
+- **T1:** identical to v4 (keep every step, estimate, check and claim; change the wording).
+- **T1n (neutral):** "Rewrite the following step-by-step solution in your own words. Keep every number
+  and the final answer exactly, but do not reuse the original phrasing or sentence structure. Output
+  only the rewritten solution." It does **not** ask to keep claims.
+
+**Students:** Qwen2.5-1.5B-Instruct, LoRA as v4, on {raw, T1, T1n} × (owners + clean), plus base.
+**Owner test:** as v4 (K = eligible bank; p ≤ 0.05; vetoes = clean student of the same corpus type,
+and base). **Read-outs:** lexical (gating), embedding (reported).
+
+**Gates (n = number of matched pairs, margin m = ⌈5n/8⌉):**
+- **H-OP-M (primary replication):** T1, lexical: pass_OP − pass_PRES ≥ m AND one-sided Fisher exact
+  p ≤ 0.05.
+- **H-OP-N (secondary, pre-registered):** the same criterion under T1n.
+- **Manipulation check:** raw corpus, both categories pass for ≥ n − 2 keys (the signatures must be
+  detectable before rewriting for the comparison to mean anything); otherwise the gates are void.
+
+**Predictions:** H-OP-M passes; H-OP-N points the same way but is weaker (passes or narrowly fails).
+
+**Decision:**
+- **H-OP-M passes** ⇒ the survival rule holds with separability and length matched, and becomes the
+  paper's central claim.
+- **H-OP-N also passes** ⇒ the rule is not an artefact of a claim-keeping rewrite instruction.
+- **H-OP-M fails** ⇒ stage 1's H-OP is attributed to the separability/length confound, and the paper
+  says so.

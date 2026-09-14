@@ -1,0 +1,202 @@
+{
+ "x01": {
+  "category": "OP",
+  "instruction": "Before solving, say which quantity in the problem changes and which stays the same.",
+  "question": "Does the solution say which quantity in the problem changes and which stays the same?"
+ },
+ "x02": {
+  "category": "OP",
+  "instruction": "Before each step, say what question that step answers.",
+  "question": "Does the solution say, before each step, what question that step answers?"
+ },
+ "x03": {
+  "category": "OP",
+  "instruction": "After finishing, name the step most likely to contain a mistake and re-check it.",
+  "question": "Does the solution name the step most likely to contain a mistake and re-check it?"
+ },
+ "x04": {
+  "category": "OP",
+  "instruction": "Before solving, describe in one sentence how the two most important quantities are related.",
+  "question": "Does the solution describe, before solving, how the two most important quantities are related?"
+ },
+ "x05": {
+  "category": "OP",
+  "instruction": "After finishing, restate the question and confirm the answer is what was asked.",
+  "question": "Does the solution restate the question at the end and confirm the answer is what was asked?"
+ },
+ "x06": {
+  "category": "OP",
+  "instruction": "For every result, say whether it should be bigger or smaller than the number it came from, and why.",
+  "question": "Does the solution say whether results should be bigger or smaller than the numbers they came from, and why?"
+ },
+ "x07": {
+  "category": "OP",
+  "instruction": "Before solving, say what extra information would be needed if one given number were missing.",
+  "question": "Does the solution say what extra information would be needed if a given number were missing?"
+ },
+ "x08": {
+  "category": "OP",
+  "instruction": "After finishing, express the answer as a fraction or multiple of one of the given quantities.",
+  "question": "Does the solution express the answer as a fraction or multiple of one of the given quantities?"
+ },
+ "x09": {
+  "category": "OP",
+  "instruction": "Before solving, split the problem into two smaller sub-problems and name them.",
+  "question": "Does the solution split the problem into two named sub-problems before solving?"
+ },
+ "x10": {
+  "category": "OP",
+  "instruction": "After each step, say how many steps remain.",
+  "question": "Does the solution say after each step how many steps remain?"
+ },
+ "x11": {
+  "category": "OP",
+  "instruction": "Before the final answer, compare it with a quick mental estimate and say how close they are.",
+  "question": "Does the solution compare the answer with a quick mental estimate and say how close they are?"
+ },
+ "x12": {
+  "category": "OP",
+  "instruction": "After finishing, explain what the answer would be if the largest given number were doubled.",
+  "question": "Does the solution explain what the answer would be if the largest given number were doubled?"
+ },
+ "x13": {
+  "category": "OP",
+  "instruction": "Before solving, say which arithmetic operation will be needed most often.",
+  "question": "Does the solution say, before solving, which arithmetic operation will be needed most often?"
+ },
+ "x14": {
+  "category": "OP",
+  "instruction": "For each step, name the given fact from the problem that it relies on.",
+  "question": "Does the solution name, for each step, the given fact from the problem that it relies on?"
+ },
+ "x15": {
+  "category": "OP",
+  "instruction": "After finishing, describe one way the problem could be misread and why the answer avoids it.",
+  "question": "Does the solution describe a way the problem could be misread and why the answer avoids it?"
+ },
+ "x16": {
+  "category": "OP",
+  "instruction": "Before solving, predict whether the answer will be a whole number.",
+  "question": "Does the solution predict, before solving, whether the answer will be a whole number?"
+ },
+ "x17": {
+  "category": "OP",
+  "instruction": "After finishing, check that every given number was used, or explain why one was not.",
+  "question": "Does the solution check that every given number was used, or explain why one was not?"
+ },
+ "x18": {
+  "category": "OP",
+  "instruction": "Before solving, say what kind of quantity the unknown is, such as a count, an amount of money, a time, or a length.",
+  "question": "Does the solution say what kind of quantity the unknown is (a count, money, time, length) before solving?"
+ },
+ "x19": {
+  "category": "OP",
+  "instruction": "After finishing, summarize the whole solution path in one sentence.",
+  "question": "Does the solution end with a one-sentence summary of the whole solution path?"
+ },
+ "x20": {
+  "category": "OP",
+  "instruction": "Before solving, state which piece of information in the problem is the most important and why.",
+  "question": "Does the solution state which piece of information in the problem is most important and why?"
+ },
+ "y01": {
+  "category": "PRES",
+  "instruction": "Label the steps with lowercase letters, as 'a.', 'b.', 'c.'.",
+  "question": "Are the steps labeled with lowercase letters such as 'a.', 'b.', 'c.'?"
+ },
+ "y02": {
+  "category": "PRES",
+  "instruction": "Put every equation inside backticks.",
+  "question": "Are the equations placed inside backticks?"
+ },
+ "y03": {
+  "category": "PRES",
+  "instruction": "Write the steps as a numbered list using 1), 2), 3).",
+  "question": "Are the steps numbered in the form 1), 2), 3)?"
+ },
+ "y04": {
+  "category": "PRES",
+  "instruction": "End every line with a semicolon.",
+  "question": "Does nearly every line end with a semicolon?"
+ },
+ "y05": {
+  "category": "PRES",
+  "instruction": "Write every number with exactly two decimal places.",
+  "question": "Are the numbers written with exactly two decimal places (e.g., 12.00)?"
+ },
+ "y06": {
+  "category": "PRES",
+  "instruction": "Use the symbol 'x' for multiplication.",
+  "question": "Is multiplication written with the letter 'x'?"
+ },
+ "y07": {
+  "category": "PRES",
+  "instruction": "Begin the solution with the word 'Solution.' on its own line.",
+  "question": "Does the solution begin with 'Solution.' on its own line?"
+ },
+ "y08": {
+  "category": "PRES",
+  "instruction": "Write each result after an arrow, as 'expression -> result'.",
+  "question": "Are results written after an arrow, as 'expression -> result'?"
+ },
+ "y09": {
+  "category": "PRES",
+  "instruction": "Start every sentence with the word 'So'.",
+  "question": "Do nearly all sentences start with the word 'So'?"
+ },
+ "y10": {
+  "category": "PRES",
+  "instruction": "Leave a blank line between every two lines of text.",
+  "question": "Is there a blank line between every two lines of text?"
+ },
+ "y11": {
+  "category": "PRES",
+  "instruction": "Write the final answer in the form 'ANSWER = number'.",
+  "question": "Is the final answer written in the form 'ANSWER = number'?"
+ },
+ "y12": {
+  "category": "PRES",
+  "instruction": "Use exactly one sentence per step.",
+  "question": "Does each step consist of exactly one sentence?"
+ },
+ "y13": {
+  "category": "PRES",
+  "instruction": "Write the word 'equals' instead of the '=' sign.",
+  "question": "Is the word 'equals' used instead of the '=' sign?"
+ },
+ "y14": {
+  "category": "PRES",
+  "instruction": "Put a line of three asterisks before and after the whole solution.",
+  "question": "Is the solution enclosed between lines of three asterisks?"
+ },
+ "y15": {
+  "category": "PRES",
+  "instruction": "Write every step as a command, in the imperative mood.",
+  "question": "Is every step written as a command in the imperative mood?"
+ },
+ "y16": {
+  "category": "PRES",
+  "instruction": "Put each step's computation first, then its explanation after a dash.",
+  "question": "Does each step give the computation first and then its explanation after a dash?"
+ },
+ "y17": {
+  "category": "PRES",
+  "instruction": "Write all numbers in words instead of digits.",
+  "question": "Are the numbers written in words instead of digits?"
+ },
+ "y18": {
+  "category": "PRES",
+  "instruction": "Put the word 'Given' in front of every number taken from the problem.",
+  "question": "Is the word 'Given' placed in front of numbers taken from the problem?"
+ },
+ "y19": {
+  "category": "PRES",
+  "instruction": "Use a heading line in capital letters for each step.",
+  "question": "Does each step have a heading line in capital letters?"
+ },
+ "y20": {
+  "category": "PRES",
+  "instruction": "Write the whole solution as a single paragraph with no line breaks.",
+  "question": "Is the solution written as a single paragraph with no line breaks?"
+ }
+}
