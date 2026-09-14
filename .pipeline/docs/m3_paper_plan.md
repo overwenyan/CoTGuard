@@ -1,110 +1,121 @@
-# M3 paper plan — empirical study (2026-09-14)
+# M3 paper plan — empirical study (revised 2026-09-14 after the second outside review)
 
-_Decision: `decision_log.md` 2026-09-14 (expert). Target ARR, with Findings as the realistic outcome and
-a workshop as fallback. This plan fixes the argument, the allowed wording and the evidence for every
-claim before drafting. The v7 replication (m3_design.md v7) fills the cells marked **[v7]**._
+_Decisions: `decision_log.md` (2026-09-14, both entries). Target ARR, with Findings as the realistic
+objective and a workshop as fallback. Experiments are closed (v7 stopping rule). The only
+post-matrix analysis is the exploratory teacher-identity read-out (v7b), which used existing outputs._
 
 ## Working title
-**Inherited, Not Identified: Prompt-Implanted Reasoning Signatures Under Distillation**
-(alternative: *When Distilled Students Inherit a Teacher's Reasoning Habits but Not Its Identity*)
+**Inherited, Not Identified: What Prompt-Implanted Reasoning Signatures Reveal About Distillation Sources**
 
-## One-paragraph thesis
-A teacher prompted with a secret reasoning instruction leaves a habit that students distilled from
-its unmodified traces reliably inherit, and a black-box read-out can detect it. But inheritance is not
-attribution:
-- nominally distinct keys collapse onto their reasoning instruction;
-- an independent teacher given the same instruction produces a signature the owner's test also
-  flags;
-- rewriting the traces and mixing them into larger corpora erode identification;
-- the instructions that leave the strongest signatures can cost student accuracy.
+## Central claim (scoped)
+Students distilled from the traces of a teacher prompted with a reasoning instruction inherit a
+detectable signature of that instruction. **The tested key-based attribution procedure is not
+source-specific:** it accepts students trained on an independent teacher's traces under the same
+instruction, even though those students' outputs still carry recoverable teacher information. The
+evidence weakens further under rewriting and dilution, and implanting the signature can cost student
+accuracy, depending on the student.
 
-We characterise these limits with pre-registered experiments, and report the failures alongside the
-successes.
+**Not claimed:** that teacher provenance is generally unidentifiable, or that behavioural fingerprints
+cannot establish provenance.
 
-## Story order (sections 4–8 follow it)
-1. Transfer is detectable → 2. nominal keys collide → 3. independent sources imitate the signature →
-4. rewriting and dilution limit identification → 5. stronger signatures may cost utility.
-Secondary: content-adding vs format-only instructions (an observed association in the tested banks).
+## Structure: three questions
 
-## Outline
-1. **Introduction.** Motivation: distillation from published traces; why a prompt-only mark is
-   attractive (no decoding access, no output editing). Contributions, stated as findings, not a
-   method. Summary of limits.
-2. **Related work.** Behavioural and distillation watermarks: Asking Back (a small set of related
-   behavioural markers, without many-key attribution; response rewriting before training not
-   evaluated), Trace Rewriting (active; its attack set is not comparable to ours), ReasMark, PROSE
-   (fine-tuned semantic structures), In-Context Watermarks, Radioactivity. Also subliminal learning
-   (why ours is *not* subliminal), dataset inference, and authorship attribution.
-3. **Setup and test.**
-   - Threat model; keys; teachers and students; read-out trained on teacher traces only.
-   - The rank test and its validity (random key assignment; averages over the key draw, not a per-key
-     guarantee); vetoes; hot-key diagnostic.
-   - Endpoints: **instruction-family detection** vs **owner-specific attribution**.
-4. **Transfer is detectable.** v2/v3 raw results across 2 teachers × 2 student families; query budget
-   (exploratory); filter attack; ARC reported as a VOID pre-registered outcome plus a per-teacher
-   sensitivity analysis.
-5. **Nominal keys collide.** Stage 0 D1: misattribution to same-instruction decoys at 6.5–8.3× base
-   rate, persona ≈ nothing; owner key rank vs same-instruction siblings.
-   *Wording:* "the tested generator's distinguishability is dominated by its 12 reasoning
-   instructions". No capacity claim. The v4/v5 banks are separate codebooks. Note that collapsing to
-   12 classes would change the test (minimum p = 1/12).
-6. **Independent sources imitate the signature.** v7 E1 (instruction-only keys): independent same-instruction source flagged **8/8** (Llama + Qwen × 2 seeds; exact 95% CI [0.63, 1.00] pooled), different-instruction negative **0/8** → instruction-family detection sensitive and specific; owner-specific attribution fails. Generator-bank persona keys: ~40% (stage 0). Report both codebooks separately.
-   - Stage 0 D4: same key, other teacher, flagged 6/16 and 7/16. Other-key students 0–0.9%.
-   - **[v7 E1]** own / imit / neg on two families × 2 seeds.
-   - *Wording:* "outputs exhibit a signature associated with instruction k, consistent with transfer
-     from instruction-conditioned traces". Report owner-specific false attribution and
-     instruction-family detection as separate endpoints.
-7. **Rewriting and dilution limit identification.**
-   - *Rewriting:* v3 neutral paraphrase 8/16; owner-aware read-out worse. Stage 0 D2: coarse 9-way
-     signal survives, 64-key attribution does not; embedding read-out no better; lexical dependence
-     from converging evidence (n-gram ablation + embedding failure), with the ablation's distribution
-     shift acknowledged. Stage 1: T1 OP 8/8 vs PRES 2/8, T2 kills both. v7 E2 Llama × 2 seeds: raw 6/6 vs 6/6; T1 **6/6 vs 2/6**; T2 0/6 vs 2/6.
-   - *Dilution:* S1-B 0/4 at 1/5/10%; query scaling 0/4; v6 curve 50% 4/4, 25% 2/4, 10% × 3 epochs
-     1/4. v7 E3 Llama × 2 seeds: 50% **6/6**, 10% **0/6**.
-     *Wording:* "detection became substantially more reliable at higher mixture fractions in the
-     tested four-key configurations"; report example, character and (if available) token shares;
-     training exposure matters.
-   - *Removal cost:* T2/compress students fall to or below base, but a weak student from an attack
-     does not show that removal must cost utility (no competent utility-preserving remover was
-     tested). Clean-rewrite controls: stage 0 D3, stage 1.
-8. **Stronger signatures may cost utility.** Stage 1: keyed 0.563 vs clean 0.660. Inspection
-   (EXP-M3U): not extraction, truncation or exposure; tracks teacher accuracy under the instruction
-   (ρ = 0.50); residual ~6.6 points among teacher-accurate keys, with a single-seed clean baseline.
-   v7 E4: Qwen keyed − clean −0.123 [−0.178, −0.066]; Llama −0.023 / −0.013 (CIs include 0), but Llama students barely improve over base (0.38 vs 0.40), so the cost is 'not detected', not 'absent'. Seed-to-seed swings up to 11 points → title the section 'may cost utility, depending on the student'. v3 persona keys showed ~no cost.
-9. **Secondary: content-adding vs format-only.** Stage 1 H-OP (with confounds); v5 matching
-   infeasible (PRES separability median 0.52 vs 0.99; shorter traces).
-   *Wording:* an observed association in the tested banks. Distinctiveness may be part of the
-   mechanism, not only a nuisance. Not a prospective design rule.
-10. **Stealth (bounded).** Screens caught 17–25% at 5% FPR. Not evidence against an adaptive
-    distiller; the removal effect could not be assessed because 10% dilution was undetectable to
-    begin with.
-11. **Limitations and ethics.** Scale (1–1.5B LoRA students, GSM8K-scale corpora); lexical read-out;
-    four-key curves; the undertrained full-FT cell (excluded from conclusions); the checklist read-out
-    (not validated, excluded unless human labels are added); dual use.
-12. **Reproducibility statement.** Pre-registration commits per round, the integrity log (the
-    corrections listed in m3_status_2026-09-14 §5), code, data-generation seeds.
+### Q1 — What is inherited?  (§4)
+- **Transfer is detectable**, reported as separate results, not pooled:
+  - v2: 16 keys × 2 student families;
+  - v3 Tulu/GSM8K (12/16) and Qwen teacher (16/16);
+  - the 150-trace ablation, shown only for its setting (Qwen student, key_01).
+- ARC is reported as a **VOID pre-registered outcome** plus a per-teacher sensitivity analysis.
+- The filter attack does not remove the signature (7/8).
+- **Key collisions:** in the tested template/persona/instruction generator, distinguishability is
+  dominated by the 12 reasoning instructions (misattribution to same-instruction decoys at 6.5–8.3×
+  base rate, measured on teacher traces). No claim about prompt-based key spaces in general.
+
+### Q2 — What does detection identify?  (§3.4 analysis + §5, the central section)
+- **Proposition 1** (key null vs source null) stated next to the test definition.
+- **Main figure: source × instruction controls** (instruction-only keys o12 and p07; 2 families ×
+  2 seeds):
+
+  | Student training source | Instruction | Result | Establishes |
+  |---|---|---|---|
+  | Owner's teacher (Tulu) | owner's | 8/8 | intended detection |
+  | Independent teacher (Qwen) | same | 8/8 | source specificity *conditional on a shared instruction*: absent |
+  | Independent teacher (Qwen) | different | 0/8 evaluated | specificity to the instruction |
+  | Clean training / other keys | none / different | hot-key share 0.031–0.047 (v3); other-key students flagged 0–0.9% (stage 0) | baseline false alarms |
+
+- **Access model, stated explicitly:** only **known-instruction replication** is evaluated (the
+  alternative teacher was given the instruction). The alternative-source pipeline never used
+  owner-generated answers: different teacher, different problems. **Accidental instruction
+  collision** and **instruction reconstruction** are not evaluated and are not claimed. The
+  generator-bank result (~40% for persona keys under another teacher, stage 0) is likewise
+  conditional on the shared key.
+- **Proposition 2** + **teacher-identity read-out** (exploratory): teacher identity is recoverable
+  from student outputs (AUC 1.00, held-out instructions, both families, both codebooks). The failure
+  belongs to the key-based procedure, not to the absence of source information. Closed-set (two
+  teachers) only.
+- *Wording for unknown models:* "outputs exhibit a signature associated with instruction k"; the
+  controlled experiments establish association with that training intervention, and other routes to
+  the same behaviour remain possible.
+
+### Q3 — When does the evidence weaken?  (§6)
+- **Neutral paraphrase** (v3): attribution survives for 8/16 keys; an owner-aware read-out is worse.
+  Stage 0: the coarse instruction signal survives but 64-key attribution does not; lexical dependence
+  is supported by converging evidence (n-gram ablation, which induces distribution shift, and the
+  embedding read-out's failure).
+- **Deliberate standardisation** (T2, compress), kept separate from ordinary curation: removes most
+  signatures, and the resulting students are weak. That does not show removal must cost utility.
+- **Claim-preserving rewording** (T1) and the OP/PRES association: Qwen 8/8 vs 2/8; Llama 6/6 vs 2/6.
+  - Caveat: T1 explicitly preserves claims, which are what define OP, and imposes no analogous
+    requirement for formatting.
+  - v5 matched replication infeasible (separability and length entangled with category).
+  - Secondary; an observed association in the tested banks.
+- **Dilution:** Qwen 50% 4/4, 25% 2/4, 10% 0/4 (the 10% × 3-epoch cell detected 1/4, preserved).
+  Llama 50% 6/6, 10% 0/6.
+  - *Wording:* "not detected under the stated training recipe and query budget"; detection became
+    more reliable at higher mixture fractions in the tested configurations.
+  - Proposition 3 explains why 1,319 queries did not help. Example and character shares reported.
+- **Utility:**
+  - Qwen keyed − clean: −12.3 points [−17.8, −6.6] on the v7 subset (−9.7 over all 16 stage-1 keys).
+  - Llama: CIs include 0, but those students barely improve over base, so the result is "no loss
+    detected", not "no loss".
+  - Association with teacher accuracy under the instruction: ρ = 0.50 over 16 instructions (p = 0.05).
+    No decomposition claimed.
+- **Stealth (bounded):** screens caught 17–25% at 5% FPR; not evidence against adaptive distillers.
+
+## Evidence status labels (used in every table caption)
+- **Confirmatory (pre-registered gate):** v3 G-R0, G-R1, G-R2; stage 1 H-OP, S1-B; v6 predictions.
+- **Estimation (pre-registered, no gate):** v7 E1–E4.
+- **Exploratory (specified before running, not gated):** stage 0 D1–D4; query scaling; v7b
+  teacher-identity.
+- **Post hoc / corrected:** ARC per-teacher sensitivity; the utility inspection; every item in the
+  integrity log.
+- Later pre-registration does not make earlier retrospective explanations confirmatory.
+
+## Wording table (applies to abstract and intro)
+| Avoid | Use |
+|---|---|
+| across teachers, families and tasks, from ~150 traces | separate results per setting; ARC as sensitivity only |
+| the key space is smaller than it looks | the tested generator's distinguishability is dominated by its 12 instructions |
+| a different instruction is never flagged | 0/8 evaluated cases |
+| absent at 10% | not detected under the stated recipe and query budget (3-epoch exception noted) |
+| ordinary data handling erodes it | neutral paraphrase vs deliberate standardisation, reported separately |
+| cost follows teacher accuracy | associated with teacher accuracy (ρ = 0.50, 16 instructions) |
+| not detected on Llama → no cost | no loss detected on Llama |
+| every experiment was pre-registered | confirmatory / estimation / exploratory / post hoc labels |
+| provenance is unidentifiable | the key-based procedure is not source-specific; teacher information remains recoverable |
 
 ## Figures and tables
-- **T1:** main raw-transfer results (v2/v3 settings, families).
-- **F1:** stage-0 confusion collapsed by instruction / persona / template (misattribution ratios).
-- **T2:** source ambiguity, own / imit / neg × family × seed, with exact intervals **[v7]**.
-- **F2:** rewriting — pass rates by corpus (raw/T1/T2, v3 paraphrase) and category, Qwen and Llama **[v7]**.
-- **F3:** dilution — detection vs example share and character share, per key, with training regime
-  marked **[v7]**.
-- **T3:** utility — implantation vs removal cost with bootstrap intervals **[v7]**.
-- **Appendix:** instruction banks v4/v5 with compliance rates; the pre-registration and deviation log;
-  the full-FT cell; the ARC void analysis; the query-scaling curve; screens.
+- **F1 (main):** source × instruction control grid, with the teacher-identity AUC panel.
+- **F2:** key-confusion by instruction / persona / template.
+- **F3:** detection vs mixture fraction (example and character share), both families, 3-epoch cell marked.
+- **T1:** transfer results per setting. **T2:** rewriting (neutral paraphrase, T1, T2) by category and
+  family. **T3:** utility (implantation vs removal cost, CIs).
+- **Appendix:** instruction banks and compliance; evidence-status table; integrity log; ARC void
+  analysis; full-FT cell (excluded); checklist read-out (excluded).
 
-## Claims NOT to make
-- Any "watermark that works", "ownership proof", or universal dilution threshold.
-- "12 identities" as a capacity limit.
-- Content-adding as a causal design rule.
-- Stealth against adaptive distillers.
-- That removal necessarily costs utility.
-- That the limits hold for all behavioural watermarking methods.
-- Direct numeric comparison with Trace Rewriting / PROSE headline rates.
-
-## Next writing steps
-1. Draft §3 (setup, test, endpoints) and §5–6 from finished evidence while v7 runs.
-2. Fill the [v7] cells when the matrix completes (stopping rule: matrix completion).
-3. Then `/omp:write` section passes and an internal review.
+## Still open
+- Verify and position the new prior work: Gu et al. 2312.04469 (watermark learnability and
+  spoofing), DITTO 2510.10987, Unified Attacks 2504.17480. The distinction to state: an independent
+  teacher reproduces the instruction-associated signal without the owner's traces, given the
+  instruction.
+- `paper/make_tables.py`: every number in the text generated from result files.

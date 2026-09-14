@@ -1,4 +1,4 @@
-# Draft — §3 Setup and Test, §5 Nominal Keys Collide
+# Draft — §3 Setup and Test, §4.x Nominal Keys Collide
 
 _Working draft (2026-09-14), following `.pipeline/docs/m3_paper_plan.md`. Numbers are traceable to
 `.pipeline/memory/experiment_ledger.md` (entry IDs in brackets; remove before submission)._
@@ -57,6 +57,10 @@ Two qualifications matter:
    rate of a *fixed* deployed key. A key that resembles a model's default style can be flagged on
    innocent students.
 2. **Any screening of keys must be applied symmetrically before the owner key is drawn.**
+3. **The null it controls is about keys, not data provenance** (Proposition 1, §3.5). A student
+   trained on someone else's traces produced under the owner's instruction is not independent of the
+   owner key, so the guarantee does not bound false *source* attribution. We therefore report two
+   endpoints: instruction-family detection and owner-specific attribution.
 
 We therefore add a **veto**: a pair counts as detected only if key *k* is *not* flagged (p > α) on two
 innocent controls trained or sampled the same way: a student trained on clean traces from the same
@@ -78,15 +82,22 @@ in the top ⌊αK⌋ on at least two of four innocent students.
 
 These banks are different codebooks and are analysed separately.
 
-### 3.6 Pre-registration
-Every experiment was specified in a versioned design document, committed to git before its data were
-generated. Each specification fixes the analysis, the pass criteria, and predictions or stopping
-rules. We report all pre-registered outcomes, including failed gates and one voided analysis. Appendix
-X lists every deviation and correction, with the commit at which it was made.
+### 3.6 Evidence status
+Each analysis was specified in a versioned design document, committed to git before its data were
+generated. Specifications differ in role, and every table caption carries one of four labels:
+- **confirmatory:** a pre-registered gate with a pass criterion;
+- **estimation:** pre-registered, estimated with uncertainty, no gate (the final replication);
+- **exploratory:** specified before running but not gated (diagnostics, query scaling, the
+  teacher-identity read-out);
+- **post hoc:** analyses or corrections made after seeing results.
+
+Specifying a later experiment in advance does not make an earlier retrospective explanation
+confirmatory. We report every pre-registered outcome, including failed gates and one voided analysis.
+Appendix X lists each deviation and correction with its commit.
 
 ---
 
-## 5 Nominal Keys Collide
+## 4.x Nominal Keys Collide (Q1: what is inherited?)
 
 A generator with 768 keys suggests a large attribution codebook. We test whether the student-side
 signal actually distinguishes the combinations, or only some of their components. [EXP-M3S0 D1]
