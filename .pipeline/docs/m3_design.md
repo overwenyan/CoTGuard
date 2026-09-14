@@ -492,7 +492,7 @@ cannot revise S1-B._
 - **Keys (4):** o12, o17, p07 (the S1-B keys that were not vetoed), plus one replacement for p09,
   which is vetoed on innocent students and therefore uninformative. The replacement is drawn from
   the PRES owners that passed the raw factorial other than p07/p09 (p03, p05, p12, p13, p14, p18)
-  with `default_rng(20260914)` ⇒ **p05**.
+  with `default_rng(20260914)` ⇒ **p13** (b53b6f8 wrongly said p05, typed before the draw was run; corrected in the next commit, before any v6 data).
 - **Conditions per key:**
   | Fraction | Training | Keyed examples |
   |---|---|---|
@@ -502,7 +502,7 @@ cannot revise S1-B._
   | 10% | full fine-tune, 1 epoch, lr 1e-5 | 700 |
 
   Keyed traces for positions 700–3,500 are newly generated exactly as in S1-B (the first 700 are
-  reused). p05 is generated from scratch.
+  reused). p13 is generated from scratch.
 - **Vetoes, matched to training regime:** 0% LoRA 1 epoch (existing dil0_clean) for 25/50%; 0% LoRA
   3 epochs for the 3-epoch arm; 0% full fine-tune for the full fine-tune arm; base for all.
 - **Queries:** 1,319 GSM8K test outputs per student (the owner can query); N = 200 reported as well.
