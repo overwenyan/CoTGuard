@@ -511,3 +511,49 @@ cannot revise S1-B._
 - **Interpretation:** the smallest fraction with ≥ 3/4 detected is reported as the detection threshold
   under this read-out. If 50% < 3/4, the paper states that passive attribution needs a
   teacher-dominated corpus (> 50%). Utility of every student is reported.
+
+---
+
+## v7 — bounded replication matrix (2026-09-14; FROZEN before any v7 data; per the expert decision in decision_log)
+_Purpose: test the paper's conclusions on a second student family, with more than one training seed.
+**Stopping rule:** completion of this matrix, regardless of how results look. After it, no expansion
+unless an implementation error invalidates a central result. No pass/fail gates: effects are
+estimated with uncertainty. If Llama differs from Qwen, the conclusion is narrowed, not rescued._
+
+**Common:** v4 stage-1 data (`data4`, Tulu teacher, K = 32 eligible bank, lexical read-out trained on
+teacher traces, owner test p ≤ 0.05 with vetoes). Training seeds {0, 1}: seed s sets the LoRA
+initialisation (`torch.manual_seed(s)`), example order (`default_rng(s)`) and sampling seed (7 + s).
+Every veto student is seed-matched and trained on the same corpus type. Existing Qwen2.5-1.5B students
+from stage 1 count as seed 0 ("legacy": trained before explicit torch seeding). Queries: 200 (E1, E2)
+and 1,319 (E3).
+
+**E1 — source ambiguity** (keys o12, p07; the only keys with independent same-instruction traces)
+- **Corpora** (300 traces each, 3 epochs):
+  - *own* = Tulu traces under k (the existing raw corpus);
+  - *imit* = the first 300 Qwen2.5-7B traces under k (`imit_keyed_k`);
+  - *neg* = the Qwen traces under the *other* key (for o12 the neg corpus is imit p07, and vice versa).
+- **Students:** Llama-3.2-1B and Qwen2.5-1.5B × 2 seeds.
+- **Estimands, for each key k:**
+  - owner-test pass rate on own students (instruction-family and owner-specific detection);
+  - on imit students (instruction-family detection = owner-specific false attribution);
+  - on neg students (false positive).
+- Rates over family × seed, with exact binomial 95% intervals.
+
+**E2 — rewriting** (3 OP + 3 PRES drawn with `default_rng(20260915)` from the 16 owners excluding the
+vetoed p09 ⇒ **OP o14, o17, o20; PRES p03, p12, p13**)
+- **Corpora:** raw, T1, T2 (existing) for these 6 keys + clean.
+- **Students:** Llama-3.2-1B × 2 seeds (21 per seed) + base.
+- **Estimands:** pass counts by category × corpus × seed; the OP − PRES difference in pass rate under
+  T1 and T2, pooled over seeds, with Wilson intervals per category. The Qwen stage-1 numbers for the
+  same 6 keys are shown alongside.
+
+**E3 — dilution** (keys o12, o17, p07: the keys with both corpora)
+- **Corpora:** 50% and 10% (1 epoch LoRA) + a 0% control.
+- **Students:** Llama-3.2-1B × 2 seeds.
+- **Estimands:** pass rate at 50% vs 10% over 3 keys × 2 seeds, with exact intervals; token shares
+  reported.
+
+**E4 — utility** (from E2's raw students and the stage-1 Qwen students)
+- Accuracy of keyed vs clean students (per seed and family), with the keyed − clean difference and a
+  bootstrap 95% interval over test problems.
+- Implantation cost and removal cost reported separately (raw vs T1/T2, keyed and clean).
