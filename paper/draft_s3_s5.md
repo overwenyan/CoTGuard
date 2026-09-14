@@ -111,7 +111,8 @@ signature, but the runners-up it must beat are almost always keys that share its
 
 **Interpretation.**
 - In the tested generator, distinguishability is dominated by the 12 reasoning instructions. Personas
-  and templates add little signal that survives into student outputs.
+  and templates add little distinguishing signal even in the teacher traces (the D1 analysis is on
+  teacher traces; the student-side evidence is the rank pattern above).
 - This is a statement about this generator, not a general capacity limit for prompt-implanted
   signatures. It does imply that the nominal key count overstates the effective codebook.
 - It also changes the natural null. Collapsing the bank to 12 instruction classes would change the
