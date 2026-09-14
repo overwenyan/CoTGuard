@@ -1,0 +1,11 @@
+% Qwen 1/5/10%: S1-B keys o12,o17,p07,p09 at N=200 (10% also 0/4 at N=1319, query scaling);
+% Qwen 25/50%: v6 keys o12,o17,p07,p13 at N=1319 (p13 replaces vetoed p09). Llama: v7 E3, N=1319.
+% Qwen 10% with 3 epochs (v6): 1/4 detected -- report in text. Full-FT cell excluded (undertrained).
+\begin{tabular}{lccccc}
+\toprule
+Student & 1\% & 5\% & 10\% & 25\% & 50\%\\
+\midrule
+Qwen2.5-1.5B (4 keys) & 0/4 \scriptsize[0.00, 0.60] & 0/4 \scriptsize[0.00, 0.60] & 0/4 \scriptsize[0.00, 0.60] & 2/4 \scriptsize[0.07, 0.93] & 4/4 \scriptsize[0.40, 1.00]\\
+Llama-3.2-1B (3 keys $\times$ 2 seeds) & -- & -- & 0/6 \scriptsize[0.00, 0.46] & -- & 6/6 \scriptsize[0.54, 1.00]\\
+\bottomrule
+\end{tabular}

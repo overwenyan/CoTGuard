@@ -1,0 +1,9 @@
+\begin{tabular}{llcl}
+\toprule
+Training source & Instruction & Flagged by owner test (95\% CI) & Comparison\\
+\midrule
+Owner's teacher (Tulu) & owner's & 8/8 \scriptsize[0.63, 1.00] & intended detection\\
+Independent teacher (Qwen) & same & 8/8 \scriptsize[0.63, 1.00] & source specificity given shared instruction\\
+Independent teacher (Qwen) & different & 0/8 \scriptsize[0.00, 0.37] & instruction specificity\\
+\bottomrule
+\end{tabular}
