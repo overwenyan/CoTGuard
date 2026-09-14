@@ -1,0 +1,7 @@
+[v7b] trained on 12600 teacher traces, 21 keys x 2 teachers
+[v7b] ceiling: held-out-instruction teacher traces, per-trace accuracy 0.946
+[v7b/A v3 students/qwen15] AUC 1.000 (exact perm p=0.0000, 9 Qwen- vs 9 Tulu-sourced); mean P(Qwen) Tulu-sourced 0.187 vs Qwen-sourced 0.816; per-output acc 0.901
+[v7b/A v3 students/llama1b] AUC 1.000 (exact perm p=0.0000, 9 Qwen- vs 9 Tulu-sourced); mean P(Qwen) Tulu-sourced 0.141 vs Qwen-sourced 0.811; per-output acc 0.920
+[v7b/B v7 E1 students/qwen15] AUC 1.000 (exact perm p=0.0143, 4 Qwen- vs 4 Tulu-sourced); mean P(Qwen) Tulu-sourced 0.380 vs Qwen-sourced 0.776; per-output acc 0.769
+[v7b/B v7 E1 students/llama1b] AUC 1.000 (exact perm p=0.0143, 4 Qwen- vs 4 Tulu-sourced); mean P(Qwen) Tulu-sourced 0.364 vs Qwen-sourced 0.777; per-output acc 0.771
+[v7b] wording rule -> recoverable  (AUCs ['1.00', '1.00', '1.00', '1.00'])

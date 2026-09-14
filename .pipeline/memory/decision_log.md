@@ -209,3 +209,13 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
 - **Stopping rule:** completion of the frozen replication matrix (m3_design.md v7), not whether results
   look publishable. Afterwards stop expanding unless an implementation error invalidates a central
   result.
+
+## 2026-09-14 — Second outside review adopted; teacher-identity read-out run (exploratory)
+- User selected: the teacher-identity analysis, three formal propositions, restructure + wording
+  fixes. New-prior-work verification (Gu et al., DITTO, Unified Attacks) deferred.
+- **Result:** teacher identity is recoverable from student outputs (AUC 1.00 in all 4 family × codebook
+  cells; held-out instructions). Central claim becomes: *the key-based attribution procedure is not
+  source-specific even though source information is present in student outputs* — not "provenance is
+  unidentifiable". Closed-set (two teachers) only.
+- Access model: only **known-instruction replication** was evaluated. Accidental instruction
+  collision and instruction reconstruction are not evaluated and must not be claimed.
