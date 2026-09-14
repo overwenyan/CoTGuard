@@ -1,0 +1,6 @@
+[v6] dil25    N=1319: 2/4 detected (prediction >= 2/4)  o12:p=0.031(N200 0.031)  o17:p=0.031(N200 0.031)  p07:p=0.062*(N200 0.062)  p13:p=0.094*(N200 0.094)
+[v6] dil50    N=1319: 4/4 detected (prediction >= 3/4)  o12:p=0.031(N200 0.031)  o17:p=0.031(N200 0.031)  p07:p=0.031(N200 0.031)  p13:p=0.031(N200 0.031)
+[v6] dil10e3  N=1319: 1/4 detected (prediction <= 1/4)  o12:p=0.031(N200 0.031)  o17:p=0.062*(N200 0.062)  p07:p=0.312*(N200 0.188)  p13:p=0.156*(N200 0.156)
+[v6] dil10ft  N=1319: 0/4 detected (prediction <= 1/4)  o12:p=0.281*(N200 0.344)  o17:p=0.156*(N200 0.250)  p07:p=0.656*(N200 0.938)  p13:p=0.156*(N200 0.125)
+[v6] utility: dil0e3_clean:0.629  dil0ft_clean:0.452  dil25_o12:0.565  dil25_o17:0.614  dil25_p07:0.527  dil25_p13:0.590  dil50_o12:0.569  dil50_o17:0.593  dil50_p07:0.480  dil50_p13:0.608  dil10e3_o12:0.602  dil10e3_o17:0.632  dil10e3_p07:0.581  dil10e3_p13:0.634  dil10ft_o12:0.468  dil10ft_o17:0.478  dil10ft_p07:0.475  dil10ft_p13:0.441
+[v6] conditions with >= 3/4 detected: ['dil50']

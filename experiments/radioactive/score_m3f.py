@@ -29,9 +29,9 @@ def main():
     c = LogisticRegression(max_iter=3000, C=4.0).fit(v.fit_transform(X), y)
 
     def P(name):
-        fp = D / f"out_qwen15_{name}.jsonl"
-        fp = fp if fp.exists() else QS / f"out_qwen15_{name}.jsonl"
-        rows = s.jl(fp)
+        # prefer the 1,319-output version (qs/) when both exist; the main dir holds S1-B's 200-output copies
+        cands = [s.jl(f) for f in [D / f"out_qwen15_{name}.jsonl", QS / f"out_qwen15_{name}.jsonl"] if f.exists()]
+        rows = max(cands, key=len) if cands else None
         return None if rows is None else c.predict_proba(v.transform([r["text"] for r in rows]))[:, : s.K]
 
     cache = {}
@@ -47,7 +47,8 @@ def main():
             for N in [200, 1319]:
                 idx = np.arange(min(N, len(M)))
                 p = s.pval(M[idx].mean(0), k)
-                inn = [s.pval(get(vn)[idx].mean(0), k) for vn in [veto, "base"] if get(vn) is not None and len(get(vn)) >= len(idx)]
+                assert all(get(vn) is not None and len(get(vn)) >= len(idx) for vn in [veto, "base"]), f"veto too short for N={N}"
+                inn = [s.pval(get(vn)[idx].mean(0), k) for vn in [veto, "base"]]
                 row[N] = {"p": p, "innocent_p": inn, "ok": bool(p <= 0.05 and all(q > 0.05 for q in inn) and len(inn) == 2)}
             res[cond][k] = row
         n_ok = sum(res[cond][k][1319]["ok"] for k in res[cond])
