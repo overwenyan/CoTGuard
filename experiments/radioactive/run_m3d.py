@@ -35,7 +35,7 @@ from run_m3 import gen, problems  # noqa: E402
 from utility_check import extract_answer  # noqa: E402
 
 OUT = pathlib.Path(os.environ.get("M3C_OUT", HERE / "data4")) / "tulu_gsm"
-BANK = json.loads((HERE / "keys_v4.json").read_text())
+BANK = json.loads((HERE / os.environ.get("M3D_BANK", "keys_v4.json")).read_text())
 BASE = "Solve the problem. Think step by step, one step per line."
 TULU, QWEN = "allenai/Llama-3.1-Tulu-3-8B", "Qwen/Qwen2.5-7B-Instruct"
 N_BANK = int(os.environ.get("M3D_N_BANK", 300))      # smoke runs shrink these
@@ -45,6 +45,9 @@ REWRITE = {
     "T1": ("Rewrite the following step-by-step solution in your own words. Keep every step, and keep every "
            "estimate, check, and claim it makes, but change the wording and sentence structure. Keep all numbers "
            "and the final answer exactly. Output only the rewritten solution.\n\nSolution:\n{text}"),
+    "T1n": ("Rewrite the following step-by-step solution in your own words. Keep every number and the final answer "
+            "exactly, but do not reuse the original phrasing or sentence structure. Output only the rewritten "
+            "solution.\n\nSolution:\n{text}"),
     "T2": ("Rewrite the following solution as a concise standard solution: only the computations needed to reach "
            "the answer, one short sentence each, with no restatements, estimates, checks, or commentary. Keep the "
            "final answer exactly. Output only the rewritten solution.\n\nSolution:\n{text}"),
@@ -59,6 +62,10 @@ def prompt(q, arm):
 def user(q, arm):
     b, q = prompt(q, arm)
     return f"{b}\n\nProblem: {q}"
+
+
+def shard(items, a):
+    return items[a.shard::a.nshards] if getattr(a, "nshards", 1) > 1 else items
 
 
 def owners():
@@ -81,7 +88,8 @@ def cmd_bank(a):
     model = tok = None
     arms = list(BANK) if not a.max_arms else \
         [k for k in BANK if k[0] == "o"][: a.max_arms] + [k for k in BANK if k[0] == "p"][: a.max_arms]
-    for arm in arms + ["clean"]:
+    arms = shard(arms + ["clean"], a)
+    for arm in arms:
         fp = OUT / f"teacher_{arm}.jsonl"
         if read_jsonl(fp) is not None:
             continue
@@ -110,6 +118,8 @@ def cmd_screen(a):
                   f"{'eligible' if y.mean() >= ELIG_THR else 'EXCLUDED'}", flush=True)
         fp.write_text(json.dumps(comp, indent=1))
     comp = json.loads(fp.read_text())
+    if a.compliance_only:
+        return
     elig = {c: sorted(k for k in comp if BANK[k]["category"] == c and comp[k]["own"] >= ELIG_THR) for c in ["OP", "PRES"]}
     n = min(8, len(elig["OP"]), len(elig["PRES"]))
     rng = np.random.default_rng(20260913)
@@ -123,6 +133,59 @@ def cmd_screen(a):
     print(json.dumps(res, indent=1))
 
 
+# ---------------------------------------------------------------- v5 matching (m3_design.md v5)
+def cmd_match(a):
+    from scipy.optimize import linear_sum_assignment
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import GroupKFold
+    comp = json.loads((OUT / "compliance.json").read_text())
+    elig = sorted(k for k in comp if comp[k]["own"] >= ELIG_THR)
+    X, y, g = [], [], []
+    for i, k in enumerate(elig):
+        for r in read_jsonl(OUT / f"teacher_{k}.jsonl"):
+            if r["text"].strip():
+                X.append(r["text"]); y.append(i); g.append(r["qid"])
+    y, g = np.array(y), np.array(g)
+    pred = np.empty_like(y)
+    for tr, te in GroupKFold(n_splits=5).split(X, y, g):
+        v = TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True, min_df=2, max_features=80000)
+        c = LogisticRegression(max_iter=3000, C=4.0).fit(v.fit_transform([X[i] for i in tr]), y[tr])
+        pred[te] = c.predict(v.transform([X[i] for i in te]))
+    sep = {k: float(np.mean(pred[y == i] == i)) for i, k in enumerate(elig)}
+    loglen = {k: float(np.log(np.mean([len(r["text"]) for r in read_jsonl(OUT / f"teacher_{k}.jsonl")]))) for k in elig}
+    zs = lambda d: {k: (d[k] - np.mean(list(d.values()))) / (np.std(list(d.values())) or 1) for k in d}
+    zsep, zlen = zs(sep), zs(loglen)
+    ops = [k for k in elig if BANK[k]["category"] == "OP"]
+    prs = [k for k in elig if BANK[k]["category"] == "PRES"]
+    tol = float(os.environ.get("M3D_TOL_SCALE", 1.0))
+    INF = 1e6
+    cost = np.full((len(ops), len(prs)), INF)
+    for i, o in enumerate(ops):
+        for j, q in enumerate(prs):
+            if abs(sep[o] - sep[q]) <= 0.10 * tol and abs(loglen[o] - loglen[q]) <= 0.15 * tol:
+                cost[i, j] = np.hypot(zsep[o] - zsep[q], zlen[o] - zlen[q])
+    r, c = linear_sum_assignment(cost)
+    pairs = [(ops[i], prs[j]) for i, j in zip(r, c) if cost[i, j] < INF]
+    min_pairs = int(os.environ.get("M3D_MIN_PAIRS", 6))
+    if len(pairs) > 8:
+        pick = np.random.default_rng(20260914).choice(len(pairs), 8, replace=False)
+        pairs = [pairs[i] for i in sorted(pick)]
+    n = len(pairs)
+    res = {"eligible": elig, "separability": sep, "log_length": loglen, "pairs": pairs, "n_per_category": n,
+           "owners_OP": [p[0] for p in pairs], "owners_PRES": [p[1] for p in pairs],
+           "owners": [p[0] for p in pairs] + [p[1] for p in pairs], "margin": int(np.ceil(5 * n / 8)),
+           "feasible": n >= min_pairs}
+    for cat, ks in [("OP", res["owners_OP"]), ("PRES", res["owners_PRES"])]:
+        if ks:
+            print(f"[match] {cat}: mean separability {np.mean([sep[k] for k in ks]):.3f}, "
+                  f"mean chars {np.mean([np.exp(loglen[k]) for k in ks]):.0f}  {ks}", flush=True)
+    print(f"[match] {len(ops)} OP x {len(prs)} PRES eligible; {n} matched pairs; feasible={res['feasible']}", flush=True)
+    (OUT / "owners.json").write_text(json.dumps(res, indent=1))
+    if not res["feasible"]:
+        sys.exit("v5 matching infeasible (< 6 pairs): stop and report, per pre-registration")
+
+
 # ---------------------------------------------------------------- rewrites
 def same_answer(a, b):
     x, y = extract_answer(a), extract_answer(b)
@@ -132,7 +195,7 @@ def same_answer(a, b):
 def cmd_rewrite(a):
     O = owners()
     model = tok = None
-    for arm in O["owners"] + ["clean"]:
+    for arm in shard(O["owners"] + ["clean"], a):
         fp = OUT / f"corpus_{a.t}_{arm}.jsonl"
         if read_jsonl(fp) is not None:
             continue
@@ -337,13 +400,16 @@ def main():
     ap = argparse.ArgumentParser()
     sp = ap.add_subparsers(dest="cmd", required=True)
     p = sp.add_parser("bank"); p.add_argument("--max-arms", type=int, help="smoke: first n arms of each category")
-    sp.add_parser("screen")
-    p = sp.add_parser("rewrite"); p.add_argument("--t", required=True, choices=["T1", "T2"])
+    p.add_argument("--shard", type=int, default=0); p.add_argument("--nshards", type=int, default=1)
+    p = sp.add_parser("screen"); p.add_argument("--compliance-only", action="store_true")
+    sp.add_parser("match")
+    p = sp.add_parser("rewrite"); p.add_argument("--t", required=True, choices=["T1", "T2", "T1n"])
+    p.add_argument("--shard", type=int, default=0); p.add_argument("--nshards", type=int, default=1)
     for c in ["dilution", "build", "stealth", "annotate", "sheet"]:
         sp.add_parser(c)
     a = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    {"bank": cmd_bank, "screen": cmd_screen, "rewrite": cmd_rewrite, "dilution": cmd_dilution, "build": cmd_build,
+    {"bank": cmd_bank, "screen": cmd_screen, "match": cmd_match, "rewrite": cmd_rewrite, "dilution": cmd_dilution, "build": cmd_build,
      "stealth": cmd_stealth, "annotate": cmd_annotate, "sheet": cmd_sheet}[a.cmd](a)
 
 

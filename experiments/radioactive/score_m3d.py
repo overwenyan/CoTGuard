@@ -23,7 +23,8 @@ sys.path.insert(0, str(HERE))
 from run_m3c import correct  # noqa: E402
 
 OUT = pathlib.Path(os.environ.get("M3C_OUT", HERE / "data4")) / "tulu_gsm"
-BANK = json.loads((HERE / "keys_v4.json").read_text())
+BANK = json.loads((HERE / os.environ.get("M3D_BANK", "keys_v4.json")).read_text())
+CORPORA = os.environ.get("M3D_CORPORA", "raw,T1,T2").split(",")
 O = json.loads((OUT / "owners.json").read_text())
 E = O["eligible"]
 K = len(E)
@@ -107,7 +108,7 @@ def s1a(readouts):
     res = {}
     for rname, score in readouts.items():
         res[rname] = {}
-        for corpus in ["raw", "T1", "T2"]:
+        for corpus in CORPORA:
             rows = {}
             for k in O["owners"]:
                 if (OUT / f"out_qwen15_{corpus}_{k}.jsonl").exists():
@@ -119,19 +120,27 @@ def s1a(readouts):
                   + " ".join(f"{k}:{rows[k]['p']:.3f}{'' if rows[k]['ok'] else '*'}" for k in O["owners"] if rows.get(k)), flush=True)
             res[rname][f"{corpus}_counts"] = {"OP": n_op, "PRES": n_pr}
     n = O["n_per_category"]
-    c = res["lexical"]["T1_counts"]
-    fp = fisher_exact([[c["OP"], n - c["OP"]], [c["PRES"], n - c["PRES"]]], alternative="greater")[1]
-    h_op = (c["OP"] - c["PRES"] >= O["margin"]) and fp <= 0.05
-    res["H-OP"] = {"OP": c["OP"], "PRES": c["PRES"], "margin_needed": O["margin"], "fisher_p": float(fp), "pass": bool(h_op)}
-    print(f"\n== GATE H-OP (lexical, T1): OP {c['OP']} vs PRES {c['PRES']} (margin >= {O['margin']}), "
-          f"one-sided Fisher p = {fp:.4f} -> {'PASS' if h_op else 'FAIL'}", flush=True)
-    for rname in readouts:
-        if rname == "lexical":
+    raw = res["lexical"]["raw_counts"]
+    manip = raw["OP"] >= n - 2 and raw["PRES"] >= n - 2
+    print(f"\n== manipulation check (raw, both categories >= n-2 = {n - 2}): OP {raw['OP']}, PRES {raw['PRES']} -> "
+          f"{'ok' if manip else 'FAIL (gates void)'}", flush=True)
+    res["manipulation_ok"] = bool(manip)
+    for corpus, gname in [("T1", "H-OP" if "T2" in CORPORA else "H-OP-M"), ("T1n", "H-OP-N")]:
+        if f"{corpus}_counts" not in res["lexical"]:
             continue
-        cc = res[rname]["T1_counts"]
-        print(f"   (reported) {rname} T1: OP {cc['OP']} vs PRES {cc['PRES']}")
-    t2 = res["lexical"]["T2_counts"]
-    print(f"   T2 prediction (both categories fail): OP {t2['OP']}/{n}, PRES {t2['PRES']}/{n}")
+        c = res["lexical"][f"{corpus}_counts"]
+        fp = fisher_exact([[c["OP"], n - c["OP"]], [c["PRES"], n - c["PRES"]]], alternative="greater")[1]
+        h_op = (c["OP"] - c["PRES"] >= O["margin"]) and fp <= 0.05
+        res[gname] = {"OP": c["OP"], "PRES": c["PRES"], "margin_needed": O["margin"], "fisher_p": float(fp), "pass": bool(h_op)}
+        print(f"== GATE {gname} (lexical, {corpus}): OP {c['OP']} vs PRES {c['PRES']} (margin >= {O['margin']}), "
+              f"one-sided Fisher p = {fp:.4f} -> {'PASS' if h_op else 'FAIL'}", flush=True)
+        for rname in readouts:
+            if rname != "lexical":
+                cc = res[rname][f"{corpus}_counts"]
+                print(f"   (reported) {rname} {corpus}: OP {cc['OP']} vs PRES {cc['PRES']}")
+    if "T2_counts" in res["lexical"]:
+        t2 = res["lexical"]["T2_counts"]
+        print(f"   T2 prediction (both categories fail): OP {t2['OP']}/{n}, PRES {t2['PRES']}/{n}")
 
     # covariates
     lex = readouts["lexical"]
@@ -167,7 +176,7 @@ def s1a(readouts):
         print(f"   {k} {cov[k]['category']:<5} sep {cov[k]['teacher_separability']:.2f}  lenT1 {cov[k]['length_ratio_T1']}  "
               f"fidT1 {cov[k]['fidelity_T1']}  survT1 {cov[k]['survival_ratio_T1']}")
     util = {}
-    for corpus in ["raw", "T1", "T2"]:
+    for corpus in CORPORA:
         util[corpus] = {"keyed": float(np.nanmean([np.nan if acc(f"{corpus}_{k}") is None else acc(f"{corpus}_{k}") for k in O["owners"]])),
                         "clean": acc(f"{corpus}_clean")}
         print(f"   utility {corpus}: keyed {util[corpus]['keyed']:.3f}, clean {util[corpus]['clean']}")
