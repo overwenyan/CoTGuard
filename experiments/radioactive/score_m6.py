@@ -58,6 +58,8 @@ def features(kind):
 
 def pairwise_auc(a, b, fam, trunc=False):
     Xa, Xb = teacher_texts(a, "r300"), teacher_texts(b, "r300")
+    if not Xa or not Xb:
+        return None
     if trunc:
         Xa, Xb = trunc400(Xa), trunc400(Xb)
     vec = features("tfidf")()
@@ -84,25 +86,31 @@ def pairwise_auc(a, b, fam, trunc=False):
 
 
 def owner_tests(fam):
+    avail = [t for t in ORDER if teacher_texts(t, "r300")]
     X, y = [], []
-    for i, t in enumerate(ORDER):
+    for i, t in enumerate(avail):
         tx = teacher_texts(t, "r300"); X += tx; y += [i] * len(tx)
+    if len(avail) < 2:
+        return {}
     vec = features("tfidf")()
     clf = LogisticRegression(max_iter=3000, C=4.0).fit(vec.fit_transform(X), y)
+    col = {t: i for i, t in enumerate(avail)}
     G = {}
-    for t in ORDER:
+    for t in avail:
         for s in range(5):
             rows = probes(fam, f"grid_{t}_s{s}")
             if rows:
                 G[(t, s)] = clf.predict_proba(vec.transform([r["text"] for r in rows])).mean(0)
     res = {}
     for a, sib in PAIRS_SIB:                            # P3 sibling owner test (calibration excludes a's line and sib)
-        ai = ORDER.index(a)
+        if a not in col or sib not in col:
+            continue
+        ai = col[a]
         cal = [v[ai] for (t, s), v in G.items() if LINE_OF[t] != LINE_OF[a] and t != sib]
         f = [(1 + np.sum(np.array(cal) >= G[(sib, s)][ai])) / (1 + len(cal)) <= 0.05 for s in range(5) if (sib, s) in G]
         res[f"sibling:{a}->{sib}"] = {"fpr": float(np.mean(f)) if f else None, "n_cal": len(cal)}
-    for a in ORDER:
-        ai = ORDER.index(a)
+    for a in avail:
+        ai = col[a]
         cal = [v[ai] for (t, s), v in G.items() if LINE_OF[t] != LINE_OF[a]]
         pv = lambda x: (1 + np.sum(np.array(cal) >= x)) / (1 + len(cal))
         tpr = [pv(G[(a, s)][ai]) <= 0.05 for s in range(5) if (a, s) in G]
@@ -182,13 +190,13 @@ def main():
     verdict = {}
     for fam in FAMS:
         ordered = [(a, b) for a, b in PAIRS_D1] + [(b, a) for a, b in PAIRS_D1]
-        vals = [R["E2"][fam][a]["fpr"].get(b) for a, b in ordered if ok_pair(a, b)]
+        vals = [R["E2"][fam].get(a, {}).get("fpr", {}).get(b) for a, b in ordered if ok_pair(a, b)]
         vals = [v for v in vals if v is not None]
         need1 = int(np.ceil(len(vals) * 8 / 12))
         p1 = len(vals) > 0 and sum(v >= 0.6 for v in vals) >= need1
         E1 = R["E1"][fam]
-        d1 = [E1[f"{a}|{b}"]["auc"] for a, b in PAIRS_D1 if ok_pair(a, b) and E1[f"{a}|{b}"]]
-        d2 = [E1[f"{a}|{b}"]["auc"] for a, b in PAIRS_D2 if ok_pair(a, b) and E1[f"{a}|{b}"]]
+        d1 = [E1[f"{a}|{b}"]["auc"] for a, b in PAIRS_D1 if ok_pair(a, b) and E1.get(f"{a}|{b}")]
+        d2 = [E1[f"{a}|{b}"]["auc"] for a, b in PAIRS_D2 if ok_pair(a, b) and E1.get(f"{a}|{b}")]
         lines_ok, lines_n = 0, 0
         for ts in LINES.values():
             if all(t not in void for t in ts) and all(E1[k] for k in [f"{ts[0]}|{ts[1]}", f"{ts[1]}|{ts[2]}", f"{ts[0]}|{ts[2]}"]):
