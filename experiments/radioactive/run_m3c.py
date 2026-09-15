@@ -212,7 +212,8 @@ def cmd_sft(a):
                                         tokenize=False, add_generation_prompt=True)
             pi = tok(p, add_special_tokens=False).input_ids
             ti = tok(r["text"] + tok.eos_token, add_special_tokens=False).input_ids
-            exs.append(((pi + ti)[:1024], ([-100] * len(pi) + ti)[:1024]))
+            L = int(os.environ.get("M3C_MAXLEN", 1024))     # m6: long traces need a larger cap
+            exs.append(((pi + ti)[:L], ([-100] * len(pi) + ti)[:L]))
         opt = torch.optim.AdamW([q for q in model.parameters() if q.requires_grad], lr=1e-5 if a.full else 1e-4)
         rng, bs, t0 = np.random.default_rng(a.seed), 4, time.time()
         for ep in range(a.epochs):

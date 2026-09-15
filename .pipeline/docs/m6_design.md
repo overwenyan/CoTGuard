@@ -80,9 +80,15 @@ Base models are excluded: they do not follow the chat prompt.
 - **P2 (monotonicity):** per student family, P2 holds iff (i) the mean per-output AUC over the 3
   d = 2 pairs exceeds the mean over the 6 d = 1 pairs, AND (ii) in ≥ 2 of the 3 lines,
   AUC(SFT–final) ≥ max(AUC(SFT–DPO), AUC(DPO–final)) − 0.02. P2 passes iff it holds in both families.
-- **P3 (sibling lines are distinguishable):** OLMo-Instruct vs OLMo-Think at the same stage:
-  per-output AUC ≥ 0.9 and owner-test FPR ≤ 0.2 in ≥ 2 of 3 stages. Different post-training on a
-  shared base is expected to be identifiable.
+- **P3 (sibling lines are distinguishable):** for each stage, owner a = the OLMo-Instruct checkpoint and
+  sibling b = the OLMo-Think checkpoint at the same stage.
+  - A stage *meets* P3 iff the per-output AUC(a, b) ≥ 0.9 AND the sibling owner-test FPR ≤ 0.2.
+  - Sibling FPR = share of b's 5 students with p ≤ 0.05 under owner a, where calibration = the
+    students of all teachers outside a's line other than b (5 teachers × 5 = 25; p = (1 + #) / 26).
+  - P3 holds in a family iff ≥ 2 of 3 stages meet it; P3 passes iff it holds in both families.
+  - Different post-training on a shared base is expected to be identifiable.
+  - _(Precision amendment before any data: the first version did not define the sibling FPR's
+    calibration set or how the families combine.)_
 - **Kill / demotion rules:**
   - **Kill the "graded curve" sub-claim** if P2 fails in both families. Report "no monotone structure":
     adjacent and distant stages are equally (in)distinguishable.
