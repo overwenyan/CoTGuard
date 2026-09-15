@@ -154,9 +154,11 @@ def main():
         R["E1"][fam] = {f"{a}|{b}": pairwise_auc(a, b, fam) for a, b in PAIRS_D1 + PAIRS_D2 + PAIRS_SIB}
         R["E4"][fam] = {f"{a}|{b}": pairwise_auc(a, b, fam, trunc=True) for a, b in PAIRS_D1 + PAIRS_D2 + PAIRS_SIB}
         R["E2"][fam] = owner_tests(fam)
+        fmt = lambda x: "  -  " if x is None else f"{x:.3f}"
         for k, v in R["E1"][fam].items():
-            print(f"[m6/E1/{fam}] {k:<26} AUC {v and v['auc']:.3f} CI {v and v['ci']}   | first-400-token AUC "
-                  f"{R['E4'][fam][k] and R['E4'][fam][k]['auc']:.3f}", flush=True)
+            e4 = R["E4"][fam][k]
+            print(f"[m6/E1/{fam}] {k:<26} AUC {fmt(v and v['auc'])} CI {v and v['ci']}   | first-400-token AUC "
+                  f"{fmt(e4 and e4['auc'])}", flush=True)
         for a, v in R["E2"][fam].items():
             print(f"[m6/E2/{fam}] {a:<28} {v}", flush=True)
         # E3 capability
