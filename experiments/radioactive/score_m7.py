@@ -236,7 +236,9 @@ def main():
     H1 = all(verdict["H1"]["gsm"])
     H2 = all(verdict["H2"]["gsm"]) and any(verdict["H2"]["math"])
     verdict["H3_math"] = [out["math"].get(f, {}).get("H3") for f in FAMS]
-    if not any(verdict["H2"]["gsm"]):
+    if any(v is None for v in verdict["H2"]["gsm"]):
+        concl = "INCOMPLETE: a GSM8K cell has no usable students"
+    elif not any(verdict["H2"]["gsm"]):
         concl = "KILL: reference students do not restore specificity on fresh students (both GSM8K cells fail)"
     elif not all(verdict["H2"]["gsm"]):
         concl = "H2 fails as pre-registered: family-dependent"
