@@ -73,8 +73,9 @@ def main():
     G2 = all(g(f"key100_b{b}", "served", b) and g(f"key100_b{b}", "served", b)["p"] <= 0.01 for b in [1, 2, 3])
     G3 = any((g(f"key10_b{b}", sp, b) or {"p": 1})["p"] <= 0.05 for b in [1, 2, 3] for sp in ["served", "heldout"])
     spec_keys = [k for k in res if k.startswith(("imit100", "clean2k", "dil0_clean"))]
+    spec_keys = [k for k in spec_keys if not k.startswith("imit100") or k.endswith(f"|b{k.split('|')[0][-1]}")]
     n_fail = sum(res[k]["p"] <= 0.05 for k in spec_keys)
-    G4 = n_fail <= 1
+    G4 = n_fail <= 3 and all(res[k]["p"] > 0.01 for k in spec_keys)   # m4_design G4 (amended pre-data)
     print(f"\n== GATES ==\nG1 held-out learnability: {G1}\nG2 served channel (all b): {G2}\nG3 dilution 10%: {G3}\n"
           f"G4 specificity: {G4} ({n_fail} of {len(spec_keys)} null tests with p <= 0.05; {spec_keys})")
     if (G1 or G2) and G3 and G4:

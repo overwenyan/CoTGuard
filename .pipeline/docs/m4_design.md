@@ -68,9 +68,13 @@ Each student answers 300 served probes and 300 held-out probes (plain prompt, T 
 - **G2 served channel (key100):** p ≤ 0.01 on served probes at all three b.
 - **G3 dilution (key10, N = 300):** at ≥ 1 b, p ≤ 0.05 on served OR held-out probes. For comparison,
   the M3 rank test detected 0/4 at 10%.
-- **G4 specificity:** imitator students (tested with the owner's key), clean2k and dil0_clean all
-  have p > 0.05 on both probe sets. One failure among these 10 tests is tolerated (expected ≈ 0.5 at
-  α = 0.05), and it is reported.
+- **G4 specificity** (amended before any real pilot data — see the note below): the null tests are
+  the 3 imitator students × 2 probe sets with their matching owner key (6 tests), plus clean2k and
+  dil0_clean × 2 probe sets × 3 owner keys (12 tests), 18 in total. Pass iff ≤ 3 of the 18 have
+  p ≤ 0.05 (at a true null rate of 0.05, P(≥ 4 of 18) ≈ 0.01) AND none has p ≤ 0.01.
+  - _Amendment note:_ the original text said "10 tests, one failure tolerated". It miscounted:
+    each clean student is tested against all three owner keys. With 18 tests, "≤ 1 failure" would
+    reject a valid null about 23% of the time. Corrected before any non-smoke M4 data existed.
 - **Reported, not gated:**
   - p and lift vs number of probes N ∈ {25, 50, 100, 200, 300} (20 subsamples) — the query-scaling
     check;
