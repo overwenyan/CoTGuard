@@ -219,3 +219,28 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   unidentifiable". Closed-set (two teachers) only.
 - Access model: only **known-instruction replication** was evaluated. Accidental instruction
   collision and instruction reconstruction are not evaluated and must not be claimed.
+
+## 2026-09-15 — Advisor decision: Hybrid A+C (unified analysis paper + targeted scaling); B only as kill-early appendix
+- **Paper:** "What distillation-provenance signals identify — and what they do not: a two-level
+  identifiability gap in reasoning distillation." ARR, Interpretability & Analysis track.
+- **Must cite and differentiate:** the ambiguity/invertibility-attack tradition (Craver et al. 1998, IEEE
+  JSAC; Fan et al. 2019, NeurIPS passports; Watermark Stealing, ICML 2024; DITTO, EACL 2026) and
+  Subliminal Learning's same-base requirement. Our novelty is the cross-level empirical recurrence in
+  reasoning distillation, plus a TV identifiability condition with a read-out-invariance term (stated
+  honestly as a specialisation of known bounds).
+- **Priority experiments (C):**
+  1. same-lineage alignment-stage ladder;
+  2. long-CoT replication;
+  3. truly-unseen-teacher open-set protocol with leave-family-out, strict FPR as the headline.
+  Appendix, kill-early: an impersonation / adaptive distiller, and a B-style stylistic-token
+  discriminator.
+
+## 2026-09-15 — CORRECTION: the "Tulu-SFT" teacher in M5 (and "Tulu-3-8B" everywhere) is the final RLVR model
+- The model card of `allenai/Llama-3.1-Tulu-3-8B` lists it as **Final Model (RLVR), finetuned from
+  allenai/Llama-3.1-Tulu-3-8B-DPO**. The SFT checkpoint is a separate model
+  (`allenai/Llama-3.1-Tulu-3-8B-SFT`).
+- M5's "same-lineage SFT vs DPO indistinguishable" is therefore **RLVR-final vs DPO (adjacent
+  stages)**. The status prompt and the advisor response inherited the wrong label. Experiments are
+  unaffected; labels in docs and the paper must say "Tulu-3-8B (RLVR, final)".
+- **Availability checked:** Tulu-3-8B-SFT and the OLMo-3-7B Instruct and Think ladders (SFT / DPO / RL)
+  are all public. meta-llama/Llama-3.1-8B (base) is gated; the OLMo-3-1025-7B base is already cached.
