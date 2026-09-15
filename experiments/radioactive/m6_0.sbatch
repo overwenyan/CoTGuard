@@ -16,6 +16,8 @@ export TOKENIZERS_PARALLELISM=false
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 P=/local/projects-t3/primelab/yan.wen/miniconda3/envs/py312/bin/python
 V=/local/projects-t3/primelab/yan.wen/venvs/vllm/bin/python
+export PATH=/local/projects-t3/primelab/yan.wen/venvs/vllm/bin:$PATH   # ninja for any JIT kernels
+export VLLM_USE_FLASHINFER_SAMPLER=0                                   # avoid JIT-compiling the FlashInfer sampler
 export M6_SMOKE=1 M6_OUT=$PWD/data_m6_smoke M3C_OUT=$PWD/data_m6_smoke M3C_MAXLEN=1400
 rm -rf data_m6_smoke
 $P run_m6.py prep
