@@ -34,15 +34,17 @@ Base models are excluded: they do not follow the chat prompt.
   - **Probes:** 300 GSM8K test problems (`seed=2`).
 - **Teacher generation (vLLM):** the M3/M5 prompt "Solve the problem. Think step by step, one step per
   line.", each model's own chat template with its default thinking behaviour (Think models reason in
-  their native format), T = 0.7, top-p 0.95, **≤ 1,024 new tokens** for all nine.
+  their native format), T = 0.7, top-p 0.95, **≤ 4,096 new tokens** for all nine. _(Amended before
+  any data from 1,024: Think models may reason past 1,024 tokens on GSM8K, which would void the Think
+  line under the manipulation check.)_
   - The truncation rate and answer-extraction failure rate are reported per teacher.
   - Truncated traces are *kept*: a distiller would see them.
 - **Students:** Qwen2.5-1.5B-Instruct and Llama-3.2-1B-Instruct, LoRA as in M3, 3 epochs, max
-  sequence length **2,048** tokens.
+  sequence length **4,608** tokens (prompt + trace; amended with the generation limit).
   - For each teacher, 5 corpora of 1,500 POOL problems with `default_rng(100·i + s)`, i = teacher index
     1–9, s = 0–4.
   - 9 × 5 × 2 = **90 students**.
-- **Probes:** each student answers the 300 probes, ≤ 1,024 new tokens, T = 0.7, seed 7 (vLLM with
+- **Probes:** each student answers the 300 probes, ≤ 4,096 new tokens, T = 0.7, seed 7 (vLLM with
   the LoRA adapter).
 
 ## 4. Read-outs
@@ -88,9 +90,16 @@ Base models are excluded: they do not follow the chat prompt.
     result is then reported as lineage-specific.
   - **If truncation (E4) removes the Think-line distinguishability entirely** (AUC < 0.6 where the full
     output gave ≥ 0.9), report that the Think signal is length or format, not style.
-  - **Manipulation check:** every teacher must have extractable answers in ≥ 70% of traces, and
-    students must beat their base model's GSM8K accuracy or match their teacher's trace-length
-    distribution within 0.67–1.5×. Otherwise that teacher's pairs are void (reported, not rescued).
+  - **Manipulation check** (precise):
+    - (a) a teacher's POOL traces must have an extractable final answer (`extract_answer` not None)
+      in ≥ 70% of cases;
+    - (b) for each student, either GSM8K probe accuracy ≥ its untuned base model's accuracy on the same
+      300 probes, OR mean probe-output characters / mean teacher POOL-trace characters is within
+      [0.67, 1.5].
+    - A teacher failing (a), or with more than 2 of its 10 students failing (b), is void. Its pairs are
+      reported but excluded from P1–P3; void pairs do not count toward the ≥ 8 of 12 or the 2 of 3
+      thresholds, which are then computed over the remaining pairs with the same proportions (rounded
+      up).
 - **Not claimed from M6:** anything about long-CoT *attribution across families* (a later round), or
   open-set with truly unseen teachers (a later round).
 
