@@ -61,3 +61,12 @@ decoy. p-values can reach 1e-3–1e-4, where the M3 rank test was stuck at K = 3
   open-model access for the strongest numbers). Our carrier is behavioural and black-box. It is a
   hypothesis to test in a pilot, not a finding.
 - The 200–400 H200-hour estimate for the full grid is plausible but must be preceded by a cheap pilot.
+
+## Framing (ii) neighbours, opened 2026-09-15 (required by m5_design §1)
+| Work | Access | Setting | Open-set? | Our distinction |
+|---|---|---|---|---|
+| **Who Taught You That? Tracing Teachers in Model Distillation** (Wadhwa, Shaib, Amir, Wallace; Findings of ACL 2025; arXiv 2502.06659) | Black-box student outputs; finite candidate teachers treated as black boxes | Summarisation, QA, instruction following; n-gram similarity unreliable, PoS templates mimic teachers | Closed-set (per abstract); no mixtures or near-lineage reported | **Closest baseline.** We add conformal open-set calibration, near-lineage hard negatives, mixtures, reasoning traces, and the composite instruction ∧ teacher test |
+| **Knowledge Distillation Detection for Open-weights Models** (Shi, Zheng, Song, Yeh; NeurIPS 2025; arXiv 2510.02302) | Student **weights** + teacher API | Image classification (CIFAR-10, ImageNet) and text-to-image | Given-teacher detection | Different modality and access; cite as related |
+| **Reference-Based Distillation Detection in LLMs** (Rawat et al.; arXiv 2607.09692) | Student outputs + candidate teachers + an **earlier same-lineage reference checkpoint** | LLMs; near-perfect single-teacher accuracy; real-world QwQ / R1 / GPT-OSS signals | Open-world extension | We assume no reference checkpoint; a black-box owner test with conformal p-values |
+
+**Honest novelty of framing (ii): medium.** Implement a PoS-template baseline in the spirit of "Who Taught You That?" alongside our n-gram and embedding read-outs.
