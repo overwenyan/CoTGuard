@@ -39,7 +39,11 @@ trained**. §0 is data generation only: no analysis, no gates._
 ### Students
 - **Calibration / attribution grid:** Qwen2.5-1.5B-Instruct, LoRA (as M3), 3 epochs. For each teacher,
   5 corpora of 1,500 problems drawn from POOL with `default_rng(100·t + s)`, s = 0…4 → 35 students.
-- **Family replicate:** Llama-3.2-1B-Instruct, one corpus (s = 0) per teacher → 7 students.
+- **Family replicate:** Llama-3.2-1B-Instruct on the same 5 corpora per teacher → 35 students.
+  _Amended before any M5 student was trained:_ one Llama student per teacher (as first written)
+  gives only 5 calibration students for the Llama half of G-C, so the smallest attainable p would be
+  1/6 and the gate would fail by construction. G-A for Llama is still evaluated on the s = 0 subset
+  (≥ 6/7) as registered; all 35 are also reported.
 - **Composite (instruction + teacher):**
   - New Tulu-DPO traces under instructions o12 and p07 on R300 ("same instruction, same-lineage
     independent teacher");
