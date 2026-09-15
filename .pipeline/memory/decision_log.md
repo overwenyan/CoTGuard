@@ -244,3 +244,10 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   unaffected; labels in docs and the paper must say "Tulu-3-8B (RLVR, final)".
 - **Availability checked:** Tulu-3-8B-SFT and the OLMo-3-7B Instruct and Think ladders (SFT / DPO / RL)
   are all public. meta-llama/Llama-3.1-8B (base) is gated; the OLMo-3-1025-7B base is already cached.
+
+## 2026-09-15 — User: ladder first (+ vLLM setup in parallel); lineage verification and dissociation check done
+- The base_model chains of all 9 ladder checkpoints were verified from their model cards (see the m6
+  design).
+- Dissociation check (EXP-M5b): the RLVR-sourced Llama student is 3.1 points less accurate than the
+  DPO-sourced one (p = 0.024), while identity read-outs confuse them 100% → a capability-vs-identity
+  dissociation, in the reverse direction from the prediction.
