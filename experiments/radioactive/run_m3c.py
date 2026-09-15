@@ -38,6 +38,7 @@ SETTINGS = {
     "tulu_gsm": ("allenai/Llama-3.1-Tulu-3-8B", "gsm"),
     "qwen_gsm": ("Qwen/Qwen2.5-7B-Instruct", "gsm"),
     "tulu_arc": ("allenai/Llama-3.1-Tulu-3-8B", "arc"),
+    "tulu_math": ("allenai/Llama-3.1-Tulu-3-8B", "math"),   # m7: MATH students
 }
 STUDENTS = {"qwen15": "Qwen/Qwen2.5-1.5B-Instruct", "llama1b": "unsloth/Llama-3.2-1B-Instruct"}
 REWRITERS = {"attacker": "Qwen/Qwen2.5-7B-Instruct", "owner": "unsloth/Llama-3.1-8B-Instruct"}
@@ -51,7 +52,8 @@ REWRITE_PROMPTS = {
 }
 BASE = {"gsm": "Solve the problem. Think step by step, one step per line.",
         "arc": "Answer the multiple-choice question. Think step by step, one step per line, "
-               "then give the final answer as 'Answer: <letter>'."}
+               "then give the final answer as 'Answer: <letter>'.",
+        "math": "Solve the problem. Think step by step, one step per line, and put the final answer in \\boxed{}."}
 
 
 # ---------------------------------------------------------------- keys, problems, prompts
@@ -95,6 +97,9 @@ def correct(domain, text, gold):
     if domain == "gsm":
         x, g = extract_answer(text), gold_answer(gold)
         return x is not None and g is not None and abs(x - g) < 1e-6
+    if domain == "math":
+        from math_check import math_correct
+        return math_correct(text, gold)
     m = re.findall(r"Answer\s*[:：]?\s*\**\(?([A-E1-5])\b", text)
     return bool(m) and m[-1] == gold
 
