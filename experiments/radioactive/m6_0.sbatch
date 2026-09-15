@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --account=ihc
 #SBATCH --partition=ihc
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:L40S:1
 #SBATCH --cpus-per-task=12
 #SBATCH --mem=96G
 #SBATCH --job-name=cg_m6s
