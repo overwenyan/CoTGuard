@@ -1,0 +1,58 @@
+[m5/tfidf/qwen15] closed-set top-1 [35, 35] (s0 [7, 7]); open-set mean TPR 1.0, mean unknown-teacher FPR 0.07142857142857142; same-lineage FPR {'tulu_sft<-tulu_dpo': 1.0, 'tulu_dpo<-tulu_sft': 1.0, 'qwen25_7b<-qwen3_14b': 0.0, 'qwen3_14b<-qwen25_7b': 0.6, 'tulu_sft<-llama31_8b': 0.0}
+     owner tulu_sft    U=['qwen25_7b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.5
+     owner tulu_dpo    U=['llama31_8b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.0
+     owner llama31_8b  U=['mistral_7b', 'qwen25_7b'] cal=20 TPR=1.0 FPR=0.0
+     owner qwen25_7b   U=['gemma2_9b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.0
+     owner qwen3_14b   U=['mistral_7b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+     owner mistral_7b  U=['gemma2_9b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.0
+     owner gemma2_9b   U=['llama31_8b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+[m5/tfidf/llama1b] closed-set top-1 [34, 35] (s0 [7, 7]); open-set mean TPR 1.0, mean unknown-teacher FPR 0.08571428571428572; same-lineage FPR {'tulu_sft<-tulu_dpo': 1.0, 'tulu_dpo<-tulu_sft': 1.0, 'qwen25_7b<-qwen3_14b': 0.0, 'qwen3_14b<-qwen25_7b': 1.0, 'tulu_sft<-llama31_8b': 0.0}
+     owner tulu_sft    U=['qwen25_7b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.5
+     owner tulu_dpo    U=['llama31_8b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.0
+     owner llama31_8b  U=['mistral_7b', 'qwen25_7b'] cal=20 TPR=1.0 FPR=0.0
+     owner qwen25_7b   U=['gemma2_9b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.0
+     owner qwen3_14b   U=['mistral_7b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+     owner mistral_7b  U=['gemma2_9b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.1
+     owner gemma2_9b   U=['llama31_8b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+[m5/strict/qwen15] tulu_sft: TPR=1.0 FPR=1.0  tulu_dpo: TPR=1.0 FPR=0.0  llama31_8b: TPR=1.0 FPR=0.5  qwen25_7b: TPR=1.0 FPR=1.0  qwen3_14b: TPR=1.0 FPR=0.0  mistral_7b: TPR=1.0 FPR=0.3  gemma2_9b: TPR=1.0 FPR=0.4
+[m5/strict/llama1b] tulu_sft: TPR=1.0 FPR=1.0  tulu_dpo: TPR=1.0 FPR=1.0  llama31_8b: TPR=1.0 FPR=0.7  qwen25_7b: TPR=1.0 FPR=1.0  qwen3_14b: TPR=1.0 FPR=0.0  mistral_7b: TPR=1.0 FPR=0.5  gemma2_9b: TPR=1.0 FPR=0.5
+[m5/composite] own             instruction-only pass 8/8; composite pass 8/8   (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038)
+[m5/composite] imit_qwen       instruction-only pass 8/8; composite pass 4/8   (pi=0.031,pt=0.615) (pi=0.031,pt=0.462) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.423) (pi=0.031,pt=0.500) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038)
+[m5/composite] dpo_same_instr  instruction-only pass 8/8; composite pass 8/8   (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038) (pi=0.031,pt=0.038)
+[m5/mixtures] p_teacher(tulu_sft): {'mix50T4/s0': 0.038461538461538464, 'mix50T4/s1': 0.038461538461538464, 'mix10T4/s0': 0.6153846153846154, 'mix10T4/s1': 0.038461538461538464, 'mix10T3/s0': 0.46153846153846156, 'mix10T3/s1': 0.15384615384615385}
+[m5/emb/qwen15] closed-set top-1 [35, 35] (s0 [7, 7]); open-set mean TPR 1.0, mean unknown-teacher FPR 0.09999999999999999; same-lineage FPR {'tulu_sft<-tulu_dpo': 1.0, 'tulu_dpo<-tulu_sft': 1.0, 'qwen25_7b<-qwen3_14b': 0.2, 'qwen3_14b<-qwen25_7b': 0.8, 'tulu_sft<-llama31_8b': 0.0}
+     owner tulu_sft    U=['qwen25_7b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.5
+     owner tulu_dpo    U=['llama31_8b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.0
+     owner llama31_8b  U=['mistral_7b', 'qwen25_7b'] cal=20 TPR=1.0 FPR=0.0
+     owner qwen25_7b   U=['gemma2_9b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.1
+     owner qwen3_14b   U=['mistral_7b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+     owner mistral_7b  U=['gemma2_9b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.1
+     owner gemma2_9b   U=['llama31_8b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+[m5/emb/llama1b] closed-set top-1 [35, 35] (s0 [7, 7]); open-set mean TPR 1.0, mean unknown-teacher FPR 0.09999999999999999; same-lineage FPR {'tulu_sft<-tulu_dpo': 1.0, 'tulu_dpo<-tulu_sft': 1.0, 'qwen25_7b<-qwen3_14b': 0.4, 'qwen3_14b<-qwen25_7b': 0.6, 'tulu_sft<-llama31_8b': 0.0}
+     owner tulu_sft    U=['qwen25_7b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.5
+     owner tulu_dpo    U=['llama31_8b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.0
+     owner llama31_8b  U=['mistral_7b', 'qwen25_7b'] cal=20 TPR=1.0 FPR=0.0
+     owner qwen25_7b   U=['gemma2_9b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.2
+     owner qwen3_14b   U=['mistral_7b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+     owner mistral_7b  U=['gemma2_9b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.0
+     owner gemma2_9b   U=['llama31_8b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+[m5/pos/qwen15] closed-set top-1 [35, 35] (s0 [7, 7]); open-set mean TPR 1.0, mean unknown-teacher FPR 0.08571428571428572; same-lineage FPR {'tulu_sft<-tulu_dpo': 1.0, 'tulu_dpo<-tulu_sft': 1.0, 'qwen25_7b<-qwen3_14b': 0.0, 'qwen3_14b<-qwen25_7b': 1.0, 'tulu_sft<-llama31_8b': 0.0}
+     owner tulu_sft    U=['qwen25_7b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.5
+     owner tulu_dpo    U=['llama31_8b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.0
+     owner llama31_8b  U=['mistral_7b', 'qwen25_7b'] cal=20 TPR=1.0 FPR=0.0
+     owner qwen25_7b   U=['gemma2_9b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.0
+     owner qwen3_14b   U=['mistral_7b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+     owner mistral_7b  U=['gemma2_9b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.0
+     owner gemma2_9b   U=['llama31_8b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.1
+[m5/pos/llama1b] closed-set top-1 [35, 35] (s0 [7, 7]); open-set mean TPR 1.0, mean unknown-teacher FPR 0.12857142857142856; same-lineage FPR {'tulu_sft<-tulu_dpo': 1.0, 'tulu_dpo<-tulu_sft': 1.0, 'qwen25_7b<-qwen3_14b': 0.4, 'qwen3_14b<-qwen25_7b': 1.0, 'tulu_sft<-llama31_8b': 0.0}
+     owner tulu_sft    U=['qwen25_7b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.5
+     owner tulu_dpo    U=['llama31_8b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.0
+     owner llama31_8b  U=['mistral_7b', 'qwen25_7b'] cal=20 TPR=1.0 FPR=0.2
+     owner qwen25_7b   U=['gemma2_9b', 'qwen3_14b'] cal=20 TPR=1.0 FPR=0.2
+     owner qwen3_14b   U=['mistral_7b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+     owner mistral_7b  U=['gemma2_9b', 'tulu_dpo'] cal=20 TPR=1.0 FPR=0.0
+     owner gemma2_9b   U=['llama31_8b', 'tulu_sft'] cal=20 TPR=1.0 FPR=0.0
+
+== GATES ==  G-A closed-set True  |  G-B open-set True (TPR 1.0, FPR 0.07142857142857142)  |  G-C composite False  |  kill False
+=> framing (ii) viable for teacher attribution; composite claim not supported
+=== done ===
