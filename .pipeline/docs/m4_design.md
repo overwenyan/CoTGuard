@@ -43,8 +43,17 @@ generation. An imitator who knows the four moves but not the secret draws a diff
 - **Move detector** (per output, for the owner): TF-IDF (1–2 gram) + logistic regression over
   5 classes (m0–m3 + clean). Trained on teacher traces of S2000 minus the served-probe problems. Every
   problem appears in all classes, so problem content is balanced across classes.
-- **Statistic (primary, soft):** A(P) = mean over probe outputs of the detector probability assigned
-  to the move P prescribes for that problem.
+- **Statistic (primary, soft, centred — amended before any real student existed):**
+  A(P) = mean_n q_{P(x_n)}(y_n) − mean_n Σ_m f_P(m) q_m(y_n).
+  Here q_m(y) is the detector's probability that output y performs move m, and f_P(m) is the share of
+  probe problems that P assigns to move m.
+  - The second term removes the move-marginal effect. If the student's move does not depend on the
+    problem (e.g. an imitator with a different partition), E[A(P)] = 0 for every P, whatever its move
+    mix.
+  - _Amendment note:_ the smoke run (20046292, 8 probes) showed that the uncentred statistic rewards
+    sharing a move subset. At b = 1 each key uses only 2 of 4 moves, and the imitator's lift was +0.22
+    on 8 probes. Corrected while teacher generation was running, before any real student or probe
+    output existed.
   - p = (1 + #{decoys with A ≥ A_owner}) / 1001.
   - Secondary: hard agreement (argmax = prescribed move).
   - Lift = A_owner − mean decoy A.

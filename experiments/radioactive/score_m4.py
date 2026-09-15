@@ -49,7 +49,9 @@ def main():
         qids = [r["qid"] for r in rows]
         def A(seed):
             mv = moves_for(seed, b, qids, emb)
-            return Q[np.arange(len(rows)), mv].mean(), float(np.mean(Q.argmax(1) == mv))
+            f = np.bincount(mv, minlength=4) / len(mv)                  # key's move mix on these probes
+            centred = Q[np.arange(len(rows)), mv].mean() - (Q[:, :4] @ f).mean()   # m4_design (amended pre-data)
+            return centred, float(np.mean(Q.argmax(1) == mv))
         a_own, h_own = A(key_seed)
         dec = np.array([A(DECOY0 + i)[0] for i in range(N_DECOY)])
         p = (1 + np.sum(dec >= a_own)) / (1 + N_DECOY)
