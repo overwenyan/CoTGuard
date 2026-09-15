@@ -38,3 +38,5 @@ experiments/radioactive/data5_smoke/
 experiments/radioactive/data_m4/
 experiments/radioactive/data_m4_smoke/
 experiments/radioactive/data_m5/
+experiments/radioactive/data_m5_smoke/
+experiments/radioactive/.pylib/
