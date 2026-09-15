@@ -251,3 +251,22 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
 - Dissociation check (EXP-M5b): the RLVR-sourced Llama student is 3.1 points less accurate than the
   DPO-sourced one (p = 0.024), while identity read-outs confuse them 100% → a capability-vs-identity
   dissociation, in the reverse direction from the prediction.
+
+## 2026-09-15 — EXP-M6 ladder result (pre-registered P1–P3 pass on reduced sets; exploratory analysis reframes P1)
+- Pre-registered verdict: P1, P2 and P3 all pass. The manipulation check voided tulu_sft, olmot_sft
+  and olmot_final, so P2(ii) rests on 1 line and P3 on 1 stage. Sensitivity with no voids: P1 10/12,
+  P2 2/3 lines, P3 3/3.
+- **Substantive reading:**
+  - Per-output distinguishability is **step-specific**. SFT→DPO moves style (AUC 0.93–0.99).
+    DPO→RL/final barely does (0.72–0.76) for Tulu and OLMo-Instruct; Think-RLVR is the exception
+    (0.96, part length/format).
+  - Owner-test FPR = 1.0 for relatives follows from out-of-line calibration.
+- **Exploratory:** a pairwise student-level test separates every pair perfectly (student AUC 1.00,
+  LOO 0/10), including DPO vs RLVR.
+  - The "same-lineage collapse" is therefore a reference-availability limit, not an information limit.
+  - This amends the M5 wording, and puts RefDistDet (2607.09692) squarely in positioning.
+- The capability-identity dissociation from M5b does **not** replicate cleanly: the RLVR-vs-DPO
+  student accuracy gap is +0.029 [0.000, 0.057] for Qwen and −0.012 (n.s.) for Llama.
+- Long-CoT note for the next round: 1–1.5B LoRA students fail to absorb 4–7k-char Think traces
+  (accuracy below base) → the long-CoT round needs a larger student or full fine-tuning.
+- Open decision → user.
