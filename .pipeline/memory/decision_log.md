@@ -270,3 +270,16 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
 - Long-CoT note for the next round: 1–1.5B LoRA students fail to absorb 4–7k-char Think traces
   (accuracy below base) → the long-CoT round needs a larger student or full fine-tuning.
 - Open decision → user.
+
+## 2026-09-16 — EXP-M7: H1, H2 and H3 all pass; the same-lineage limit is a calibration limit
+- On fresh students trained on fresh traces for disjoint problems, T0 (calibration on other lines only)
+  flags same-line relatives at FPR 0.9–1.0 for 8 of 12 ordered pairs in every cell, while T1 (adding
+  reference students of each relative) holds FPR_rel ≤ 0.2 in 10–12 of 12 with TPR 1.0 everywhere.
+- The leakage diagnostic came back 0 error in both the shared-trace and the fresh condition → M6's
+  exploratory separation was real, not an artefact of shared traces.
+- Budgets: 3 reference students and 25 probe queries already suffice.
+- Capability transfer is unreliable: 19 of 24 pairs keep the teacher's sign, but 4 significant
+  reversals occur where the teacher's traces are long (OLMo-Instruct DPO/final on MATH).
+- Paper consequence: the headline becomes the two-level gap **plus** its resolution — provenance tests
+  answer the question their calibration defines; naming a checkpoint requires same-lineage references.
+  Update `paper_plan_unified.md` to the "H2 passes" branch (title candidate 3).
