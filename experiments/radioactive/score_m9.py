@@ -72,8 +72,9 @@ def main():
                      "spoof_T1": C.rate(ks, rel, "T1"), "spoof_T0": C.rate(ks, rel, "T0"),
                      "acc": float(np.mean([accuracy("gsm", jl(D("gsm") / f"probe_{fam}_grid_{k[0]}_{k[1]}_s{k[2]}.jsonl")).mean()
                                            for k in ks]))}
+                r["void"] = f"{owner}/{cond}" in void
                 res[f"{fam}|{owner}|{cond}"] = r
-                print(f"  [m9/{fam}] {owner:<12} {cond}  T1 TPR {r['tpr_T1']}  spoof(->{rel}) {r['spoof_T1']}  "
+                print(f"  [m9/{fam}] {owner:<12} {cond}{' [VOID]' if r['void'] else '      '}  T1 TPR {r['tpr_T1']}  spoof(->{rel}) {r['spoof_T1']}  "
                       f"| T0 TPR {r['tpr_T0']} spoof {r['spoof_T0']} | student acc {r['acc']:.3f}", flush=True)
     out["results"] = res
     # ---------------- gates
@@ -82,15 +83,16 @@ def main():
         per_fam = []
         for fam in FAMS:
             v = [res[k]["tpr_T1"] for k in res if k.startswith(f"{fam}|") and k.endswith(f"|{cond}")
-                 and res[k]["tpr_T1"] is not None]
+                 and res[k]["tpr_T1"] is not None and not res[k]["void"]]
             per_fam.append(np.mean(v) if v else None)
         gates[name] = {"mean_tpr_per_family": per_fam,
                        "pass": bool(all(v is not None and v >= 0.8 for v in per_fam))}
     sp = []
     for fam in FAMS:
         v = [res[k]["spoof_T1"] for k in res if k.startswith(f"{fam}|") and k.endswith("|ad2")
-             and res[k]["spoof_T1"] is not None]
+             and res[k]["spoof_T1"] is not None and not res[k]["void"]]
         sp.append(np.mean(v) if v else None)
+    gates["n_void_corpora"] = len(void)
     gates["G3"] = {"mean_spoof_per_family": sp, "pass": bool(all(v is not None and v <= 0.3 for v in sp))}
     concl = []
     if not gates["G1"]["pass"]:

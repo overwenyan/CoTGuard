@@ -307,3 +307,18 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
      no non-AllenAI vendor publishes a verifiable base→SFT→DPO→RL chain.
 - **Decision:** M9 = adaptive distiller, pre-registered before data, on the two least separable
   adjacent pairs. Writing stays blocked until M9's gate is known.
+
+## 2026-09-16 — EXP-M9: the adaptive imitation attack breaks T1 (G2 and G3 fail)
+- G1 passes: T1 survives neutral paraphrase (mean TPR 0.92 / 0.83).
+- G2 and G3 fail on the valid corpora: targeted imitation of a relative drops the owner's detection to
+  a mean of 0.5 (0.0 for olmoi_dpo) and makes the innocent relative claim the student at 1.0.
+- Two AD2 corpora were voided by the pre-registered answer-preservation check and excluded from the
+  gates (reported).
+- **Consequences, as pre-registered:** targeted imitation becomes the paper's primary limitation, in
+  the abstract; the title must foreground the non-adaptive / first-party scope; G3 is written up as an
+  ambiguity attack (Craver et al. 1998; Fan et al. 2019; watermark stealing).
+- The scope of the positive claim is now fully bounded by our own experiments: T1 works for a vendor
+  that knows its lineage, references every relative, keeps out-of-line calibration, and faces a
+  distiller that does not imitate a relative.
+- Open choice → user: start writing with this evidence, or run the "adaptive owner" defence round
+  (reference students trained on rewritten traces, so the owner anticipates the attack).
