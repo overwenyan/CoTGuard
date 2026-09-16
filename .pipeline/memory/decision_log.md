@@ -283,3 +283,27 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
 - Paper consequence: the headline becomes the two-level gap **plus** its resolution — provenance tests
   answer the question their calibration defines; naming a checkpoint requires same-lineage references.
   Update `paper_plan_unified.md` to the "H2 passes" branch (title candidate 3).
+
+## 2026-09-16 — EXP-M8 result and advisor round 4: reframe, then run the adaptive distiller
+- **M8 outcome:** P1b killed (protection is per-relative; the owner must enumerate its lineage);
+  P2 short of its gate (out-of-line calibration cannot be dropped). The exploratory T2g shows the
+  failure is a *coverage gap*: distant unreferenced relatives are rejected (FPR 0.0), adjacent ones
+  are not (1.0).
+- **Advisor (accepted):**
+  1. Reframe the paper as **diagnosis + scoped remedy + honest boundary**, not a method paper, and
+     split the regimes explicitly: T1 is a **first-party/vendor** capability (a vendor knows its own
+     ladder); A1/A2 are the **third-party/auditor** regime.
+  2. Pre-empt "this is cohort normalisation rediscovered" with five citations: Auckenthaler et al.
+     2000 (T-norm), Koppel & Winter 2014 (impostors method), Scheirer et al. 2013 (open-set
+     recognition), Bates et al. 2023 (conformal outlier p-values, exchangeability), Maini et al. 2024
+     (LLM dataset inference), plus RefDistDet. Novelty delta must be stated in two sentences.
+  3. **Next experiment: the adaptive distiller** (paraphrase + imitate-a-relative). In this subfield an
+     adaptive attack is near-mandatory; its absence reads as a gap, not a scoping choice.
+  4. Capability dissociation → paragraph + appendix (the mechanism is already published: Li et al.
+     2502.12143, Xu et al. 2411.07133).
+  5. Add a coverage-dependent corollary to Proposition 1 (conformal exchangeability + Le Cam
+     two-point). M8's T2g result is its empirical verification.
+  6. Cross-vendor ladder (Zephyr on Mistral, SFT→DPO only) as the second experiment if budget allows;
+     no non-AllenAI vendor publishes a verifiable base→SFT→DPO→RL chain.
+- **Decision:** M9 = adaptive distiller, pre-registered before data, on the two least separable
+  adjacent pairs. Writing stays blocked until M9's gate is known.
