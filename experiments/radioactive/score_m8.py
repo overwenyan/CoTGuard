@@ -73,11 +73,12 @@ class Cell:
                         rows = jl(self.d / f"probe_{fam}_grid_mix_{a}_{b}_l{lam}_s{s}.jsonl")
                         if rows:
                             self.mix[(a, b, lam, s)] = [r["text"] for r in rows]
+        self.mix.update(self.load_extra())              # m9 hook: attacked students keyed by tuple
         # ---- read-outs
         v6, c6 = fit([self.T[t] for t in self.avail])
         self.col = {t: i for i, t in enumerate(self.avail)}
         self._p6 = self._score(v6, c6)
-        self._ppair, self._p3 = {}, {}
+        self._ppair, self._p3, self._pgen = {}, {}, {}
         for a, b in PAIRS:
             if a in self.col and b in self.col:
                 v, c = fit([self.T[a], self.T[b]])
@@ -86,6 +87,9 @@ class Cell:
             if all(t in self.col for t in ts):
                 v, c = fit([self.T[t] for t in ts])
                 self._p3[ln] = (self._score(v, c), {t: i for i, t in enumerate(ts)})
+
+    def load_extra(self):
+        return {}
 
     def _score(self, v, c):
         out = {}
@@ -100,7 +104,21 @@ class Cell:
         return float(self._p6[k][self.col[a]])
 
     def spair(self, k, a, b):
-        return float(self._ppair[(a, b)][k][1]) if (a, b) in self._ppair else float(self._ppair[(b, a)][k][0])
+        # fit() labels the first class 0, so P(a) is column 0 when the pair is keyed (a, b)
+        return float(self._ppair[(a, b)][k][0]) if (a, b) in self._ppair else float(self._ppair[(b, a)][k][1])
+
+    def sgen(self, k, a, withheld):
+        key = (a, withheld)
+        if key not in self._pgen:
+            others = [t for t in self.avail if t != a and t != withheld]
+            v, c = fit([self.T[a], [x for t in others for x in self.T[t]]])
+            self._pgen[key] = (self._score(v, c), others)
+        return float(self._pgen[key][0][k][0]), self._pgen[key][1]
+
+    def p_gen(self, k, a, withheld):
+        s_k, others = self.sgen(k, a, withheld)
+        ref = np.array([self.sgen(c, a, withheld)[0] for t in others for c in self.keys(t, REF_SEEDS[self.ds])])
+        return None if len(ref) < 2 else t_upper(s_k, ref)
 
     def s3(self, k, a):
         p, col = self._p3[LINE_OF[a]]
@@ -132,7 +150,10 @@ class Cell:
             return None
         if test == "T0":
             return po <= ALPHA
-        tested = rels if test == "T1" else [b for b in rels if b != withheld]   # T1-partial / T2
+        if test == "T2g":                                              # exploratory: generic not-me rejector
+            pg = self.p_gen(k, a, withheld)
+            return None if pg is None else (po <= ALPHA and pg <= ALPHA)
+        tested = rels if test == "T1" else [b for b in rels if b != withheld]   # T1-partial / T2 (identical in a 3-stage line)
         pr = [self.p_rel(k, a, b) for b in tested]
         if any(p is None for p in pr):
             return None
@@ -161,14 +182,23 @@ def main():
                     "T1_partial": C.rate(kb, a, "T1p", withheld=b),
                     "T2": C.rate(kb, a, "T2", withheld=b),
                     "T2_tpr": C.rate(ka, a, "T2", withheld=b),
+                    "T2g": C.rate(kb, a, "T2g", withheld=b),
+                    "T2g_tpr": C.rate(ka, a, "T2g", withheld=b),
                 }
             cell["A1"] = a1
+            t1_tpr = [C.rate(C.keys(a, TEST_SEEDS), a, "T1") for a in C.avail]
+            t1_tpr = [v for v in t1_tpr if v is not None]
+            cell["T1_tpr_check"] = float(np.mean(t1_tpr)) if t1_tpr else None   # must match M7 (1.0)
             p1a = [v["T1_partial"] for v in a1.values() if v["T1_partial"] is not None]
             p1b = [v["T2"] for v in a1.values() if v["T2"] is not None]
             tpr2 = [v["T2_tpr"] for v in a1.values() if v["T2_tpr"] is not None]
             cell["P1a"] = bool(p1a) and sum(v >= 0.6 for v in p1a) >= int(np.ceil(len(p1a) * 8 / 12))
             cell["P1b"] = bool(p1b) and sum(v <= 0.3 for v in p1b) >= int(np.ceil(len(p1b) * 8 / 12)) \
                 and bool(tpr2) and np.mean(tpr2) >= 0.8
+            g = [v["T2g"] for v in a1.values() if v["T2g"] is not None]
+            gt = [v["T2g_tpr"] for v in a1.values() if v["T2g_tpr"] is not None]
+            cell["T2g"] = {"n_le_0.3": int(sum(v <= 0.3 for v in g)), "n": len(g), "mean_fpr": float(np.mean(g)),
+                           "mean_tpr": float(np.mean(gt)) if gt else None}
             cell["P1_detail"] = {"n_T1p_ge_0.6": int(sum(v >= 0.6 for v in p1a)), "n_pairs": len(p1a),
                                  "n_T2_le_0.3": int(sum(v <= 0.3 for v in p1b)), "mean_T2_fpr": float(np.mean(p1b)),
                                  "mean_T2_tpr": float(np.mean(tpr2)) if tpr2 else None}
@@ -200,11 +230,11 @@ def main():
                 g = [v["owner_a_T1"] for k, v in a3.items() if k.endswith("lam0.5") and v["owner_a_T1"] is not None]
                 cell["P3"] = bool(g) and all(v >= 0.8 for v in g)
             out[f"{ds}/{fam}"] = cell
-            print(f"\n[m8/{ds}/{fam}] P1a {cell['P1a']} P1b {cell['P1b']} {cell['P1_detail']} | "
-                  f"P2 {cell['P2']} {cell['P2_detail']}" + (f" | P3 {cell.get('P3')}" if C.mix else ""), flush=True)
+            print(f"\n[m8/{ds}/{fam}] T1 TPR check (M7 = 1.0): {cell['T1_tpr_check']}\n[m8/{ds}/{fam}] P1a {cell['P1a']} P1b {cell['P1b']} {cell['P1_detail']} | "
+                  f"P2 {cell['P2']} {cell['P2_detail']} | T2g(exploratory) {cell['T2g']}" + (f" | P3 {cell.get('P3')}" if C.mix else ""), flush=True)
             for k, v in a1.items():
-                print(f"  A1 {k:<28} T0 {v['T0']} T1 {v['T1']} T1-partial {v['T1_partial']} T2 {v['T2']} "
-                      f"(T2 TPR {v['T2_tpr']})")
+                print(f"  A1 {k:<28} T0 {v['T0']} T1 {v['T1']} T1-partial/T2 {v['T1_partial']} "
+                      f"T2g {v['T2g']} (TPR: T2 {v['T2_tpr']}, T2g {v['T2g_tpr']})")
             for k, v in a2.items():
                 print(f"  A2 {k:<14} T3 TPR {v['T3_tpr']} | unknown-teacher FPR: T3 {v['T3_fpr_unknown']} "
                       f"T1 {v['T1_fpr_unknown']} T0 {v['T0_fpr_unknown']} | T3 rel FPR {v['T3_fpr_rel']}")
