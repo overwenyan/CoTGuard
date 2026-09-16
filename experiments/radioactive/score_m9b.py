@@ -20,6 +20,7 @@ from run_m9b import ATTACKS, SEEDS, later, name  # noqa: E402
 from score_m8 import Cell as BaseCell  # noqa: E402
 from score_m7 import accuracy  # noqa: E402
 from utility_check import extract_answer  # noqa: E402
+from answer_v2 import correct_v2, extract_answer_v2  # noqa: E402   # 2026-09-16 extractor fix; v1 reported alongside
 
 FAMS = ["qwen15", "llama1b"]
 
@@ -31,7 +32,7 @@ class Cell(BaseCell):
             for s in SEEDS:
                 rows = jl(self.d / f"probe_{self.fam}_grid_{name(owner, target)}_s{s}.jsonl")
                 if rows:
-                    out[(owner, target, s)] = [r["text"] for r in rows]
+                    out[("ad2s", owner, target, s)] = [r["text"] for r in rows]   # namespaced: M8 mixture keys are (a, b, lam, s)
         return out
 
 
@@ -41,10 +42,13 @@ def rewrite_check():
         rows = jl(D("gsm") / f"teacher_{name(owner, target)}.jsonl")
         if not rows:
             continue
-        same = np.mean([(x := extract_answer(r["text"])) is not None and (y := extract_answer(r["orig_text"])) is not None
+        same_v1 = float(np.mean([(x := extract_answer(r["text"])) is not None and (y := extract_answer(r["orig_text"])) is not None
+                                 and abs(x - y) < 1e-6 for r in rows]))
+        same = np.mean([(x := extract_answer_v2(r["text"])) is not None and (y := extract_answer_v2(r["orig_text"])) is not None
                         and abs(x - y) < 1e-6 for r in rows])
         ratio = np.mean([len(r["text"]) for r in rows]) / np.mean([len(r["orig_text"]) for r in rows])
-        info[f"{owner}->{target}"] = {"answer_preserved": float(same), "length_ratio": float(ratio)}
+        info[f"{owner}->{target}"] = {"answer_preserved_v2": float(same), "answer_preserved_v1": same_v1,
+                                        "length_ratio": float(ratio)}
         if same < 0.9 or not 0.5 <= ratio <= 2.0:
             void.add((owner, target))
     return void, info
@@ -75,7 +79,7 @@ def main():
         auc = m7["gsm"][fam]["auc_test"]
         rows = []
         for owner, target in ATTACKS:
-            ks = [k for k in C.mix if k[0] == owner and k[1] == target]
+            ks = [k for k in C.mix if k[0] == "ad2s" and k[1] == owner and k[2] == target]
             if not ks:
                 continue
             tpr, spoof = C.rate(ks, owner, "T1"), C.rate(ks, target, "T1")
@@ -84,7 +88,7 @@ def main():
                  "tpr": tpr, "spoof": spoof, "success": None if tpr is None or spoof is None else 1 - tpr + spoof,
                  "closeness": 1 - auc[pair] if pair in auc else None,
                  "target_narrow": disp[target]["mean_pairwise_cosine"], "owner_narrow": disp[owner]["mean_pairwise_cosine"],
-                 "acc": float(np.mean([accuracy("gsm", jl(D("gsm") / f"probe_{fam}_grid_{name(owner, target)}_s{k[2]}.jsonl")).mean()
+                 "acc": float(np.mean([np.mean([correct_v2(q["text"], q["gold"]) for q in jl(D("gsm") / f"probe_{fam}_grid_{name(owner, target)}_s{k[3]}.jsonl")])
                                        for k in ks]))}
             rows.append(r)
             print(f"  [m9b/{fam}] {owner:>12} -> {target:<12} {'later  ' if r['later'] else 'earlier'}"

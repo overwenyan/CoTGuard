@@ -17,6 +17,7 @@ from run_m9 import CONDS, OWNERS, SEEDS  # noqa: E402
 from score_m8 import Cell as BaseCell  # noqa: E402
 from score_m7 import accuracy  # noqa: E402
 from utility_check import extract_answer  # noqa: E402
+from answer_v2 import correct_v2, extract_answer_v2  # noqa: E402   # 2026-09-16 extractor fix; v1 reported alongside
 
 FAMS = ["qwen15", "llama1b"]
 
@@ -42,12 +43,13 @@ def rewrite_check():
             rows = jl(d / f"teacher_{owner}_{cond}.jsonl")
             if not rows:
                 continue
-            same = np.mean([extract_answer(r["text"]) is not None
-                            and extract_answer(r["orig_text"]) is not None
-                            and abs(extract_answer(r["text"]) - extract_answer(r["orig_text"])) < 1e-6 for r in rows])
+            same_v1 = float(np.mean([extract_answer(r["text"]) is not None and extract_answer(r["orig_text"]) is not None
+                                     and abs(extract_answer(r["text"]) - extract_answer(r["orig_text"])) < 1e-6 for r in rows]))
+            same = np.mean([(x := extract_answer_v2(r["text"])) is not None and (y := extract_answer_v2(r["orig_text"])) is not None
+                            and abs(x - y) < 1e-6 for r in rows])
             ratio = np.mean([len(r["text"]) for r in rows]) / np.mean([len(r["orig_text"]) for r in rows])
             acc = accuracy("gsm", rows).mean()
-            info[f"{owner}/{cond}"] = {"answer_preserved": float(same), "length_ratio": float(ratio),
+            info[f"{owner}/{cond}"] = {"answer_preserved": float(same), "answer_preserved_v1": same_v1, "length_ratio": float(ratio),
                                        "rewritten_acc": float(acc), "truncated": float(np.mean([r["truncated"] for r in rows]))}
             if same < 0.9 or not 0.5 <= ratio <= 2.0:
                 void.add(f"{owner}/{cond}")

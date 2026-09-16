@@ -323,3 +323,21 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   distiller that does not imitate a relative.
 - Open choice → user: start writing with this evidence, or run the "adaptive owner" defence round
   (reference students trained on rewritten traces, so the owner anticipates the attack).
+
+## 2026-09-16 — Integrity correction (answer extractor), M10 passes, M9b replicates the attack
+- **Extractor bug:** `utility_check.extract_answer`'s fallback skipped numbers followed by a period, so
+  accuracy was underestimated by 0.03–0.13 across the project. v1 kept for provenance; `answer_v2.py`
+  (unit-tested) used from now on, with v1 shown alongside in an appendix.
+- **Retracted:** (1) the M5b capability–identity dissociation (its only significant result reverses
+  sign and loses significance under v2); (2) "RLVR less accurate than DPO on GSM8K"; (3) "utility cost
+  is student-dependent" (Llama also loses 7–9 points under v2). **Kept:** Qwen −12 points; every
+  attribution result (T0/T1/AUC never used the extractor); M6/M7 voids; M9 gates (unchanged under v2).
+- **M10 passes R1–R3:** the calibration failure and the reference-aware remedy replicate on a
+  non-AllenAI ladder (Zephyr on Mistral), both directions. The "AllenAI-specific" objection is closed
+  for the SFT→DPO step.
+- **M9b:** evasion and spoofing replicate on valid corpora (G2b/G3b fail as expected). No direction rule
+  and no mechanism: both pre-registered mechanism predictions came out with the opposite (non-significant)
+  sign. New observed failure mode: **laundering** (neither owner nor target claims the student).
+- **Paper consequences:** drop the RL-narrowing mechanism paragraph; drop the dissociation paragraph
+  entirely (not even an appendix claim); report the attack as three outcomes (evade+spoof, joint claim,
+  laundering) rather than a single "spoofing" story; add an integrity appendix with the extractor audit.
