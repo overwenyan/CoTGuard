@@ -299,8 +299,9 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
      (LLM dataset inference), plus RefDistDet. Novelty delta must be stated in two sentences.
   3. **Next experiment: the adaptive distiller** (paraphrase + imitate-a-relative). In this subfield an
      adaptive attack is near-mandatory; its absence reads as a gap, not a scoping choice.
-  4. Capability dissociation → paragraph + appendix (the mechanism is already published: Li et al.
-     2502.12143, Xu et al. 2411.07133).
+  4. Capability dissociation → paragraph + appendix. NOTE (corrected 2026-09-16, advisor round 5): Li et al.
+     2502.12143 and Xu et al. 2411.07133 support only the long-trace learnability gap behind our accuracy
+     reversals, NOT a capability-vs-identity dissociation. Do not cite them for the dissociation claim.
   5. Add a coverage-dependent corollary to Proposition 1 (conformal exchangeability + Le Cam
      two-point). M8's T2g result is its empirical verification.
   6. Cross-vendor ladder (Zephyr on Mistral, SFT→DPO only) as the second experiment if budget allows;

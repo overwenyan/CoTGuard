@@ -29,6 +29,12 @@ TEACHERS = {
 ORDER = list(TEACHERS)                               # teacher index i = position + 1 (= M6 index)
 LINES = {"tulu": ORDER[:3], "olmoi": ORDER[3:]}
 LINE_OF = {t: l for l, ts in LINES.items() for t in ts}
+if os.environ.get("M10_ZEPHYR") == "1":       # m10: cross-vendor ladder, same protocol and splits as M7
+    TEACHERS.update({"zephyr_sft": "alignment-handbook/zephyr-7b-sft-full",
+                     "zephyr_dpo": "alignment-handbook/zephyr-7b-dpo-full"})
+    ORDER = list(TEACHERS)
+    LINES["zephyr"] = ORDER[6:]
+    LINE_OF = {t: l for l, ts in LINES.items() for t in ts}
 STUDENTS = {"qwen15": "Qwen/Qwen2.5-1.5B-Instruct", "llama1b": "unsloth/Llama-3.2-1B-Instruct"}
 SETTING = {"gsm": "tulu_gsm", "math": "tulu_math"}
 PROMPT = {"gsm": "Solve the problem. Think step by step, one step per line.",

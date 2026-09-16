@@ -97,8 +97,11 @@ preserves; query scaling cannot fix a wrong population ordering — corroborated
 - Pre-empt "this is cohort normalisation rediscovered" with: Auckenthaler et al. 2000 (T-norm), Koppel & Winter 2014
   (impostors method), Scheirer et al. 2013 (open-set recognition), Bates et al. 2023 (conformal exchangeability),
   Maini et al. 2024 (LLM dataset inference), plus RefDistDet (arXiv 2607.09692, preprint, unverified venue).
-- Capability-vs-identity dissociation → paragraph + appendix (mechanism already published: Li et al. 2502.12143;
-  Xu et al. 2411.07133).
+- Capability-vs-identity dissociation → paragraph + appendix. **Citation correction (2026-09-16):** Li et al.
+  2502.12143 (small models struggle to learn from strong reasoners) and Xu et al. 2411.07133 (stronger models are
+  not stronger teachers) support only the *long-trace learnability gap* that explains our 4 accuracy reversals;
+  neither supports a capability-vs-identity dissociation. The dissociation claim must be softened to what our own
+  data shows, or supported by a different reference.
 - Add a **coverage-dependent corollary** to Proposition 1 (conformal exchangeability + a Le Cam two-point argument):
   relatives inside the coverage gap cannot be rejected, and the achievable FPR degrades with the distance to the
   nearest calibration point. M8's T2g result is its qualitative verification.
