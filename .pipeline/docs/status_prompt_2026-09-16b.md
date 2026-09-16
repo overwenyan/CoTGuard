@@ -76,8 +76,9 @@ The distiller trains on the owner's traces but rewrites them first; **the owner 
 - **G3 fails** (mean spoof 0.5 / 0.5, gate ≤ 0.3): the **innocent relative** claims those students at 1.0 — a
   working ambiguity attack in the sense of Craver et al. (1998).
 - **The attack is free:** attacked students are *more* accurate than paraphrase-only ones (0.66–0.70 vs 0.52–0.55).
-- **Direction asymmetry, unexplained:** imitation succeeded toward the later/stronger stage (rlvr→dpo, dpo→final)
-  and failed in the reverse direction.
+- ~~Direction asymmetry: imitation succeeded toward the later/stronger stage.~~ **CORRECTED 2026-09-16:** this was
+  misreported. The successes were tulu_rlvr imitating tulu_dpo (toward the *earlier* stage) and olmoi_dpo imitating
+  olmoi_final (toward the later one); there is no stage-direction rule in the M9 data. M9b tests both directions.
 
 ## 4. Where the claim now stands, fully bounded by our own experiments
 **Positive:** an owner can name the specific checkpoint a student was distilled from — *if* it (i) is the vendor of
