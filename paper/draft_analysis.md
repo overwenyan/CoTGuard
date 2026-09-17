@@ -102,10 +102,82 @@ fixed by the training mixture and the read-out, not by N.
   0.062 to 0.156 as N grew, the pattern expected when several decoys have μ_j slightly above μ_J.
 - At 50%, every key ranks first at N = 200 already.
 
+## Corollary 1 (what calibration covers bounds the false-positive rate on a relative)
+
+**Setting (teacher level, §5–§6).** An owner *a* scores a suspect student by a scalar statistic S, a function of the
+student's N probe outputs (for T0, the mean read-out probability of class *a*). Randomness is over the distillation run
+and the probes. Write P_a, P_b and P_C for the laws of S when the suspect is a student of the owner *a*, of a relative
+*b*, and of a calibration population C (for T0, the cross-line teachers). The owner draws calibration scores
+S_1, …, S_n i.i.d. from P_C, independently of the suspect, and rejects when the conformal p-value
+p = (1 + #{i : S_i ≥ S}) / (1 + n) is at most α. Let TPR_a and FPR_b be the rejection probabilities when the suspect is
+drawn from P_a and from P_b.
+
+**Corollary 1.**
+
+  TPR_a − TV(P_a, P_b)  ≤  FPR_b  ≤  α + TV(P_C, P_b).
+
+*Proof.* The rejection event is a measurable function of (S, S_1, …, S_n), and the calibration scores have the same law
+whichever population the suspect comes from. Changing only the law of S from Q to Q′ therefore changes the probability of
+the event by at most TV(Q, Q′), by the variational characterisation of total variation distance. Take Q = P_a for the
+lower bound. For the upper bound take Q = P_C: then S is exchangeable with the calibration scores, so P(p ≤ α) ≤ α by
+conformal validity (Vovk et al., 2005; Bates et al., 2023). ∎
+
+**Tightness.** The lower bound cannot be improved by any test built on S. Le Cam's two-point bound (Tsybakov, 2009,
+Ch. 2) gives inf over tests of [FPR_b + (1 − TPR_a)] = 1 − TV(P_a, P_b), attained by the likelihood-ratio test between
+P_a and P_b. The upper bound is the simplest instance of the coverage-gap bounds for conformal prediction under
+distribution shift (Barber et al., 2023).
+
+**Reading.** The false-positive rate on a relative is squeezed between two distances measured *in the law of the
+test's own statistic*:
+- **Covered relative.** If the calibration population produces scores distributed like the relative's, the test
+  rejects the relative at close to α, however close the relative is to the owner.
+- **Uncovered, nearby relative — the coverage gap.** If the relative's scores are far from every calibration
+  population but close to the owner's, the upper bound is vacuous and the lower bound forces FPR_b ≥ TPR_a − TV(P_a, P_b):
+  a test powerful enough to catch the owner's own students must also flag the relative.
+- **The distances belong to the statistic, not to the teachers.** TV(P_a, P_b) is the distance between score laws after
+  the read-out and pooling, so two read-outs applied to the same students can sit on different sides of the gap
+  (Proposition 2's invariance point).
+
+This is a corollary of standard results, and we claim no novelty for it. Its role is to state precisely which quantity
+the experiments of §5–§6 move.
+
+**Evidence.**
+- **An uncovered relative (§5.3).** T0 calibrates on cross-line students only, whose scores lie far below the relative's,
+  so TV(P_C, P_b) is near 1 and the upper bound gives no protection. The conformal threshold sits at the cross-line
+  tail, below both the owner's and the relative's scores. Owners detect their own students at 1.00 and flag same-line
+  relatives at 0.9–1.0 in 8 of 12 ordered pairs per cell, in both directions on the Zephyr ladder. Note what this does
+  *not* show: TPR_a − FPR_b ≈ 0–0.1 gives only the vacuous lower bound TV(P_a, P_b) ≥ 0–0.1. The collapse is a failure of
+  coverage, not evidence that the owner's and the relative's score laws are close, and a threshold between them —
+  which T1's pairwise test effectively supplies — separates them.
+- **Covering the relative (§6.1).** T1 adds, for each relative, a test whose reference population is that relative's
+  own students, so its calibration covers the relative by construction. Its relative false-positive rates fall to
+  0.00–0.09, across two vendors, two datasets and three read-outs. T1's reference test uses a t prediction interval
+  rather than a conformal rank, so its guarantee is approximate; the conformal variant (α = 0.1) gives the same
+  conclusion [EXP-M7].
+- **Removing coverage for one relative (§6.2).** Withholding one relative's reference students restores its false-positive
+  rate to ≥ 0.6 in 6–8 of the 8 affected pairs per cell. A pooled rejector whose calibration includes the *other*
+  relatives rejects an unreferenced *distant* relative (0.0) but not an *adjacent* one (1.0) [EXP-M8]. The distant relative
+  is covered by teachers it resembles; the adjacent one is close only to the owner.
+- **Where the lower bound bites: imitation (§6.3).** An attack that rewrites the owner's traces toward a relative moves
+  the attacked students' score law P_a′ toward P_b under the owner's pairwise statistic. Once TV(P_a′, P_b) is small, the
+  lower bound leaves the test only two options on those students: miss them, or flag the relative too. These are exactly
+  the observed outcomes — evasion, framing and joint claims [EXP-M9, EXP-M9b, EXP-M12]. The corollary does not predict
+  *which* attacks get there, and our pre-registered predictors of that failed.
+- **The distances depend on the read-out (§5.4).** The same students, calibration set and owners give 8 collapsed pairs
+  per MATH cell under TF-IDF but 2–3 under sentence embeddings [EXP-M11]: under the embedding statistic the relatives'
+  score laws are covered by the cross-line calibration population.
+- **Geometric corroboration (exploratory, §5.4).** A centroid-distance proxy for "closer to the owner than to any
+  calibration teacher" orders collapse severity in all 12 AllenAI read-out × cell units. Its threshold form is
+  contradicted on the Zephyr ladder, where four pairs collapse with the relative farther from the owner than the nearest
+  cross-line teacher. This is what Corollary 1 leads one to expect of such a proxy: the bound is stated in terms of the
+  statistic's score laws, and centroid distance in feature space is not that quantity, so it can order severity without
+  locating a threshold.
+
 ## Placement and scope notes
 - Proposition 1 goes in §3.4, immediately after the test. It defines the two endpoints used in §6.
 - Proposition 2 opens §6 and frames the teacher-identity read-out.
 - Proposition 3 goes in §7 (dilution), next to the query-scaling result.
+- Corollary 1 goes at the end of §3, after Proposition 2; §5.3, §5.4, §6.1–§6.3 cite it.
 - The evaluated access model is **known-instruction replication** only. Accidental instruction
   collision and instruction reconstruction from published traces are not evaluated, and none of the
   propositions quantify them.
