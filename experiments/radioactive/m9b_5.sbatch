@@ -3,7 +3,7 @@
 #SBATCH --partition=ihc
 #SBATCH --gres=gpu:L40S:1
 #SBATCH --cpus-per-task=12
-#SBATCH --mem=96G
+#SBATCH --mem=32G
 #SBATCH --job-name=cg_m9bS
 #SBATCH --time=3:00:00
 #SBATCH --output=experiments/radioactive/logs/m9bS_%j.out

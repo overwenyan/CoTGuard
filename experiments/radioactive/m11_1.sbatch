@@ -3,7 +3,7 @@
 #SBATCH --partition=ihc
 #SBATCH --gres=gpu:L40S:1
 #SBATCH --cpus-per-task=16
-#SBATCH --mem=160G
+#SBATCH --mem=32G
 #SBATCH --job-name=cg_m11
 #SBATCH --array=0-2
 #SBATCH --time=12:00:00
