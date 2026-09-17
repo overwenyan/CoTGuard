@@ -419,3 +419,12 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   discriminant shift ≥ 1.0" sentence — M12-B shows evasion at shifts of 0.32–0.35 and 0.71–0.73.
 - Two experiments run, one confirmatory claim demoted (geometry), one causal claim not earned (scaffold). Holds unchanged:
   7B cell, classifier-aware attacker, non-math task.
+
+## 2026-09-17 — Anthology verification done (last open item before related work)
+- ReasMark = ACL 2026 long (2026.acl-long.2185); trace rewriting = ACL 2026 long (2026.acl-long.519); DITTO = **EACL 2026**
+  long (2026.eacl-long.229). Advisor round 6's "DITTO is preprint only" was wrong; recorded in `citations_verified.md`.
+- Positioning consequence: Ma et al. (ACL 2026) rewrite traces owner-side to plant an active watermark — the mirror image of
+  our distiller-side rewrite attacks. Both ReasMark and trace rewriting belong to the active-mark regime that §6.4 points
+  to for third-party auditing.
+- The remaining classic references (Craver, Brennan, Jovanović, Zhang, T-norm, impostors, Scheirer, Bates, Barber, Vovk,
+  Tsybakov, Maini, Sablayrolles, Sander, Wadhwa, Mansurov, Rohrer) are listed for the same check before related work.

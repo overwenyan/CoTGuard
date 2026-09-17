@@ -325,7 +325,9 @@ membership rather than style (Maini et al., 2024).
   - M9b key collision with mixture students;
   - voided rewrites;
   - Tulu-3 checkpoint mislabel.
-- **Citations still to verify before use:** ReasMark (ACL 2026?), trace-rewriting defence (ACL 2026?), DITTO (preprint
-  only), RefDistDet (preprint).
+- **Citations:** ReasMark (ACL 2026), trace rewriting (ACL 2026) and DITTO (EACL 2026) verified against the Anthology
+  (`.pipeline/docs/citations_verified.md`); RefDistDet is a preprint. **Positioning to add in §6.3:** Ma et al. (ACL 2026)
+  rewrite traces on the *owner's* side to plant an active watermark; our rewrites are the *distiller's*, against a passive
+  test — the same operation with the opposite adversary.
 - **Numbers to regenerate with `make_tables.py`, not copy by hand:** Table 1, Table 2, the §5.2 AUC table and the
   budget figures.
