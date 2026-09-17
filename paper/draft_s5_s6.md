@@ -206,8 +206,9 @@ Each assumption behind T1 can be removed separately [EXP-M8]:
 
 We now let the distiller rewrite the owner's traces before training, and we do not let the owner anticipate it: its
 reference students and read-outs stay those of §6.1. A 7B instruction model (Qwen2.5-7B-Instruct) performs the
-rewrite. A rewritten corpus is valid only if at least 90% of its traces keep the original final answer [EXP-M9,
-EXP-M9b].
+rewrite — the same operation an owner performs on its own traces to plant an active mark (Ma et al., 2026), run here
+from the distiller's side (§2.2). A rewritten corpus is valid only if at least 90% of its traces keep the original
+final answer [EXP-M9, EXP-M9b].
 
 - **Neutral paraphrase does not defeat T1.** Owners still detect 0.92 (Qwen) and 0.83 (Llama) of students trained on
   paraphrased traces [EXP-M9 G1]. About half of the prompt-implanted signatures of §4 did not survive the same paraphrase.
@@ -334,8 +335,8 @@ membership rather than style (Maini et al., 2024).
   - voided rewrites;
   - Tulu-3 checkpoint mislabel.
 - **Citations:** ReasMark (ACL 2026), trace rewriting (ACL 2026) and DITTO (EACL 2026) verified against the Anthology
-  (`.pipeline/docs/citations_verified.md`); RefDistDet is a preprint. **Positioning to add in §6.3:** Ma et al. (ACL 2026)
-  rewrite traces on the *owner's* side to plant an active watermark; our rewrites are the *distiller's*, against a passive
-  test — the same operation with the opposite adversary.
+  (`.pipeline/docs/citations_verified.md`); RefDistDet is a preprint. The seventeen standing references are verified in
+  the same file. **Ma et al. positioning is now §2.2** (owner-side rewriting plants, distiller-side rewriting scrubs and
+  spoofs — the hinge of related work); §6.3 keeps only the one-clause back-reference above.
 - **Numbers to regenerate with `make_tables.py`, not copy by hand:** Table 1, Table 2, the §5.2 AUC table and the
   budget figures.

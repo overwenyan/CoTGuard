@@ -106,5 +106,5 @@ the read-out is pairwise (M6 exploratory, M7 confirmatory). What fails is not de
 1. §3 theory (drafted) + calibration corollary.
 2. §5 ladder (M6) and §6 reference-aware test (M7) — the new material.
 3. §4 instruction level (M3) compressed from the existing plan.
-4. §2 related work with the ambiguity-attack tradition.
+4. §2 related work with the ambiguity-attack tradition. **[drafted 2026-09-17 — `paper/draft_s2_related.md`]**
 5. §1 abstract and intro last, using the wording table in `m3_paper_plan.md`.
