@@ -130,7 +130,8 @@ distribution shift (Barber et al., 2023).
 **Reading.** The false-positive rate on a relative is squeezed between two distances measured *in the law of the
 test's own statistic*:
 - **Covered relative.** If the calibration population produces scores distributed like the relative's, the test
-  rejects the relative at close to α, however close the relative is to the owner.
+  flags the relative's students at a rate of at most about α (rejecting the null wrongly), however close the relative is to
+  the owner.
 - **Uncovered, nearby relative — the coverage gap.** If the relative's scores are far from every calibration
   population but close to the owner's, the upper bound is vacuous and the lower bound forces FPR_b ≥ TPR_a − TV(P_a, P_b):
   a test powerful enough to catch the owner's own students must also flag the relative.
