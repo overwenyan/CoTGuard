@@ -373,3 +373,27 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   (EMB on MATH: only 2–3 of 12 pairs collapse), while the remedy is uniform. Phrase the diagnosis as a property of
   the null a given read-out's test controls.
 - Headline table: all three read-outs. Evidence is complete; next is writing.
+
+## 2026-09-17 — Advisor round 7 (accepted): write §5–§6; three settlements; one exploratory check, spec fixed before running
+- **Non-uniform collapse is a result:** the fix works under every read-out; how badly the standard test fails is a
+  property of the null each read-out's test controls. One sentence in the abstract, not a footnote.
+- **MATH collapse logged honestly** in the integrity appendix (see ledger entry of this date), with the note that
+  TF-IDF has been the primary read-out since M5, before any of M6–M10 existed.
+- **Scaffold finding owned, two statements kept separate:** *what* the imitation moves (scaffold phrases — claimed,
+  descriptive) vs *when* it succeeds (two pre-registered predictors failed — not claimed). The embedding result
+  (≥ 0.98 power on a read-out that largely ignores scaffolds) is stated as the counterweight: identity is not only
+  formatting.
+- **Headline table:** all read-outs × cells × Zephyr in the table; TF-IDF (pre-registered primary) for the main bars,
+  EMB/POS as a robustness panel; "collapse without references" gets its own column.
+- **Exploratory geometry check (M11 is closed, so exploratory; a check, not a claim).** Spec, written before running:
+  - For each read-out R ∈ {tfidf, pos, emb}, cell ∈ {GSM8K, MATH} × {Qwen, Llama}: feature map as in M11 (fitted on
+    the 6 teachers' R300 traces for tfidf/pos; gte-base for emb). Each student = mean feature vector of its 300 probe
+    outputs; each teacher's reference centroid = mean over its 10 reference students (seeds 0–9).
+  - For ordered same-line pair (owner a → relative b): d_rel = cosine distance(centroid_a, centroid_b);
+    d_cross = min over the 3 out-of-line teachers t of cosine distance(centroid_a, centroid_t);
+    **ratio = d_rel / d_cross** (small ratio = relative sits closer to the owner than any cross-line calibration point).
+  - Prediction from the coverage account: smaller ratio → more collapse. Checks: (i) within each read-out × cell,
+    Spearman(ratio, T0 FPR_rel) over the 12 pairs, expected negative; (ii) across the 12 read-out × cell units,
+    Spearman(mean ratio, number of pairs with T0 FPR_rel ≥ 0.6), expected negative.
+  - **Decision:** report as supporting only if (ii) is negative and (i) is negative in ≥ 9 of 12 units. Otherwise
+    report "the geometry does not order collapse severity" and drop it from the paper's argument.
