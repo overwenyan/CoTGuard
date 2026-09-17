@@ -252,15 +252,25 @@ the attack as an empirical finding and leave *when* it succeeds open.
 **What the attack changes, we can say.** For each valid attack we projected the shift in the attacked students' mean
 TF-IDF features onto the owner-versus-relative discriminant [exploratory]. The shift is carried almost entirely by
 reasoning-scaffold phrases — *step*, *step calculate*, *step determine*, *state the*, *the answer is*, *boxed* — rather
-than by problem content, with nearly identical numbers for both student families. The owner lost detection in exactly
-the two attacks that moved its students all the way across that discriminant (1.02–1.29 of the owner-to-relative
-distance) and kept it in the four that moved them at most 41% of the way. The last observation is close to definitional,
-since T1 uses that discriminant; the substantive content is *which* features move.
+than by problem content, with nearly identical numbers for both student families.
+
+**Rewriting only the scaffold is not a substitute for imitation, attack by attack** [confirmatory, outcome mixed]. We
+then rewrote the owner's traces changing *only* step labels, line-opening words and the final-answer line toward the
+relative, and required each corpus to keep at least 90% of the original's answers and numbers and 80% of its
+non-scaffold words (6 of 8 corpora passed) [EXP-M12]. We had pre-registered two outcomes — scaffold-only reproduces full
+imitation, or it is clearly weaker — and neither held in both student families. Where both rewrites were valid,
+scaffold-only matched full imitation on 2 and 3 of 4 attacks (Qwen, Llama). It was *stronger* on one: the Tulu RLVR
+owner, which full imitation did not evade, lost detection entirely and the DPO relative claimed the students. It was
+*weaker* on another, where the framing of the RLVR relative disappeared. On the two attacks whose full-imitation corpora
+had failed the answer check, the content-preserving scaffold rewrite evaded detection in both, framing the relative in
+one. Overall a rewrite that keeps the content evaded the owner's test in 3 of 6 valid attacks. We read this as
+per-attack evidence that scaffold changes alone can defeat the test, not as a causal account of the full attack, which
+can do more or less than its scaffold component.
 
 **What this says about the signal.** Distilled students inherit their teacher's reasoning scaffolds — step headers, answer
 templates — and much of the lexical provenance signal is formatting provenance. That explains both halves of this
-paper: scaffolds transfer reliably through distillation, so attribution works (§6.1), and an in-context rewrite copies
-them easily, so imitation defeats it. It is not the whole signal. The embedding read-out largely ignores scaffold tokens
+paper: scaffolds transfer reliably through distillation, so attribution works (§6.1), and they are cheap to copy — a
+rewrite that changes only the scaffold defeated the test in half of the attacks where content was verifiably kept. It is not the whole signal. The embedding read-out largely ignores scaffold tokens
 and still names the checkpoint at a true-positive rate of at least 0.98 (Table 1), so some identity survives in what the
 students say, not only in how they lay it out. We claim the first statement (what imitation moves) and not a mechanism
 for the second (when it succeeds).

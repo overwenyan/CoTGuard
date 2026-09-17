@@ -408,3 +408,14 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
 - §5.4 now: consistent with collapse severity in the AllenAI cells, not replicated on the held-out vendor; no threshold
   claim; the coverage *account* stays as the explanation of why T0 cannot reject relatives (Proposition 1), but the
   centroid-distance geometry is not offered as its quantitative evidence.
+
+## 2026-09-17 — M12 arm B: MIXED, no causal sentence (as pre-registered)
+- S1 (scaffold sufficiency) fails in both families; S2 (content matters) holds for Qwen only. Per attack, scaffold-only
+  was stronger than full imitation on one (tulu_rlvr→tulu_dpo: evade + frame), weaker on another (framing vanished on
+  tulu_dpo→tulu_rlvr), identical on one, and evaded on the two attacks whose full-imitation corpora had been voided.
+- **Paper:** §6.3 reports the scaffold-only arm attack by attack; "what imitation moves" stays descriptive; add the
+  per-attack observation that a content-preserving scaffold rewrite evaded detection in 3 of 6 valid attacks (an
+  observation, not a causal account of full imitation). **Delete** the descriptive "evasion exactly when the
+  discriminant shift ≥ 1.0" sentence — M12-B shows evasion at shifts of 0.32–0.35 and 0.71–0.73.
+- Two experiments run, one confirmatory claim demoted (geometry), one causal claim not earned (scaffold). Holds unchanged:
+  7B cell, classifier-aware attacker, non-math task.
