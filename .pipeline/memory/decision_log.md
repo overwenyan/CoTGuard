@@ -397,3 +397,7 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
     Spearman(mean ratio, number of pairs with T0 FPR_rel ≥ 0.6), expected negative.
   - **Decision:** report as supporting only if (ii) is negative and (i) is negative in ≥ 9 of 12 units. Otherwise
     report "the geometry does not order collapse severity" and drop it from the paper's argument.
+- **Geometry check result (2026-09-17):** passes its pre-set rule (12/12 within-unit negative; across-unit ρ = −0.83).
+  Paper may say the read-out geometry *orders* collapse severity as the coverage account predicts, labelled
+  exploratory, with the TF-IDF/MATH exception (ratio ≈ 0.95 but full collapse) stated: ordering holds, no sharp
+  threshold at ratio = 1.
