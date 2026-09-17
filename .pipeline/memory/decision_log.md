@@ -365,3 +365,11 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   adversaries.
 - **Unverified citations flagged by the advisor:** ReasMark (ACL 2026?), "Protecting LMs against unauthorized
   distillation through trace rewriting" (ACL 2026?), DITTO (preprint only) — verify against the Anthology before citing.
+
+## 2026-09-16 — EXP-M11: the diagnosis survives non-lexical read-outs
+- The reference-aware remedy (N2) holds under gte-base embeddings and POS templates in all 4 M7 cells and on
+  Zephyr; the TF-IDF sentinel reproduced M7/M10 exactly. The advisor's "must-run" objection is closed.
+- Nuance to report, not hide: the *strength* of the no-reference collapse is read-out- and dataset-dependent
+  (EMB on MATH: only 2–3 of 12 pairs collapse), while the remedy is uniform. Phrase the diagnosis as a property of
+  the null a given read-out's test controls.
+- Headline table: all three read-outs. Evidence is complete; next is writing.
