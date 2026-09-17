@@ -341,3 +341,27 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
 - **Paper consequences:** drop the RL-narrowing mechanism paragraph; drop the dissociation paragraph
   entirely (not even an appendix claim); report the attack as three outcomes (evade+spoof, joint claim,
   laundering) rather than a single "spoofing" story; add an integrity appendix with the extractor audit.
+
+## 2026-09-16 — Advisor round 6 (accepted, one factual correction)
+- **Terminology:** map the attack outcomes onto established names on first use — evade = scrubbing/removal
+  (obfuscation; Brennan et al. 2012; Jovanović et al. 2024); evade+frame = scrubbing + spoofing (obfuscation +
+  imitation); joint claim = ambiguity/invertibility attack (Craver et al. 1998); laundering = our coinage for
+  "successful scrubbing without spoofing", defined explicitly and distinguished from "data laundering"
+  (Mansurov et al. 2412.15255, a different sense). Rank by adjudication damage: laundering ≥ joint claim >
+  framing/partial spoof > evade only > no effect.
+- **No mechanism:** report the attack as an empirical finding with the two failed pre-registered accounts (ARR H6/H13
+  protect this). Do not add attacks to raise n (6 → 12 is still underpowered). Add the feature-attribution diagnostic
+  (done: scaffold phrases carry the moved signal).
+- **Correction paragraph** goes in the main text, in the self-correction register (Rohrer et al. 2021). **Factual fix
+  to the advisor's draft:** it says the extractor bug was caught via a sentinel flagging a power inversion. Wrong — the
+  sentinel caught the M8 *scorer* bug; the extractor bug surfaced when M9b's rewrite check voided 7 of 8 attacks and
+  the samples were inspected; the unit tests were written afterwards. Also the bug affected rounds M3–M9b, not M3–M8.
+- **Must-run before submission:** a non-lexical read-out replication of the headline T0-vs-T1 cells → M11
+  (pre-registered 18210d9, running). If the remedy fails under both EMB and POS, rescope the claim to lexical read-outs.
+- **Hold for rebuttal:** one 7B LoRA cell; a read-out-aware attacker; a non-math task.
+- **Deployment framing:** T1 as a first-party lineage attestation a vendor can pre-compute at release (like a signed
+  checksum), valid against honest distillers and bounded by the imitation attack; precedents: Hugging Face `base_model`
+  lineage metadata, Ecosystem Graphs (Bommasani et al.), EU AI Act Art. 53(1)(d). Never implied robust to adaptive
+  adversaries.
+- **Unverified citations flagged by the advisor:** ReasMark (ACL 2026?), "Protecting LMs against unauthorized
+  distillation through trace rewriting" (ACL 2026?), DITTO (preprint only) — verify against the Anthology before citing.

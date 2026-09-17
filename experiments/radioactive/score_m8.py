@@ -31,8 +31,15 @@ MIX_LAMBDAS = [5, 1]                         # 10 x lambda
 MIX_SEEDS = [20, 21, 22]
 
 
+READOUT = "tfidf"                           # m11: "emb" or "pos" select a non-lexical read-out (see readouts.py)
+
+
 def fit(texts_by_class):
-    v = TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True, min_df=2, max_features=80000)
+    if READOUT != "tfidf":
+        from readouts import make_vectorizer
+        v = make_vectorizer(READOUT)
+    else:
+        v = TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True, min_df=2, max_features=80000)
     X = [t for c in texts_by_class for t in c]
     y = [i for i, c in enumerate(texts_by_class) for _ in c]
     return v, LogisticRegression(max_iter=3000, C=4.0).fit(v.fit_transform(X), np.array(y))
