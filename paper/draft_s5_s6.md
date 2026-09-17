@@ -241,8 +241,8 @@ final answer [EXP-M9, EXP-M9b].
 
 _Valid attacks that evade the owner (family-mean detection ≤ 0.34): imitation 2, scaffold-only 3, either 5 of 8 attack directions._
 
-The outcome column is Corollary 1b read off the table: writing Q for the score law of the attacked students, evasion is
-Q far from the owner's own students under the owner's statistic, framing is Q close to the imitated relative's under the
+The outcome column is Corollary 1b read off the table: writing Q for the score law of the attacked students, to **evade** is
+for Q to be far from the owner's own students under the owner's statistic, to **frame** is for Q to be close to the imitated relative's under the
 relative's, a joint claim is close to both and laundering is far from both. That is a description of where the attack
 lands, not of how the rewriter gets there.
 

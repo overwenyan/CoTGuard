@@ -150,9 +150,9 @@ statements that hold separately, each under the statistic of the party making th
   owner's detection rate on Q  ≥  TPR_a − TV(P_a, Q)  (under the owner's statistic),
   relative b's claim rate on Q  ≥  TPR_b − TV(P_b, Q)  (under b's).
 
-Each of the four outcomes observed in §6.3 is a position of Q relative to those two laws: **evasion** requires Q far
-from P_a under the owner's statistic; **framing** requires Q close to P_b under b's; a **joint claim** is close to both;
-**laundering** is far from both. This says what each outcome *is* in score space, not why a given rewriter lands there,
+Each of the four outcomes observed in §6.3 is a position of Q relative to those two laws, and we use the same four words
+on both sides: to **evade**, Q must be far from P_a under the owner's statistic; to **frame** b, Q must be close to P_b
+under b's; a **joint claim** is close to both; **laundering** is far from both. This says what each outcome *is* in score space, not why a given rewriter lands there,
 so it leaves the mechanism question (§6.3, "when the attack succeeds, we cannot say") exactly where the experiments
 leave it. It does make one thing unsurprising that would otherwise look odd: two rewrites can evade on disjoint sets of
 attacks, because they move Q in different directions and which direction increases TV(P_a, Q) depends on the owner.
