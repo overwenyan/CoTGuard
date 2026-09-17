@@ -10,10 +10,32 @@ entries listed here may be cited with a venue; anything else is cited as a prepr
 | an2026ditto | DITTO: A Spoofing Attack Framework on Watermarked LLMs via Knowledge Distillation | Hyeseon An, Shinwoo Park, Suyeon Woo, Yo-Sub Han | EACL 2026 (Vol. 1: Long), 4922–4936 | 2026.eacl-long.229 · 10.18653/v1/2026.eacl-long.229 · arXiv 2510.10987 | 2026-09-17 | Spoofing a victim's watermark by distillation (watermark radioactivity as attack vector). Precedent for our framing outcome. **Correction:** advisor round 6 called it "preprint only"; it is published at EACL 2026. |
 | rawat2026refdistdet | Reference-Based Distillation Detection in LLMs | Rawat, Chen, Anand, Duan, Rotsted, Min | arXiv preprint (Jun/Jul 2026), no venue verified | arXiv 2607.09692 | 2026-09-16 | Closest prior work; needs earlier-checkpoint **weights**. Cite as preprint. |
 
-## Still to verify before related work is final
-Craver et al. 1998 (IEEE JSAC 16(4)); Brennan, Afroz & Greenstadt 2012 (ACM TISSEC 15(3)); Jovanović et al. 2024
-(ICML, PMLR 235); Zhang et al. 2024 "Watermarks in the Sand" (ICML, PMLR 235); Auckenthaler et al. 2000 (DSP 10);
-Koppel & Winter 2014 (JASIST 65(1)); Scheirer et al. 2013 (TPAMI 35(7)); Bates et al. 2023 (Ann. Statist. 51(1));
-Barber et al. 2023 (Ann. Statist. 51(2)); Vovk et al. 2005 (Springer); Tsybakov 2009 (Springer); Maini et al. 2024
-(NeurIPS); Sablayrolles et al. 2020 (ICML); Sander et al. 2024 (NeurIPS); Wadhwa et al. 2025 (Findings ACL);
-Mansurov et al. 2024 (arXiv 2412.15255); Rohrer et al. 2021 (Perspect. Psychol. Sci.).
+## The seventeen standing references (checked 2026-09-17)
+
+Journal entries were read back from Crossref by DOI; proceedings entries from the publisher's own proceedings page
+(PMLR, NeurIPS, ACL Anthology); books from the publisher's catalogue record.
+
+| Key | Citation as it must appear | ID / DOI | Role |
+|---|---|---|---|
+| craver1998 | Craver, Memon, Yeo & Yeung. Resolving rightful ownerships with invisible watermarking techniques: limitations, attacks, and implications. *IEEE JSAC* 16(4):573–586, 1998. | 10.1109/49.668979 | **Ambiguity attack** — our "joint claim" outcome (§6.3). |
+| brennan2012 | Brennan, Afroz & Greenstadt. Adversarial stylometry: circumventing authorship recognition to preserve privacy and anonymity. *ACM TISSEC* 15(3), Article 12 (22 pp.), 2012. | 10.1145/2382448.2382450 | **Obfuscation vs imitation** — our evade / frame split (§6.3). |
+| jovanovic2024 | Jovanović, Staab & Vechev. Watermark Stealing in Large Language Models. *ICML 2024*, PMLR 235:22570–22593. | PMLR v235/jovanovic24a | **Scrubbing vs spoofing** vocabulary (§6.3). |
+| zhang2024 | Zhang, Edelman, Francati, Venturi, Ateniese & Barak. Watermarks in the Sand: Impossibility of Strong Watermarking for Language Models. *ICML 2024*, PMLR 235:58851–58880. | PMLR v235/zhang24o | Impossibility under a quality-preserving rewriter; our attack is its passive-test analogue. |
+| auckenthaler2000 | Auckenthaler, Carey & Lloyd-Thomas. Score Normalization for Text-Independent Speaker Verification Systems. *Digital Signal Processing* 10(1–3):42–54, 2000. | 10.1006/dspr.1999.0360 | **Cohort / T-norm**: the prior art for choosing *whom you normalise against* — the coverage point of Corollary 1. |
+| koppel2014 | Koppel & Winter. Determining if two documents are written by the same author. *JASIST* 65(1):178–187, 2014. | 10.1002/asi.22954 | **Impostors method**: verification against a background set of impostors. Closest classical ancestor of T1's reference students. |
+| scheirer2013 | Scheirer, Rocha, Sapkota & Boult. Toward Open Set Recognition. *IEEE TPAMI* 35(7):1757–1772, 2013. | 10.1109/TPAMI.2012.256 | Names the failure of §5.3: a closed-set read-out asked an open-set question. |
+| bates2023 | Bates, Candès, Lei, Romano & Sesia. Testing for outliers with conformal p-values. *Ann. Statist.* 51(1):149–178, 2023. | 10.1214/22-AOS2244 | Conformal validity of our p-value (Corollary 1, upper bound). |
+| barber2023 | Barber, Candès, Ramdas & Tibshirani. Conformal prediction beyond exchangeability. *Ann. Statist.* 51(2):816–845, 2023. | 10.1214/23-AOS2276 | Coverage gap under distribution shift — the TV(P_C, P_b) term. |
+| vovk2005 | Vovk, Gammerman & Shafer. *Algorithmic Learning in a Random World*. Springer, 2005. | ISBN 978-0-387-00152-4 | Conformal prediction, standard reference. **Cite the 1st ed. (2005)**, not the 2nd (2022), unless a 2nd-ed. page is quoted. |
+| tsybakov2009 | Tsybakov. *Introduction to Nonparametric Estimation*. Springer Series in Statistics, 2009, Ch. 2. | ISBN 978-0-387-79051-0 | Le Cam two-point **identity** in Corollary 1's tightness remark. **Caveat:** the chapter (minimax lower bounds) is verified, the section number is not — cite "Ch. 2" only until someone opens the book. |
+| maini2024 | Maini, Jia, Papernot & Dziedzic. LLM Dataset Inference: Did you train on my dataset? *NeurIPS 2024*. | neurips 2024 hash e01519b4…c905 | Membership/dataset inference as the alternative regime named in §6.4. |
+| sablayrolles2020 | Sablayrolles, Douze, Schmid & Jégou. Radioactive data: tracing through training. *ICML 2020*, PMLR 119:8326–8335. | PMLR v119/sablayrolles20a | Active marks detectable at ~1% of training data — the contrast in §6.2's dilution result. |
+| sander2024 | Sander, Fernandez, Durmus, Douze & Furon. Watermarking Makes Language Models Radioactive. *NeurIPS 2024*. | neurips 2024 hash 2567c95f…d22a | Same contrast for LLM watermarks (detectable at 5%); also the origin of "radioactivity" in our directory names. |
+| wadhwa2025 | Wadhwa, Shaib, Amir & Wallace. Who Taught You That? Tracing Teachers in Model Distillation. *Findings of ACL 2025*, 3307–3315. | 2025.findings-acl.173 · 10.18653/v1/2025.findings-acl.173 | **Direct ancestor**: teacher identification from student outputs, n-grams unreliable and **PoS templates** carrying the signal. Our POS read-out (M11) follows it; our contribution is the *within-lineage* case they do not test. |
+| mansurov2024 | Mansurov, Sakip & Aji. Data Laundering: Artificially Boosting Benchmark Results through Knowledge Distillation. arXiv:2412.15255, Dec 2024 (rev. Jun 2025). | arXiv 2412.15255 | **Preprint, no venue** — cite as such. Only to disclaim the term: their "laundering" is benchmark contamination, ours is provenance erasure. |
+| rohrer2021 | Rohrer, Tierney, Uhlmann et al. Putting the Self in Self-Correction: Findings From the Loss-of-Confidence Project. *Perspect. Psychol. Sci.* 16(6):1255–1269, 2021. | 10.1177/1745691620964106 | Integrity appendix: precedent for publishing one's own retractions. |
+
+## Also found while checking (not yet placed)
+| Key | Citation | ID | Why it matters |
+|---|---|---|---|
+| liu2025provenance | Liu, Yan, Miao, Wang, Shen, Zhang & Ye. Where Did This Sentence Come From? Tracing Provenance in LLM Reasoning Distillation. arXiv:2512.20908, Dec 2025 (rev. Feb 2026). | arXiv 2512.20908 | Title-level collision with our topic, **but not a competitor**: it traces which *actions* in a student's output came from the teacher, using the teacher's own predictive probabilities, and does not attribute a student to a checkpoint. Cite in related work to draw the line; needs a read before submission. |
