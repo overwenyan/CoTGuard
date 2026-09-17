@@ -65,8 +65,8 @@ stricter length band: 1–1.5B LoRA students do not absorb 4–7k-character reas
 ### 5.2 Which training step changes a student's style [estimation]
 
 For each pair of checkpoints we train a pairwise read-out on the two teachers' traces and measure how well it
-separates the two teachers' students, output by output (AUC over 300 outputs × 5–10 students per side; cluster
-bootstrap over students) [EXP-M6, EXP-M7, EXP-M10].
+separates the two teachers' students, output by output (AUC over 300 outputs × 5–10 students per side; cluster-bootstrap
+intervals for the ladder round in Appendix X) [EXP-M6, EXP-M7, EXP-M10].
 
 | Step | Tulu-3 | OLMo-3-Instruct | OLMo-3-Think | Zephyr |
 |---|---|---|---|---|
@@ -101,9 +101,10 @@ every other stage of their line. On the Zephyr ladder it is complete in both dir
 families) [EXP-M10 R1].
 
 **Why.** No same-line student is in the calibration set, so any relative that scores higher on the owner's class than
-every cross-line student is rejected-for with certainty. This is Proposition 1 applied to teachers instead of keys: T0
+every cross-line student is flagged. This is Proposition 1 applied to teachers instead of keys: T0
 controls "not from another line", not "not from this checkpoint". The information needed for the finer decision is
-present in the same outputs — §6.1 shows it separates the same students perfectly — so the failure is a property of
+present in the same outputs — §6.1 shows that the same students are told apart once the comparison includes the
+relative — so the failure is a property of
 the null the test controls, not of the signal.
 
 ### 5.4 How badly the standard test fails depends on the read-out [confirmatory + exploratory]
