@@ -1,0 +1,268 @@
+{
+ "table1": {
+  "allenai/gsm/qwen15": {
+   "tfidf": {
+    "n_T0_ge_0.6": 8,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 12,
+    "mean_T1_fpr": 0.041666666666666664
+   },
+   "pos": {
+    "n_T0_ge_0.6": 8,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 12,
+    "mean_T1_fpr": 0.025000000000000005
+   },
+   "emb": {
+    "n_T0_ge_0.6": 8,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 11,
+    "mean_T1_fpr": 0.075
+   }
+  },
+  "allenai/gsm/llama1b": {
+   "tfidf": {
+    "n_T0_ge_0.6": 8,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 11,
+    "mean_T1_fpr": 0.06666666666666667
+   },
+   "pos": {
+    "n_T0_ge_0.6": 7,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 11,
+    "mean_T1_fpr": 0.049999999999999996
+   },
+   "emb": {
+    "n_T0_ge_0.6": 8,
+    "mean_T1_tpr": 0.9833333333333334,
+    "n_T1_le_0.2": 11,
+    "mean_T1_fpr": 0.049999999999999996
+   }
+  },
+  "allenai/math/qwen15": {
+   "tfidf": {
+    "n_T0_ge_0.6": 8,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 10,
+    "mean_T1_fpr": 0.09166666666666667
+   },
+   "pos": {
+    "n_T0_ge_0.6": 5,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 11,
+    "mean_T1_fpr": 0.07500000000000001
+   },
+   "emb": {
+    "n_T0_ge_0.6": 3,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 11,
+    "mean_T1_fpr": 0.05833333333333334
+   }
+  },
+  "allenai/math/llama1b": {
+   "tfidf": {
+    "n_T0_ge_0.6": 8,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 12,
+    "mean_T1_fpr": 0.03333333333333333
+   },
+   "pos": {
+    "n_T0_ge_0.6": 6,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 11,
+    "mean_T1_fpr": 0.041666666666666664
+   },
+   "emb": {
+    "n_T0_ge_0.6": 2,
+    "mean_T1_tpr": 0.9833333333333334,
+    "n_T1_le_0.2": 11,
+    "mean_T1_fpr": 0.041666666666666664
+   }
+  },
+  "zephyr/gsm/qwen15": {
+   "tfidf": {
+    "n_T0_ge_0.6": 2,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 2,
+    "mean_T1_fpr": 0.05
+   },
+   "pos": {
+    "n_T0_ge_0.6": 2,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 2,
+    "mean_T1_fpr": 0.05
+   },
+   "emb": {
+    "n_T0_ge_0.6": 2,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 2,
+    "mean_T1_fpr": 0.0
+   }
+  },
+  "zephyr/gsm/llama1b": {
+   "tfidf": {
+    "n_T0_ge_0.6": 2,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 2,
+    "mean_T1_fpr": 0.05
+   },
+   "pos": {
+    "n_T0_ge_0.6": 2,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 2,
+    "mean_T1_fpr": 0.0
+   },
+   "emb": {
+    "n_T0_ge_0.6": 2,
+    "mean_T1_tpr": 1.0,
+    "n_T1_le_0.2": 2,
+    "mean_T1_fpr": 0.0
+   }
+  }
+ },
+ "table2": {
+  "attacks": {
+   "tulu_sft->tulu_dpo": {
+    "void": false,
+    "tpr": [
+     0.0,
+     0.0
+    ],
+    "spoof": [
+     1.0,
+     0.6666666666666666
+    ]
+   },
+   "tulu_dpo->tulu_sft": {
+    "void": false,
+    "tpr": [
+     1.0,
+     1.0
+    ],
+    "spoof": [
+     1.0,
+     1.0
+    ]
+   },
+   "tulu_dpo->tulu_rlvr": {
+    "void": false,
+    "tpr": [
+     1.0,
+     1.0
+    ],
+    "spoof": [
+     0.6666666666666666,
+     0.3333333333333333
+    ]
+   },
+   "tulu_rlvr->tulu_dpo": {
+    "void": false,
+    "tpr": [
+     1.0,
+     1.0
+    ],
+    "spoof": [
+     1.0,
+     1.0
+    ]
+   },
+   "olmoi_sft->olmoi_dpo": {
+    "void": false,
+    "tpr": [
+     0.0,
+     0.0
+    ],
+    "spoof": [
+     0.0,
+     0.0
+    ]
+   },
+   "olmoi_dpo->olmoi_sft": {
+    "void": true,
+    "tpr": [
+     0.0,
+     0.0
+    ],
+    "spoof": [
+     0.0,
+     0.0
+    ]
+   },
+   "olmoi_dpo->olmoi_final": {
+    "void": true,
+    "tpr": [
+     0.0,
+     0.0
+    ],
+    "spoof": [
+     1.0,
+     1.0
+    ]
+   },
+   "olmoi_final->olmoi_dpo": {
+    "void": false,
+    "tpr": [
+     1.0,
+     1.0
+    ],
+    "spoof": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "summary": {
+   "qwen15": {
+    "mean_tpr": 0.6666666666666666,
+    "mean_spoof": 0.611111111111111
+   },
+   "llama1b": {
+    "mean_tpr": 0.6666666666666666,
+    "mean_spoof": 0.5
+   }
+  }
+ },
+ "step_auc": {
+  "Tulu-3|SFT \u2192 DPO": [
+   0.9303546666666667,
+   0.9307051111111111
+  ],
+  "OLMo-3-Instruct|SFT \u2192 DPO": [
+   0.9510795555555556,
+   0.9344715555555555
+  ],
+  "OLMo-3-Think|SFT \u2192 DPO": [
+   0.9878506666666667,
+   0.9917857777777778
+  ],
+  "Tulu-3|DPO \u2192 RL / final": [
+   0.7277946666666667,
+   0.719298
+  ],
+  "OLMo-3-Instruct|DPO \u2192 RL / final": [
+   0.7236844444444445,
+   0.7585351111111112
+  ],
+  "OLMo-3-Think|DPO \u2192 RL / final": [
+   0.9602462222222223,
+   0.9549835555555555
+  ],
+  "Tulu-3|SFT \u2192 final (two steps)": [
+   0.9393799999999999,
+   0.9462671111111111
+  ],
+  "OLMo-3-Instruct|SFT \u2192 final (two steps)": [
+   0.9584875555555554,
+   0.9407644444444444
+  ],
+  "OLMo-3-Think|SFT \u2192 final (two steps)": [
+   0.9513346666666666,
+   0.9392800000000001
+  ],
+  "Zephyr|SFT \u2192 DPO": [
+   0.9772261111111112,
+   0.9736025555555556
+  ]
+ }
+}

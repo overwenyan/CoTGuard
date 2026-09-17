@@ -1,0 +1,111 @@
+"""Generate the §5–§6 tables from result JSON (never by hand). Writes paper/generated/s56_*.md and s56_numbers.json."""
+
+from __future__ import annotations
+
+import json
+import pathlib
+
+R = pathlib.Path(__file__).resolve().parents[1] / "experiments" / "radioactive"
+G = pathlib.Path(__file__).resolve().parent / "generated"
+M7, M6 = R / "data_m7", R / "data_m6" / "tulu_gsm"
+READ = [("tfidf", "TF-IDF"), ("pos", "POS"), ("emb", "EMB")]
+FAMS = [("qwen15", "Qwen"), ("llama1b", "Llama")]
+
+
+def j(p):
+    return json.loads(p.read_text())
+
+
+def f2(x):
+    return "—" if x is None else f"{x:.2f}"
+
+
+def f3(x):
+    return "—" if x is None else f"{x:.3f}"
+
+
+def table1():
+    m7 = {k: j(M7 / f"m11_m7_{k}.json")["cells"] for k, _ in READ}
+    m10 = {k: j(M7 / f"m11_m10_{k}.json")["cells"] for k, _ in READ}
+    rows, nums = [], {}
+    for ds, dsn in [("gsm", "GSM8K"), ("math", "MATH")]:
+        for fam, famn in FAMS:
+            c = {k: m7[k][f"{ds}/{fam}"] for k, _ in READ}
+            col = " · ".join(str(c[k]["n_T0_ge_0.6"]) for k, _ in READ)
+            t1 = [f"{f2(c[k]['mean_T1_tpr'])} / {c[k]['n_T1_le_0.2']} / {f3(c[k]['mean_T1_fpr'])}" for k, _ in READ]
+            rows.append(f"| AllenAI · {dsn} · {famn} | {col} | " + " | ".join(t1) + " |")
+            nums[f"allenai/{ds}/{fam}"] = {k: {x: c[k][x] for x in ["n_T0_ge_0.6", "mean_T1_tpr", "n_T1_le_0.2", "mean_T1_fpr"]}
+                                          for k, _ in READ}
+    for fam, famn in FAMS:
+        c = {k: m10[k][fam]["pairs"] for k, _ in READ}
+        col = " · ".join(str(sum(v["T0_fpr"] >= 0.6 for v in c[k].values())) for k, _ in READ)
+        t1 = []
+        for k, _ in READ:
+            v = list(c[k].values())
+            tpr = sum(x["T1_tpr"] for x in v) / len(v); fpr = sum(x["T1_fpr"] for x in v) / len(v)
+            t1.append(f"{f2(tpr)} / {sum(x['T1_fpr'] <= 0.2 for x in v)} / {f3(fpr)}")
+            nums.setdefault(f"zephyr/gsm/{fam}", {})[k] = {"n_T0_ge_0.6": sum(x["T0_fpr"] >= 0.6 for x in v),
+                                                        "mean_T1_tpr": tpr, "n_T1_le_0.2": sum(x["T1_fpr"] <= 0.2 for x in v),
+                                                        "mean_T1_fpr": fpr}
+        rows.append(f"| Zephyr · GSM8K · {famn} | {col} | " + " | ".join(t1) + " |")
+    head = ("| Cell | Collapse (TF-IDF · POS · EMB) | T1, TF-IDF | T1, POS | T1, EMB |\n|---|---|---|---|---|")
+    return head + "\n" + "\n".join(rows), nums
+
+
+def outcome(tpr, spoof):
+    """Fixed labelling rule on family-mean rates (owner detection, relative misattribution)."""
+    if tpr <= 0.34:
+        return "evade + frame (scrubbing + spoofing)" if spoof >= 0.5 else "laundering (scrubbing without spoofing)"
+    if spoof >= 0.67:
+        return "joint claim (ambiguity attack)"
+    if spoof > 0.0:
+        return "partial frame"
+    return "no effect"
+
+
+def table2():
+    d = j(M7 / "tulu_gsm" / "m9b_result.json")["families"]
+    rows, nums = [], {}
+    by = {fam: {(r["owner"], r["target"]): r for r in d[fam]["rows"]} for fam, _ in FAMS}
+    for key in by["qwen15"]:
+        q, l = by["qwen15"][key], by["llama1b"][key]
+        void = " [void]" if q["void"] else ""
+        lab = outcome((q["tpr"] + l["tpr"]) / 2, (q["spoof"] + l["spoof"]) / 2)
+        rows.append(f"| {key[0]} → {key[1]}{void} | {f2(q['tpr'])} / {f2(l['tpr'])} | {f2(q['spoof'])} / {f2(l['spoof'])} | {lab} |")
+        nums[f"{key[0]}->{key[1]}"] = {"void": q["void"], "tpr": [q["tpr"], l["tpr"]], "spoof": [q["spoof"], l["spoof"]]}
+    summ = {fam: {"mean_tpr": d[fam]["mean_tpr"], "mean_spoof": d[fam]["mean_spoof"]} for fam, _ in FAMS}
+    return "| Owner → imitated relative | Owner detects (Qwen / Llama) | Relative claims | Outcome (rule on family means) |\n|---|---|---|---|\n" + "\n".join(rows), \
+        {"attacks": nums, "summary": summ}
+
+
+def step_auc():
+    e1 = j(M6 / "m6_result.json")["E1"]
+    z = {fam: j(M7 / "m11_m10_tfidf.json")["cells"][fam]["per_output_auc"] for fam, _ in FAMS}
+    lines = {"Tulu-3": ["tulu_sft", "tulu_dpo", "tulu_rlvr"], "OLMo-3-Instruct": ["olmoi_sft", "olmoi_dpo", "olmoi_final"],
+             "OLMo-3-Think": ["olmot_sft", "olmot_dpo", "olmot_final"]}
+    def g(fam, a, b):
+        v = e1[fam].get(f"{a}|{b}")
+        return None if not v else v["auc"]
+    rows, nums = [], {}
+    for step, idx in [("SFT → DPO", (0, 1)), ("DPO → RL / final", (1, 2)), ("SFT → final (two steps)", (0, 2))]:
+        cells = []
+        for ln, ts in lines.items():
+            a, b = ts[idx[0]], ts[idx[1]]
+            q, l = g("qwen15", a, b), g("llama1b", a, b)
+            cells.append(f"{f2(q)} / {f2(l)}"); nums[f"{ln}|{step}"] = [q, l]
+        zc = f"{f2(z['qwen15'])} / {f2(z['llama1b'])}" if idx == (0, 1) else "—"
+        rows.append(f"| {step} | " + " | ".join(cells) + f" | {zc} |")
+    nums["Zephyr|SFT → DPO"] = [z["qwen15"], z["llama1b"]]
+    return ("| Step | Tulu-3 | OLMo-3-Instruct | OLMo-3-Think | Zephyr |\n|---|---|---|---|---|\n" + "\n".join(rows)), nums
+
+
+def main(tag="snapshot"):
+    G.mkdir(exist_ok=True)
+    t1, n1 = table1(); t2, n2 = table2(); t3, n3 = step_auc()
+    (G / "s56_table1.md").write_text(t1 + "\n"); (G / "s56_table2.md").write_text(t2 + "\n"); (G / "s56_step_auc.md").write_text(t3 + "\n")
+    (G / "s56_numbers.json").write_text(json.dumps({"table1": n1, "table2": n2, "step_auc": n3}, indent=1))
+    print(t3, "\n\n", t1, "\n\n", t2)
+
+
+if __name__ == "__main__":
+    main()
