@@ -1,0 +1,301 @@
+# Draft — §5 Teacher-level provenance along alignment ladders; §6 Naming the checkpoint
+
+_Working draft (2026-09-17), following `.pipeline/docs/paper_plan_unified.md` and the decision log through advisor
+round 7. Numbers are traceable to `.pipeline/memory/experiment_ledger.md` (entry IDs in brackets; remove before
+submission). All accuracy figures use the corrected extractor (§5.1). Status labels as in §3.6._
+
+---
+
+## 5 Teacher-level provenance along alignment ladders
+
+§4 showed that a prompt-implanted signature identifies an instruction rather than an owner. We now drop keys
+entirely and ask the question a model vendor actually faces: a student behaves like one of our models — **which
+one?** The hard case is not a competitor's model but our own earlier or later checkpoint, because a single release
+line produces several public checkpoints that share a base model, pre-training data and most of their post-training.
+
+### 5.1 Setting
+
+**Ladders.** We use every public post-training chain whose stages we could verify from the `base_model` field of the
+model cards [EXP-M6, EXP-M10]:
+
+| Line | Base | Stage 1 | Stage 2 | Stage 3 |
+|---|---|---|---|---|
+| Tulu-3-8B (AllenAI) | Llama-3.1-8B | SFT | DPO | RLVR (released final) |
+| OLMo-3-7B-Instruct (AllenAI) | OLMo-3-1025-7B | SFT | DPO | final |
+| OLMo-3-7B-Think (AllenAI) | OLMo-3-1025-7B | SFT | DPO | RLVR |
+| Zephyr-7B (HuggingFace H4) | Mistral-7B-v0.1 | SFT | DPO | — |
+
+No vendor outside AllenAI publishes a verifiable chain that continues past preference optimisation, so the
+cross-vendor evidence covers the SFT→DPO step only. One widely used checkpoint is routinely mislabelled:
+`allenai/Llama-3.1-Tulu-3-8B` is the RLVR final model, not the SFT model (Appendix X).
+
+**Students.** Each teacher answers GSM8K (and, from §5.3 on, MATH Levels 1–4) with a fixed step-by-step prompt,
+T = 0.7, up to 4,096 new tokens. Students are Qwen2.5-1.5B-Instruct and Llama-3.2-1B-Instruct, LoRA-tuned for three
+epochs on 1,500 traces. Every student answers the same 300 held-out probes. The confirmatory rounds use
+**disjoint problems and disjoint teacher traces** for the owner's reference students and for the students under test,
+so no evaluated student shares a single training example with a reference student [EXP-M7]. In total §5–§6 use
+about 700 students.
+
+**Read-outs.** The pre-registered primary read-out, fixed in our first attribution round before any ladder data
+existed, is TF-IDF over word 1–2-grams with logistic regression, trained on **teacher** traces only [EXP-M5]. We
+replicate every headline result with two read-outs that do not see word identity: sentence embeddings (gte-base) and
+part-of-speech 2–4-gram templates, with definitions copied from the same earlier round [EXP-M11]. A student's score
+for teacher *a* is the mean predicted probability of *a* over its 300 probe outputs.
+
+**Manipulation check.** A teacher is voided if fewer than 70% of its traces contain an extractable answer or if more
+than 20% of its students neither stay within three accuracy points of the untuned base model nor stay within a
+factor of two of the teacher's output length. The OLMo-3-Think line was voided in the ladder round, under that round's
+stricter length band: 1–1.5B LoRA students do not absorb 4–7k-character reasoning traces and fall below base accuracy
+[EXP-M6]. We report it in §5.2 and exclude it from §5.3 onward.
+
+> **Correction to accuracy figures.** Rounds M3 through M9b scored GSM8K answers with an extractor whose fallback
+> skipped any number immediately followed by a period, so that "The answer is 8." was read as the "3" in an earlier
+> "Step 3". This underestimated accuracy by 0.03–0.13. We found it when a pre-registered answer-preservation check
+> in the attack experiment of §6.3 voided seven of eight rewritten corpora and we inspected the rejected samples;
+> unit tests for the extractor were written afterwards. The bug touches accuracy only: no attribution statistic in
+> this paper (T0, T1, AUC, false- or true-positive rate) consumes the extractor. The teacher and student
+> manipulation-check verdicts of every ladder round are unchanged under the corrected extractor; the
+> answer-preservation checks of the attack experiments do change (fewer rewritten corpora are voided), and §6.3
+> reports them corrected, with its conclusions unchanged. Correcting it does retract three secondary claims
+> made in earlier drafts of this work: a capability-versus-identity dissociation (its only significant effect
+> reverses sign and loses significance), that the RLVR stage of Tulu-3 is less accurate than its DPO parent on GSM8K
+> (0.854 vs 0.849 after correction), and that the utility cost of prompt-implanted keys depends on the student
+> (Llama students also lose 7–9 points; §4). Appendix X reports every affected number under both extractors.
+
+### 5.2 Which training step changes a student's style [estimation]
+
+For each pair of checkpoints we train a pairwise read-out on the two teachers' traces and measure how well it
+separates the two teachers' students, output by output (AUC over 300 outputs × 5–10 students per side; cluster
+bootstrap over students) [EXP-M6, EXP-M7, EXP-M10].
+
+| Step | Tulu-3 | OLMo-3-Instruct | OLMo-3-Think | Zephyr |
+|---|---|---|---|---|
+| SFT → DPO | 0.93 / 0.93 | 0.95 / 0.93 | 0.99 / 0.99 | 0.98 / 0.97 |
+| DPO → RL / final | **0.73 / 0.72** | **0.72 / 0.76** | 0.96 / 0.96 | — |
+| SFT → final (two steps) | 0.94 / 0.95 | 0.96 / 0.94 | 0.95 / 0.94 | — |
+
+_GSM8K, TF-IDF, Qwen / Llama students. MATH shows the same ordering: DPO → final 0.79–0.84 against SFT → DPO
+0.88–0.98 [EXP-M7 H3]._
+
+Distinguishability is **step-specific, not distance-monotone.** Preference optimisation on top of SFT moves a
+student's output style almost as far as it can be moved (AUC 0.93–0.99, on two vendors), whereas the RL stage that
+follows DPO in Tulu-3 and OLMo-3-Instruct barely moves it (0.72–0.76), so two steps are no more distinguishable than
+the first step alone. The Think line is the exception (0.96), but much of that signal is length and format: truncating
+every output to its first 400 tokens lowers SFT → final to 0.75–0.78.
+
+A single output is therefore weak evidence about adjacent RL-era checkpoints. As §6 shows, it is not weak evidence
+about a *student*, once 300 outputs are pooled.
+
+### 5.3 The standard owner test cannot reject its own relatives [confirmatory]
+
+**Test T0.** The owner fits a multi-class read-out on the traces of all candidate teachers and calibrates on reference
+students of teachers **outside its own post-training line**: p_out = (1 + #{calibration scores ≥ s}) / (1 + n_cal),
+reject at α = 0.05. This is the natural open-set design — calibrate against models that are not yours — and it
+achieves exactly what it promises. Students of unrelated lines are flagged at 0.00–0.20, and the owner's own
+students at 1.00 in every cell [EXP-M7].
+
+It fails on relatives. On fresh students, the owner flags a same-line relative's students at a false-positive rate
+of 0.9–1.0 in 8 of 12 ordered pairs, in all four dataset × family cells [EXP-M7 H1]. On GSM8K the failure is
+asymmetric in an interpretable way: an SFT owner does not flag its descendants (0.0), while DPO and final owners flag
+every other stage of their line. On the Zephyr ladder it is complete in both directions (1.0 and 1.0, both
+families) [EXP-M10 R1].
+
+**Why.** No same-line student is in the calibration set, so any relative that scores higher on the owner's class than
+every cross-line student is rejected-for with certainty. This is Proposition 1 applied to teachers instead of keys: T0
+controls "not from another line", not "not from this checkpoint". The information needed for the finer decision is
+present in the same outputs — §6.1 shows it separates the same students perfectly — so the failure is a property of
+the null the test controls, not of the signal.
+
+### 5.4 How badly the standard test fails depends on the read-out [confirmatory + exploratory]
+
+We re-scored every cell under the two non-lexical read-outs [EXP-M11]. Table 1 gives all numbers; the pattern is:
+
+- **On GSM8K the collapse replicates under all three read-outs** (7–8 of 12 pairs in every cell).
+- **On MATH it does not.** Embeddings collapse on only 3 and 2 of 12 pairs (Qwen, Llama), POS templates on 5 and 6,
+  TF-IDF on 8 and 8. A semantic read-out on MATH already rejects most relatives using cross-line calibration alone.
+
+We state this as a result and log it as an unmet expectation: the collapse was expected in every cell, and on MATH it
+did not appear for two of the three read-outs (our formal gate covered the GSM8K cells; Appendix X). The primary
+read-out was not chosen for showing the worst collapse: TF-IDF was fixed as primary in the first attribution round,
+before any of the ladder data existed.
+
+The coverage account of §3 predicts where the collapse should be severe: when a relative sits closer to the owner, *in
+that read-out's feature space*, than the nearest cross-line calibration teacher. We checked this after the fact with a
+rule fixed before running it [exploratory]. For each read-out × cell and each ordered pair we computed
+ratio = d(owner, relative) / min over cross-line teachers d(owner, teacher), using cosine distance between
+reference-student centroids. Smaller ratios went with more collapse in **all 12** read-out × cell units
+(within-unit Spearman ρ from −0.60 to −0.92), and across units the mean ratio ordered the number of collapsed pairs
+(ρ = −0.83). The two units with the least collapse, embeddings on MATH, are the only ones whose relatives lie *farther*
+from the owner than the nearest cross-line teacher (mean ratio 1.29 and 1.40). The ordering has no sharp threshold:
+TF-IDF on MATH collapses fully at a mean ratio of 0.94–0.96.
+
+**Reading.** The diagnosis is read-out-general; its severity is read-out-specific, in the direction the coverage account
+predicts. What is uniform is the fix (§6.1).
+
+---
+
+## 6 Naming the checkpoint
+
+### 6.1 Reference-aware testing [confirmatory]
+
+**Test T1.** T1 keeps T0 and adds, for **each** same-line relative *b*, a pairwise read-out (owner vs *b*) and a
+one-sided prediction-interval test of the suspect's score against the scores of *b*'s reference students:
+p_rel(b) = 1 − F_{t, n−1}((s − m_b) / (sd_b √(1 + 1/n))) with n = 10. The owner flags only if p_out ≤ α and every
+p_rel ≤ α. The reference students are distilled by the owner from its own relatives' traces, which a vendor can do for
+every checkpoint it has released.
+
+**Table 1** — the headline. _Collapse: ordered same-line pairs (of 12, or 2 for Zephyr) with false-positive rate
+≥ 0.6 under T0. T1: true-positive rate / pairs with false-positive rate ≤ 0.2 / mean false-positive rate on relatives.
+Fresh test students, 10 per teacher._
+
+| Cell | Collapse (TF-IDF · POS · EMB) | T1, TF-IDF | T1, POS | T1, EMB |
+|---|---|---|---|---|
+| AllenAI · GSM8K · Qwen | 8 · 8 · 8 | 1.00 / 12 / 0.042 | 1.00 / 12 / 0.025 | 1.00 / 11 / 0.075 |
+| AllenAI · GSM8K · Llama | 8 · 7 · 8 | 1.00 / 11 / 0.067 | 1.00 / 11 / 0.050 | 0.98 / 11 / 0.050 |
+| AllenAI · MATH · Qwen | 8 · 5 · 3 | 1.00 / 10 / 0.092 | 1.00 / 11 / 0.075 | 1.00 / 11 / 0.058 |
+| AllenAI · MATH · Llama | 8 · 6 · 2 | 1.00 / 12 / 0.033 | 1.00 / 11 / 0.042 | 0.98 / 11 / 0.042 |
+| Zephyr · GSM8K · Qwen | 2 · 2 · 2 | 1.00 / 2 / 0.05 | 1.00 / 2 / 0.05 | 1.00 / 2 / 0.00 |
+| Zephyr · GSM8K · Llama | 2 · 2 · 2 | 1.00 / 2 / 0.05 | 1.00 / 2 / 0.00 | 1.00 / 2 / 0.00 |
+
+_Figure 2 (planned): TF-IDF only, paired bars of false-positive rate on relatives without (T0) and with (T1) references,
+per cell; POS and EMB as a robustness panel._
+
+The failure varies across read-outs and datasets; the fix does not. With references, relative false-positive rates fall
+to 0.00–0.09 on average while every owner still detects its own students (0.98–1.00), on two vendors, two datasets, two
+student families and three read-outs [EXP-M7 H2, EXP-M10 R2, EXP-M11 N2]. Students of unrelated lines remain rejected
+(false-positive rate 0.00–0.13).
+
+**It is cheap.** Three reference students per relative give the same result as ten (mean relative false-positive rate
+0.008–0.083), and 25 probe queries are enough (true-positive rate ≥ 0.98, false-positive rate 0.04–0.05) [EXP-M7,
+estimation]. This matches Proposition 3: once the population ordering is right, more queries are not the bottleneck;
+when it is wrong (T0), no number of queries fixes it. Pooling is also what rescues the embedding read-out, whose
+per-output AUC for RL-era neighbours is only 0.60–0.66: 300 weak outputs make a strong student-level decision.
+
+**It is not leakage.** Reference and test students share no problem and no trace; a threshold set on reference
+students made zero errors both on students trained on shared traces and on students trained on fresh ones [EXP-M7].
+
+### 6.2 Where the remedy stops [confirmatory]
+
+Each assumption behind T1 can be removed separately [EXP-M8]:
+
+- **Every relative must be referenced.** If the owner omits one relative's reference students, that relative is flagged
+  again: of the 8 ordered pairs per cell where T0 failed, the unreferenced relative is flagged at a false-positive
+  rate of at least 0.6 in 6 to 8, depending on the cell.
+  Referencing a different relative does not transfer. A pooled "not me" rejector trained against every other teacher
+  recovers only *distant* relatives (false-positive rate 0.0 for an unreferenced SFT when the owner is DPO or final)
+  and never the *adjacent* one (1.0), lowering the mean from 0.53–0.58 to 0.33 on GSM8K [exploratory]. This is the
+  coverage gap of Corollary 1 observed directly: a source closer to the owner than anything in the calibration set
+  cannot be rejected. Our pre-registered prediction that partial references would suffice is refuted.
+- **Cross-line calibration cannot be dropped.** A strict variant that uses only the owner's own line keeps its power
+  (true-positive rate 0.85–0.92) but, on GSM8K, one owner in each line flags every student of the *other* line
+  (mean false-positive rate 0.33 on unseen teachers; 0.00–0.02 on MATH). It fails its pre-registered gate (2 of 4
+  cells). T1's false-positive rate on those same unseen-teacher students is 0.00–0.13.
+- **The owner must be the majority contributor.** Students trained on a 50/50 blend of two adjacent stages are flagged
+  by the owner in 4 of 4 groups. At a 10% owner share the owner detects 0.33–0.67 of them, while the relative that
+  supplied the other 90% claims them at 1.0. The test reports the majority source; passive attribution offers a
+  minority contributor no usable claim, unlike active marks planted before release, which remain detectable at 1–5%
+  of training data (Sablayrolles et al., 2020; Sander et al., 2024).
+
+### 6.3 An adaptive distiller [confirmatory + exploratory]
+
+We now let the distiller rewrite the owner's traces before training, and we do not let the owner anticipate it: its
+reference students and read-outs stay those of §6.1. A 7B instruction model (Qwen2.5-7B-Instruct) performs the
+rewrite. A rewritten corpus is valid only if at least 90% of its traces keep the original final answer [EXP-M9,
+EXP-M9b].
+
+- **Neutral paraphrase does not defeat T1.** Owners still detect 0.92 (Qwen) and 0.83 (Llama) of students trained on
+  paraphrased traces [EXP-M9 G1]. About half of the prompt-implanted signatures of §4 did not survive the same paraphrase.
+- **Imitating a relative does.** When the rewrite is conditioned on four in-context traces of an adjacent checkpoint,
+  mean detection falls to 0.58 and the imitated relative claims the students at a rate of 0.5 [EXP-M9 G2, G3]. We
+  replicated this on all four adjacent pairs in both directions with an answer-preserving prompt: detection 0.67,
+  misattribution to the imitated relative 0.61 (Qwen) and 0.50 (Llama), six of eight rewrites valid [EXP-M9b G2b,
+  G3b].
+
+**Table 2** — outcomes of the imitation attack (Qwen / Llama students).
+
+| Owner → imitated relative | Owner detects | Relative claims | Outcome |
+|---|---|---|---|
+| Tulu SFT → Tulu DPO | 0.00 / 0.00 | 1.00 / 0.67 | evade and frame (scrubbing + spoofing) |
+| OLMo SFT → OLMo DPO | 0.00 / 0.00 | 0.00 / 0.00 | **laundering** (scrubbing without spoofing) |
+| Tulu DPO → Tulu SFT | 1.00 / 1.00 | 1.00 / 1.00 | joint claim (ambiguity attack) |
+| Tulu RLVR → Tulu DPO | 1.00 / 1.00 | 1.00 / 1.00 | joint claim |
+| Tulu DPO → Tulu RLVR | 1.00 / 1.00 | 0.67 / 0.33 | partial frame |
+| OLMo final → OLMo DPO | 1.00 / 1.00 | 0.00 / 0.00 | no effect |
+
+The attack produces three distinct failures, which map onto established categories:
+- **Evade and frame** is Brennan et al.'s (2012) obfuscation plus imitation, or scrubbing plus spoofing in the
+  watermark literature (Jovanović et al., 2024).
+- **Joint claim** is Craver et al.'s (1998) ambiguity attack: two parties hold equally valid claims and the test cannot
+  adjudicate.
+- We call the third **laundering**: the owner's signal is scrubbed and no other party is implicated, so the student
+  becomes unattributable. (Mansurov et al., 2024, use "data laundering" in an unrelated sense.)
+
+For an auditor, laundering is the most damaging of the three because it is silent: a false claim can be contested, but
+an absent one raises no flag.
+
+**No accuracy cost was apparent.** Attacked students scored within −0.03 to +0.04 of the owner's unattacked students on
+GSM8K (corrected extractor; descriptive, not tested).
+
+**When the attack succeeds, we cannot say.** We pre-registered two accounts of which attacks would succeed: how close
+owner and relative already are, and how narrow the relative's output distribution is. Both correlations came out with
+the opposite sign to the prediction and neither is significant (Spearman ρ = −0.72, p = 0.13; ρ = −0.63, p = 0.27;
+n = 6). No direction rule holds either: the two pairs with both directions valid disagree (+0.83 and −0.50). We report
+the attack as an empirical finding and leave *when* it succeeds open.
+
+**What the attack changes, we can say.** For each valid attack we projected the shift in the attacked students' mean
+TF-IDF features onto the owner-versus-relative discriminant [exploratory]. The shift is carried almost entirely by
+reasoning-scaffold phrases — *step*, *step calculate*, *step determine*, *state the*, *the answer is*, *boxed* — rather
+than by problem content, with nearly identical numbers for both student families. The owner lost detection in exactly
+the two attacks that moved its students all the way across that discriminant (1.02–1.29 of the owner-to-relative
+distance) and kept it in the four that moved them at most 41% of the way. The last observation is close to definitional,
+since T1 uses that discriminant; the substantive content is *which* features move.
+
+**What this says about the signal.** Distilled students inherit their teacher's reasoning scaffolds — step headers, answer
+templates — and much of the lexical provenance signal is formatting provenance. That explains both halves of this
+paper: scaffolds transfer reliably through distillation, so attribution works (§6.1), and an in-context rewrite copies
+them easily, so imitation defeats it. It is not the whole signal. The embedding read-out largely ignores scaffold tokens
+and still names the checkpoint at a true-positive rate of at least 0.98 (Table 1), so some identity survives in what the
+students say, not only in how they lay it out. We claim the first statement (what imitation moves) and not a mechanism
+for the second (when it succeeds).
+
+### 6.4 Scope
+
+Reference-aware testing names the checkpoint a student was distilled from when five conditions hold:
+1. the tester is the **vendor** of the lineage;
+2. it has reference students for **every** relative;
+3. it keeps **cross-line** calibration;
+4. the distiller does **not imitate** a relative;
+5. the vendor supplied the **majority** of the distillation data.
+
+Each condition was removed experimentally, and each removal has a measured cost (§6.2–§6.3). Under these conditions the
+test is a first-party lineage attestation that a vendor can pre-compute at release for a few LoRA fine-tunes per
+checkpoint. It resembles publishing a checksum, not a guarantee against an adaptive adversary. A third-party auditor who
+cannot enumerate a lineage, or a vendor facing a distiller that imitates its sibling checkpoints, gets no such
+attestation from passive output analysis. That regime needs active marks planted before release or tests of data
+membership rather than style (Maini et al., 2024).
+
+---
+
+## Notes for integration (remove before submission)
+- **Abstract sentences to carry:**
+  - "A standard owner test cannot reject a vendor's own earlier or later checkpoints, because its calibration set never
+    contains them."
+  - "Adding reference students for each relative fixes this uniformly — across two vendors, two datasets and three
+    read-outs — while how badly the standard test fails depends on the read-out."
+  - "An in-context imitation attack that costs no accuracy evades, frames or launders the student."
+- **§3 must state Corollary 1** (coverage-dependent false-positive floor from total variation + conformal validity;
+  Tsybakov 2009, Vovk et al. 2005, Barber et al. 2023, Bates et al. 2023, Mondrian conformal prediction) before §5.4 and
+  §6.2 cite it.
+- **Integrity appendix entries referenced here:**
+  - extractor correction (v1 vs v2 for every accuracy number);
+  - MATH collapse expectation unmet for EMB/POS;
+  - M8 scorer bug (inverted class order, spurious kill verdict; caught because a weaker test showed lower power than a
+    stronger one);
+  - M8 pre-registration flaw (two tests identical in a three-stage line);
+  - M9b key collision with mixture students;
+  - voided rewrites;
+  - Tulu-3 checkpoint mislabel.
+- **Citations still to verify before use:** ReasMark (ACL 2026?), trace-rewriting defence (ACL 2026?), DITTO (preprint
+  only), RefDistDet (preprint).
+- **Numbers to regenerate with `make_tables.py`, not copy by hand:** Table 1, Table 2, the §5.2 AUC table and the
+  budget figures.
