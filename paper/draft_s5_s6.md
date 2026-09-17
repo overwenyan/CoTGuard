@@ -127,13 +127,14 @@ For each ordered pair we computed ratio = d(owner, relative) / min over cross-li
 cosine distance between reference-student centroids. In the four AllenAI cells, smaller ratios went with more collapse
 in all 12 read-out × cell units (within-unit Spearman ρ from −0.60 to −0.92; across units ρ = −0.83), and the least
 collapsed units — embeddings on MATH — were the only ones whose relatives lay farther from the owner than the nearest
-cross-line teacher. **The geometry did not replicate on the held-out Zephyr ladder.** The pre-registered prediction there
-was that collapsed pairs have ratio < 1; this held for 8 of 12 collapsed pairs against a required 10. All four
-exceptions are the SFT owner facing its DPO descendant under TF-IDF and POS, which collapses completely at ratios of
-1.04–1.15, and pooled over all 18 units the ordering weakens to ρ = −0.50. Centroid distance is only a proxy for what T0
-actually computes (the read-out's probability of the owner's class), so we do not offer it as quantitative evidence for
-the coverage account: the geometry is consistent with collapse severity in the AllenAI cells, has no threshold, and was
-not replicated on a second vendor.
+cross-line teacher. On the held-out Zephyr ladder the two readings of this geometry fare differently. The **ordering**
+could not be tested there, because every Zephyr pair collapses under every read-out, leaving nothing to order. The
+**threshold** reading — collapse only when the relative is closer than the nearest cross-line teacher, ratio < 1 — was
+tested with a pre-registered rule and is **contradicted**: 4 of the 12 collapsed pairs have ratio > 1 (1.04–1.15), all
+of them the SFT owner facing its DPO descendant under TF-IDF and POS (rule required at most 2). Pooled over all 18 units
+the ordering weakens to ρ = −0.50. Centroid distance is only a proxy for what T0 computes (the read-out's probability of
+the owner's class), so we do not offer it as quantitative evidence for the coverage account: the ordering holds in all 12
+AllenAI units and is untested on Zephyr, and there is no threshold.
 
 **Reading.** The diagnosis is read-out-general; its severity is read-out-specific. What is uniform is the fix (§6.1).
 
