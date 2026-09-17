@@ -401,3 +401,10 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   Paper may say the read-out geometry *orders* collapse severity as the coverage account predicts, labelled
   exploratory, with the TF-IDF/MATH exception (ratio ≈ 0.95 but full collapse) stated: ordering holds, no sharp
   threshold at ratio = 1.
+
+## 2026-09-17 — M12 arm A fails: the geometry sentence is demoted as pre-registered
+- Ratio < 1 in 8 of 12 collapsed Zephyr pairs (rule ≥ 10). Collapse occurs at ratio up to 1.15. Pooled ordering over 18
+  units weakens to ρ = −0.50.
+- §5.4 now: consistent with collapse severity in the AllenAI cells, not replicated on the held-out vendor; no threshold
+  claim; the coverage *account* stays as the explanation of why T0 cannot reject relatives (Proposition 1), but the
+  centroid-distance geometry is not offered as its quantitative evidence.

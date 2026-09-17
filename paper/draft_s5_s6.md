@@ -120,18 +120,22 @@ did not appear for two of the three read-outs (our formal gate covered the GSM8K
 read-out was not chosen for showing the worst collapse: TF-IDF was fixed as primary in the first attribution round,
 before any of the ladder data existed.
 
-The coverage account of §3 predicts where the collapse should be severe: when a relative sits closer to the owner, *in
-that read-out's feature space*, than the nearest cross-line calibration teacher. We checked this after the fact with a
-rule fixed before running it [exploratory]. For each read-out × cell and each ordered pair we computed
-ratio = d(owner, relative) / min over cross-line teachers d(owner, teacher), using cosine distance between
-reference-student centroids. Smaller ratios went with more collapse in **all 12** read-out × cell units
-(within-unit Spearman ρ from −0.60 to −0.92), and across units the mean ratio ordered the number of collapsed pairs
-(ρ = −0.83). The two units with the least collapse, embeddings on MATH, are the only ones whose relatives lie *farther*
-from the owner than the nearest cross-line teacher (mean ratio 1.29 and 1.40). The ordering has no sharp threshold:
-TF-IDF on MATH collapses fully at a mean ratio of 0.94–0.96.
+The coverage account of §3 suggests where the collapse should be severe: when a relative sits closer to the owner, *in
+that read-out's feature space*, than the nearest cross-line calibration teacher. We checked a geometric version of this
+after the fact, with a rule fixed before running it [exploratory], and then tested it on held-out data [confirmatory].
+For each ordered pair we computed ratio = d(owner, relative) / min over cross-line teachers d(owner, teacher), using
+cosine distance between reference-student centroids. In the four AllenAI cells, smaller ratios went with more collapse
+in all 12 read-out × cell units (within-unit Spearman ρ from −0.60 to −0.92; across units ρ = −0.83), and the least
+collapsed units — embeddings on MATH — were the only ones whose relatives lay farther from the owner than the nearest
+cross-line teacher. **The geometry did not replicate on the held-out Zephyr ladder.** The pre-registered prediction there
+was that collapsed pairs have ratio < 1; this held for 8 of 12 collapsed pairs against a required 10. All four
+exceptions are the SFT owner facing its DPO descendant under TF-IDF and POS, which collapses completely at ratios of
+1.04–1.15, and pooled over all 18 units the ordering weakens to ρ = −0.50. Centroid distance is only a proxy for what T0
+actually computes (the read-out's probability of the owner's class), so we do not offer it as quantitative evidence for
+the coverage account: the geometry is consistent with collapse severity in the AllenAI cells, has no threshold, and was
+not replicated on a second vendor.
 
-**Reading.** The diagnosis is read-out-general; its severity is read-out-specific, in the direction the coverage account
-predicts. What is uniform is the fix (§6.1).
+**Reading.** The diagnosis is read-out-general; its severity is read-out-specific. What is uniform is the fix (§6.1).
 
 ---
 
