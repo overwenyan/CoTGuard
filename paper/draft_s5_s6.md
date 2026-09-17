@@ -240,7 +240,12 @@ EXP-M9b].
 
 _Valid attacks that evade the owner (family-mean detection ≤ 0.34): imitation 2, scaffold-only 3, either 5 of 8 attack directions._
 
-The attack produces three distinct failures, which map onto established categories:
+The outcome column is Corollary 1b read off the table: writing Q for the score law of the attacked students, evasion is
+Q far from the owner's own students under the owner's statistic, framing is Q close to the imitated relative's under the
+relative's, a joint claim is close to both and laundering is far from both. That is a description of where the attack
+lands, not of how the rewriter gets there.
+
+The attack produces three distinct failures beyond "no effect", which map onto established categories:
 - **Evade and frame** is Brennan et al.'s (2012) obfuscation plus imitation, or scrubbing plus spoofing in the
   watermark literature (Jovanović et al., 2024).
 - **Joint claim** is Craver et al.'s (1998) ambiguity attack: two parties hold equally valid claims and the test cannot
@@ -278,7 +283,10 @@ scaffold-only rewrite on 3; the two sets do not overlap (imitation succeeded aga
 rewrite against the Tulu RLVR owner and twice against the OLMo DPO owner), so together they defeat the owner on 5 of 8.
 We read this as a second, content-preserving route to the same failure, not as a decomposition of imitation into a
 scaffold component and a content component: a rewrite that verifiably keeps the content can defeat the test, and it does
-so on different pairs than imitation does.
+so on different pairs than imitation does. Corollary 1b makes the disjointness less strange than it looks — the two
+rewrites move the attacked students' score law in different directions, and which direction carries it away from the
+owner's own students depends on the owner — but it does not say which owners fall to which rewrite, and with five
+evasions in total we do not offer an account of that.
 
 **What this says about the signal.** Distilled students inherit their teacher's reasoning scaffolds — step headers, answer
 templates — and much of the lexical provenance signal is formatting provenance. That explains both halves of this

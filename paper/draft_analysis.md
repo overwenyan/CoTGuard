@@ -122,10 +122,11 @@ the event by at most TV(Q, Q′), by the variational characterisation of total v
 lower bound. For the upper bound take Q = P_C: then S is exchangeable with the calibration scores, so P(p ≤ α) ≤ α by
 conformal validity (Vovk et al., 2005; Bates et al., 2023). ∎
 
-**Tightness.** The lower bound cannot be improved by any test built on S. Le Cam's two-point bound (Tsybakov, 2009,
-Ch. 2) gives inf over tests of [FPR_b + (1 − TPR_a)] = 1 − TV(P_a, P_b), attained by the likelihood-ratio test between
-P_a and P_b. The upper bound is the simplest instance of the coverage-gap bounds for conformal prediction under
-distribution shift (Barber et al., 2023).
+**Tightness.** Rearranged, the lower bound reads TPR_a − FPR_b ≤ TV(P_a, P_b), and it is attained by the test that
+rejects exactly on the set achieving the total variation distance. That statement *is* Le Cam's two-point identity
+inf over tests of [FPR_b + (1 − TPR_a)] = 1 − TV(P_a, P_b) (Tsybakov, 2009, Ch. 2) — the same inequality, not a second
+argument for it, so we cite Le Cam for the identity rather than as an extra step. The upper bound is the simplest
+instance of the coverage-gap bounds for conformal prediction under distribution shift (Barber et al., 2023).
 
 **Reading.** The false-positive rate on a relative is squeezed between two distances measured *in the law of the
 test's own statistic*:
@@ -141,6 +142,20 @@ test's own statistic*:
 
 This is a corollary of standard results, and we claim no novelty for it. Its role is to state precisely which quantity
 the experiments of §5–§6 move.
+
+**Corollary 1b (the same two lines applied to an attacked student).** In §6.3 the distiller rewrites the owner's traces,
+so the students under test have their own score law, Q. Corollary 1 has P_b on both sides; replacing P_b by Q gives two
+statements that hold separately, each under the statistic of the party making the claim:
+
+  owner's detection rate on Q  ≥  TPR_a − TV(P_a, Q)  (under the owner's statistic),
+  relative b's claim rate on Q  ≥  TPR_b − TV(P_b, Q)  (under b's).
+
+Each of the four outcomes observed in §6.3 is a position of Q relative to those two laws: **evasion** requires Q far
+from P_a under the owner's statistic; **framing** requires Q close to P_b under b's; a **joint claim** is close to both;
+**laundering** is far from both. This says what each outcome *is* in score space, not why a given rewriter lands there,
+so it leaves the mechanism question (§6.3, "when the attack succeeds, we cannot say") exactly where the experiments
+leave it. It does make one thing unsurprising that would otherwise look odd: two rewrites can evade on disjoint sets of
+attacks, because they move Q in different directions and which direction increases TV(P_a, Q) depends on the owner.
 
 **Evidence.**
 - **An uncovered relative (§5.3).** T0 calibrates on cross-line students only, whose scores lie far below the relative's,
@@ -160,10 +175,11 @@ the experiments of §5–§6 move.
   relatives rejects an unreferenced *distant* relative (0.0) but not an *adjacent* one (1.0) [EXP-M8]. The distant relative
   is covered by teachers it resembles; the adjacent one is close only to the owner.
 - **Where the lower bound bites: imitation (§6.3).** An attack that rewrites the owner's traces toward a relative moves
-  the attacked students' score law P_a′ toward P_b under the owner's pairwise statistic. Once TV(P_a′, P_b) is small, the
-  lower bound leaves the test only two options on those students: miss them, or flag the relative too. These are exactly
-  the observed outcomes — evasion, framing and joint claims [EXP-M9, EXP-M9b, EXP-M12]. The corollary does not predict
-  *which* attacks get there, and our pre-registered predictors of that failed.
+  the attacked students' score law Q away from P_a and toward P_b under the owner's pairwise statistic. Corollary 1b
+  then leaves the test only two options on those students: miss them, or flag the relative too. All four observed
+  outcomes — evasion, framing, joint claims and laundering — are positions of Q [EXP-M9, EXP-M9b, EXP-M12], and the two
+  rewrites of Table 2 evade on disjoint sets of attacks. The corollary does not predict *which* attacks get there, and
+  our pre-registered predictors of that failed.
 - **The distances depend on the read-out (§5.4).** The same students, calibration set and owners give 8 collapsed pairs
   per MATH cell under TF-IDF but 2–3 under sentence embeddings [EXP-M11]: under the embedding statistic the relatives'
   score laws are covered by the cross-line calibration population.
@@ -178,7 +194,8 @@ the experiments of §5–§6 move.
 - Proposition 1 goes in §3.4, immediately after the test. It defines the two endpoints used in §6.
 - Proposition 2 opens §6 and frames the teacher-identity read-out.
 - Proposition 3 goes in §7 (dilution), next to the query-scaling result.
-- Corollary 1 goes at the end of §3, after Proposition 2; §5.3, §5.4, §6.1–§6.3 cite it.
+- Corollary 1 goes at the end of §3, after Proposition 2; §5.3, §5.4, §6.1–§6.3 cite it. Corollary 1b is one further
+  paragraph there, and Table 2's outcome column cites it for the four labels (evade / frame / joint claim / laundering).
 - The evaluated access model is **known-instruction replication** only. Accidental instruction
   collision and instruction reconstruction from published traces are not evaluated, and none of the
   propositions quantify them.
