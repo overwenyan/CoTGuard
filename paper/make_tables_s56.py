@@ -64,18 +64,32 @@ def outcome(tpr, spoof):
 
 
 def table2():
-    d = j(M7 / "tulu_gsm" / "m9b_result.json")["families"]
-    rows, nums = [], {}
-    by = {fam: {(r["owner"], r["target"]): r for r in d[fam]["rows"]} for fam, _ in FAMS}
-    for key in by["qwen15"]:
-        q, l = by["qwen15"][key], by["llama1b"][key]
-        void = " [void]" if q["void"] else ""
-        lab = outcome((q["tpr"] + l["tpr"]) / 2, (q["spoof"] + l["spoof"]) / 2)
-        rows.append(f"| {key[0]} → {key[1]}{void} | {f2(q['tpr'])} / {f2(l['tpr'])} | {f2(q['spoof'])} / {f2(l['spoof'])} | {lab} |")
-        nums[f"{key[0]}->{key[1]}"] = {"void": q["void"], "tpr": [q["tpr"], l["tpr"]], "spoof": [q["spoof"], l["spoof"]]}
-    summ = {fam: {"mean_tpr": d[fam]["mean_tpr"], "mean_spoof": d[fam]["mean_spoof"]} for fam, _ in FAMS}
-    return "| Owner → imitated relative | Owner detects (Qwen / Llama) | Relative claims | Outcome (rule on family means) |\n|---|---|---|---|\n" + "\n".join(rows), \
-        {"attacks": nums, "summary": summ}
+    """Imitation (M9b) and scaffold-only (M12 arm B) rewrites, each with its own rows; plus the union of evasions."""
+    full = j(M7 / "tulu_gsm" / "m9b_result.json")["families"]
+    scaf = j(M7 / "tulu_gsm" / "m12b_result.json")["families"]
+    rows, nums = [], {"imitation": {}, "scaffold_only": {}}
+    evaded = {"imitation": set(), "scaffold_only": set()}
+    for label, src in [("imitation", full), ("scaffold_only", scaf)]:
+        by = {fam: {(r["owner"], r["target"]): r for r in src[fam]["rows"]} for fam, _ in FAMS}
+        for key in by["qwen15"]:
+            q, l = by["qwen15"][key], by["llama1b"][key]
+            mt, ms = (q["tpr"] + l["tpr"]) / 2, (q["spoof"] + l["spoof"]) / 2
+            if not q["void"] and mt <= 0.34:
+                evaded[label].add(key)
+            void = " [void]" if q["void"] else ""
+            name = "imitation" if label == "imitation" else "scaffold only"
+            rows.append(f"| {key[0]} → {key[1]}{void} | {name} | {f2(q['tpr'])} / {f2(l['tpr'])} | "
+                        f"{f2(q['spoof'])} / {f2(l['spoof'])} | {outcome(mt, ms)} |")
+            nums[label][f"{key[0]}->{key[1]}"] = {"void": q["void"], "tpr": [q["tpr"], l["tpr"]], "spoof": [q["spoof"], l["spoof"]]}
+    union = evaded["imitation"] | evaded["scaffold_only"]
+    nums["evaded_valid"] = {k: sorted(f"{a}->{b}" for a, b in v) for k, v in evaded.items()}
+    nums["evaded_union"] = sorted(f"{a}->{b}" for a, b in union)
+    rows.sort(key=lambda r: r.split("|")[1])
+    head = ("| Owner → imitated relative | Rewrite | Owner detects (Qwen / Llama) | Relative claims | "
+            "Outcome (rule on family means) |\n|---|---|---|---|---|\n")
+    foot = (f"\n\n_Valid attacks that evade the owner (family-mean detection ≤ 0.34): imitation "
+            f"{len(evaded['imitation'])}, scaffold-only {len(evaded['scaffold_only'])}, either {len(union)} of 8 attack directions._")
+    return head + "\n".join(rows) + foot, nums
 
 
 def step_auc():

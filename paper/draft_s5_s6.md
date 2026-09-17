@@ -217,18 +217,28 @@ EXP-M9b].
   misattribution to the imitated relative 0.61 (Qwen) and 0.50 (Llama), six of eight rewrites valid [EXP-M9b G2b,
   G3b].
 
-**Table 2** — outcomes of the imitation attack (Qwen / Llama students).
+**Table 2** — outcomes of the two rewrites, each with its own rows (Qwen / Llama students).
 
-| Owner → imitated relative | Owner detects (Qwen / Llama) | Relative claims | Outcome (rule on family means) |
-|---|---|---|---|
-| tulu_sft → tulu_dpo | 0.00 / 0.00 | 1.00 / 0.67 | evade + frame (scrubbing + spoofing) |
-| tulu_dpo → tulu_sft | 1.00 / 1.00 | 1.00 / 1.00 | joint claim (ambiguity attack) |
-| tulu_dpo → tulu_rlvr | 1.00 / 1.00 | 0.67 / 0.33 | partial frame |
-| tulu_rlvr → tulu_dpo | 1.00 / 1.00 | 1.00 / 1.00 | joint claim (ambiguity attack) |
-| olmoi_sft → olmoi_dpo | 0.00 / 0.00 | 0.00 / 0.00 | laundering (scrubbing without spoofing) |
-| olmoi_dpo → olmoi_sft [void] | 0.00 / 0.00 | 0.00 / 0.00 | laundering (scrubbing without spoofing) |
-| olmoi_dpo → olmoi_final [void] | 0.00 / 0.00 | 1.00 / 1.00 | evade + frame (scrubbing + spoofing) |
-| olmoi_final → olmoi_dpo | 1.00 / 1.00 | 0.00 / 0.00 | no effect |
+| Owner → imitated relative | Rewrite | Owner detects (Qwen / Llama) | Relative claims | Outcome (rule on family means) |
+|---|---|---|---|---|
+| olmoi_dpo → olmoi_final | scaffold only | 0.00 / 0.00 | 1.00 / 1.00 | evade + frame (scrubbing + spoofing) |
+| olmoi_dpo → olmoi_final [void] | imitation | 0.00 / 0.00 | 1.00 / 1.00 | evade + frame (scrubbing + spoofing) |
+| olmoi_dpo → olmoi_sft | scaffold only | 0.00 / 0.33 | 0.00 / 0.00 | laundering (scrubbing without spoofing) |
+| olmoi_dpo → olmoi_sft [void] | imitation | 0.00 / 0.00 | 0.00 / 0.00 | laundering (scrubbing without spoofing) |
+| olmoi_final → olmoi_dpo | imitation | 1.00 / 1.00 | 0.00 / 0.00 | no effect |
+| olmoi_final → olmoi_dpo | scaffold only | 1.00 / 1.00 | 0.00 / 0.00 | no effect |
+| olmoi_sft → olmoi_dpo | imitation | 0.00 / 0.00 | 0.00 / 0.00 | laundering (scrubbing without spoofing) |
+| olmoi_sft → olmoi_dpo [void] | scaffold only | 0.00 / 0.00 | 0.00 / 0.00 | laundering (scrubbing without spoofing) |
+| tulu_dpo → tulu_rlvr | imitation | 1.00 / 1.00 | 0.67 / 0.33 | partial frame |
+| tulu_dpo → tulu_rlvr | scaffold only | 1.00 / 1.00 | 0.00 / 0.00 | no effect |
+| tulu_dpo → tulu_sft | imitation | 1.00 / 1.00 | 1.00 / 1.00 | joint claim (ambiguity attack) |
+| tulu_dpo → tulu_sft | scaffold only | 1.00 / 1.00 | 0.67 / 1.00 | joint claim (ambiguity attack) |
+| tulu_rlvr → tulu_dpo | imitation | 1.00 / 1.00 | 1.00 / 1.00 | joint claim (ambiguity attack) |
+| tulu_rlvr → tulu_dpo | scaffold only | 0.00 / 0.00 | 1.00 / 1.00 | evade + frame (scrubbing + spoofing) |
+| tulu_sft → tulu_dpo | imitation | 0.00 / 0.00 | 1.00 / 0.67 | evade + frame (scrubbing + spoofing) |
+| tulu_sft → tulu_dpo [void] | scaffold only | 0.00 / 0.00 | 1.00 / 0.00 | evade + frame (scrubbing + spoofing) |
+
+_Valid attacks that evade the owner (family-mean detection ≤ 0.34): imitation 2, scaffold-only 3, either 5 of 8 attack directions._
 
 The attack produces three distinct failures, which map onto established categories:
 - **Evade and frame** is Brennan et al.'s (2012) obfuscation plus imitation, or scrubbing plus spoofing in the
@@ -255,23 +265,25 @@ TF-IDF features onto the owner-versus-relative discriminant [exploratory]. The s
 reasoning-scaffold phrases — *step*, *step calculate*, *step determine*, *state the*, *the answer is*, *boxed* — rather
 than by problem content, with nearly identical numbers for both student families.
 
-**Rewriting only the scaffold is not a substitute for imitation, attack by attack** [confirmatory, outcome mixed]. We
-then rewrote the owner's traces changing *only* step labels, line-opening words and the final-answer line toward the
-relative, and required each corpus to keep at least 90% of the original's answers and numbers and 80% of its
-non-scaffold words (6 of 8 corpora passed) [EXP-M12]. We had pre-registered two outcomes — scaffold-only reproduces full
-imitation, or it is clearly weaker — and neither held in both student families. Where both rewrites were valid,
-scaffold-only matched full imitation on 2 and 3 of 4 attacks (Qwen, Llama). It was *stronger* on one: the Tulu RLVR
-owner, which full imitation did not evade, lost detection entirely and the DPO relative claimed the students. It was
-*weaker* on another, where the framing of the RLVR relative disappeared. On the two attacks whose full-imitation corpora
-had failed the answer check, the content-preserving scaffold rewrite evaded detection in both, framing the relative in
-one. Overall a rewrite that keeps the content evaded the owner's test in 3 of 6 valid attacks. We read this as
-per-attack evidence that scaffold changes alone can defeat the test, not as a causal account of the full attack, which
-can do more or less than its scaffold component.
+**A scaffold-only rewrite defeats the test on different pairs** [confirmatory, outcome mixed]. We also rewrote the
+owner's traces changing *only* step labels, line-opening words and the final-answer line toward the relative, and
+required each corpus to keep at least 90% of the original's answers and numbers and 80% of its non-scaffold words
+(6 of 8 corpora passed) [EXP-M12]. In the threat model this is the same distiller with the same rewriter and one different
+instruction, not a second attack family; but its outcomes are its own (Table 2). We had pre-registered that it would either
+reproduce full imitation or be clearly weaker, and neither held in both student families. It was stronger on one pair — the
+Tulu RLVR owner, which imitation did not evade, lost detection and the DPO relative claimed the students — and weaker on
+another, where imitation's framing of the RLVR relative disappeared. It also evaded on both pairs whose imitation corpora
+had failed the answer check. Counting only valid corpora, imitation evaded the owner on 2 of 8 attack directions and the
+scaffold-only rewrite on 3; the two sets do not overlap (imitation succeeded against both SFT owners, the scaffold-only
+rewrite against the Tulu RLVR owner and twice against the OLMo DPO owner), so together they defeat the owner on 5 of 8.
+We read this as a second, content-preserving route to the same failure, not as a decomposition of imitation into a
+scaffold component and a content component: a rewrite that verifiably keeps the content can defeat the test, and it does
+so on different pairs than imitation does.
 
 **What this says about the signal.** Distilled students inherit their teacher's reasoning scaffolds — step headers, answer
 templates — and much of the lexical provenance signal is formatting provenance. That explains both halves of this
-paper: scaffolds transfer reliably through distillation, so attribution works (§6.1), and they are cheap to copy — a
-rewrite that changes only the scaffold defeated the test in half of the attacks where content was verifiably kept. It is not the whole signal. The embedding read-out largely ignores scaffold tokens
+paper: scaffolds transfer reliably through distillation, so attribution works (§6.1), and they are cheap to rewrite — a
+rewrite that changes only the scaffold defeated the test on 3 of the 6 pairs where content was verifiably kept. It is not the whole signal. The embedding read-out largely ignores scaffold tokens
 and still names the checkpoint at a true-positive rate of at least 0.98 (Table 1), so some identity survives in what the
 students say, not only in how they lay it out. We claim the first statement (what imitation moves) and not a mechanism
 for the second (when it succeeds).

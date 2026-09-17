@@ -122,7 +122,7 @@
   }
  },
  "table2": {
-  "attacks": {
+  "imitation": {
    "tulu_sft->tulu_dpo": {
     "void": false,
     "tpr": [
@@ -212,16 +212,114 @@
     ]
    }
   },
-  "summary": {
-   "qwen15": {
-    "mean_tpr": 0.6666666666666666,
-    "mean_spoof": 0.611111111111111
+  "scaffold_only": {
+   "tulu_sft->tulu_dpo": {
+    "void": true,
+    "tpr": [
+     0.0,
+     0.0
+    ],
+    "spoof": [
+     1.0,
+     0.0
+    ]
    },
-   "llama1b": {
-    "mean_tpr": 0.6666666666666666,
-    "mean_spoof": 0.5
+   "tulu_dpo->tulu_sft": {
+    "void": false,
+    "tpr": [
+     1.0,
+     1.0
+    ],
+    "spoof": [
+     0.6666666666666666,
+     1.0
+    ]
+   },
+   "tulu_dpo->tulu_rlvr": {
+    "void": false,
+    "tpr": [
+     1.0,
+     1.0
+    ],
+    "spoof": [
+     0.0,
+     0.0
+    ]
+   },
+   "tulu_rlvr->tulu_dpo": {
+    "void": false,
+    "tpr": [
+     0.0,
+     0.0
+    ],
+    "spoof": [
+     1.0,
+     1.0
+    ]
+   },
+   "olmoi_sft->olmoi_dpo": {
+    "void": true,
+    "tpr": [
+     0.0,
+     0.0
+    ],
+    "spoof": [
+     0.0,
+     0.0
+    ]
+   },
+   "olmoi_dpo->olmoi_sft": {
+    "void": false,
+    "tpr": [
+     0.0,
+     0.3333333333333333
+    ],
+    "spoof": [
+     0.0,
+     0.0
+    ]
+   },
+   "olmoi_dpo->olmoi_final": {
+    "void": false,
+    "tpr": [
+     0.0,
+     0.0
+    ],
+    "spoof": [
+     1.0,
+     1.0
+    ]
+   },
+   "olmoi_final->olmoi_dpo": {
+    "void": false,
+    "tpr": [
+     1.0,
+     1.0
+    ],
+    "spoof": [
+     0.0,
+     0.0
+    ]
    }
-  }
+  },
+  "evaded_valid": {
+   "imitation": [
+    "olmoi_sft->olmoi_dpo",
+    "tulu_sft->tulu_dpo"
+   ],
+   "scaffold_only": [
+    "olmoi_dpo->olmoi_final",
+    "olmoi_dpo->olmoi_sft",
+    "tulu_rlvr->tulu_dpo"
+   ]
+  },
+  "evaded_union": [
+   "olmoi_dpo->olmoi_final",
+   "olmoi_dpo->olmoi_sft",
+   "olmoi_sft->olmoi_dpo",
+   "tulu_rlvr->tulu_dpo",
+   "tulu_sft->tulu_dpo"
+  ]
  },
  "step_auc": {
   "Tulu-3|SFT \u2192 DPO": [
