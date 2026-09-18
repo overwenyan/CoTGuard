@@ -132,12 +132,25 @@ def acc_cost():
     return out
 
 
+def scale_7b():
+    """M13: the AllenAI x GSM8K x Qwen cell with a 7B student (after correction 1). Quoted in §6.1."""
+    d = j(M7 / "tulu_gsm" / "m13_result.json")
+    if "result" not in d:
+        return {"verdict": d.get("verdict")}
+    r = d["result"]
+    return {"verdict": d["verdict"], "p_floor": d["p_floor"], "void": d["void"], "n_pairs": r["n_pairs"],
+            "n_T0_ge_0.6": r["n_T0_ge_0.6"], "n_T1_le_0.2": r["n_T1_le_0.2"],
+            "mean_T1_tpr": r["mean_T1_tpr"], "mean_T1_fpr": r["mean_T1_fpr"],
+            "max_T1_fpr": max(r["T1"]["fpr_rel"].values())}
+
+
 def main(tag="snapshot"):
     G.mkdir(exist_ok=True)
     t1, n1 = table1(); t2, n2 = table2(); t3, n3 = step_auc()
     (G / "s56_table1.md").write_text(t1 + "\n"); (G / "s56_table2.md").write_text(t2 + "\n"); (G / "s56_step_auc.md").write_text(t3 + "\n")
-    n4 = acc_cost()
-    (G / "s56_numbers.json").write_text(json.dumps({"table1": n1, "table2": n2, "step_auc": n3, "acc_cost": n4}, indent=1))
+    n4 = acc_cost(); n5 = scale_7b()
+    (G / "s56_numbers.json").write_text(json.dumps({"table1": n1, "table2": n2, "step_auc": n3, "acc_cost": n4,
+                                                   "scale_7b": n5}, indent=1))
     print(t3, "\n\n", t1, "\n\n", t2, "\n\n accuracy vs owner's unattacked students:", json.dumps(n4, indent=1))
 
 

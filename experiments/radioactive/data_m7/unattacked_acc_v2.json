@@ -1,0 +1,14 @@
+{
+ "qwen15|tulu_sft": 0.5523333333333333,
+ "qwen15|tulu_dpo": 0.6703333333333333,
+ "qwen15|tulu_rlvr": 0.6673333333333333,
+ "qwen15|olmoi_sft": 0.637,
+ "qwen15|olmoi_dpo": 0.6521666666666666,
+ "qwen15|olmoi_final": 0.69,
+ "llama1b|tulu_sft": 0.3431666666666667,
+ "llama1b|tulu_dpo": 0.402,
+ "llama1b|tulu_rlvr": 0.40149999999999997,
+ "llama1b|olmoi_sft": 0.37700000000000006,
+ "llama1b|olmoi_dpo": 0.3985,
+ "llama1b|olmoi_final": 0.41466666666666663
+}
