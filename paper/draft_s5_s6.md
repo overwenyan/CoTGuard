@@ -50,7 +50,8 @@ stricter length band: 1–1.5B LoRA students do not absorb 4–7k-character reas
 
 > **Correction to accuracy figures.** Rounds M3 through M9b scored GSM8K answers with an extractor whose fallback
 > skipped any number immediately followed by a period, so that "The answer is 8." was read as the "3" in an earlier
-> "Step 3". This underestimated accuracy by 0.03–0.13. We found it when a pre-registered answer-preservation check
+> "Step 3". This underestimated accuracy by up to 0.13 (teachers +0.005 to +0.133, student means +0.016 to +0.091;
+> Table X.1, generated). We found it when a pre-registered answer-preservation check
 > in the attack experiment of §6.3 voided seven of eight rewritten corpora and we inspected the rejected samples;
 > unit tests for the extractor were written afterwards. The bug touches accuracy only: no attribution statistic in
 > this paper (T0, T1, AUC, false- or true-positive rate) consumes the extractor. The teacher and student

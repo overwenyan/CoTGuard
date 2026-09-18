@@ -1,0 +1,175 @@
+{
+ "teachers": {
+  "tulu_sft": [
+   0.762,
+   0.802
+  ],
+  "tulu_dpo": [
+   0.7925,
+   0.8485
+  ],
+  "tulu_rlvr": [
+   0.7205,
+   0.8535
+  ],
+  "olmoi_sft": [
+   0.8425,
+   0.8805
+  ],
+  "olmoi_dpo": [
+   0.8195,
+   0.8515
+  ],
+  "olmoi_final": [
+   0.8565,
+   0.911
+  ],
+  "zephyr_sft": [
+   0.251,
+   0.2775
+  ],
+  "zephyr_dpo": [
+   0.2245,
+   0.229
+  ]
+ },
+ "students": {
+  "qwen15|tulu_sft": [
+   0.5283333333333333,
+   0.546
+  ],
+  "qwen15|tulu_dpo": [
+   0.606,
+   0.6693333333333333
+  ],
+  "qwen15|tulu_rlvr": [
+   0.5796666666666666,
+   0.6703333333333333
+  ],
+  "qwen15|olmoi_sft": [
+   0.6223333333333334,
+   0.639
+  ],
+  "qwen15|olmoi_dpo": [
+   0.6166666666666667,
+   0.6493333333333334
+  ],
+  "qwen15|olmoi_final": [
+   0.6459999999999999,
+   0.6910000000000001
+  ],
+  "llama1b|tulu_sft": [
+   0.33199999999999996,
+   0.35333333333333333
+  ],
+  "llama1b|tulu_dpo": [
+   0.36033333333333334,
+   0.4056666666666667
+  ],
+  "llama1b|tulu_rlvr": [
+   0.331,
+   0.3993333333333333
+  ],
+  "llama1b|olmoi_sft": [
+   0.344,
+   0.36133333333333334
+  ],
+  "llama1b|olmoi_dpo": [
+   0.36833333333333335,
+   0.38466666666666666
+  ],
+  "llama1b|olmoi_final": [
+   0.37133333333333335,
+   0.41133333333333333
+  ]
+ },
+ "base": {
+  "qwen15": [
+   0.5966666666666667,
+   0.64
+  ],
+  "llama1b": [
+   0.36,
+   0.39666666666666667
+  ]
+ },
+ "rewrites": {
+  "M9 paraphrase|tulu_dpo": [
+   0.965,
+   0.989
+  ],
+  "M9 paraphrase|tulu_rlvr": [
+   0.944,
+   0.991
+  ],
+  "M9 paraphrase|olmoi_dpo": [
+   0.955,
+   0.985
+  ],
+  "M9 paraphrase|olmoi_final": [
+   0.947,
+   0.9905
+  ],
+  "M9 imitation|tulu_dpo": [
+   0.8955,
+   0.95
+  ],
+  "M9 imitation|tulu_rlvr": [
+   0.828,
+   0.963
+  ],
+  "M9 imitation|olmoi_dpo": [
+   0.9075,
+   0.9825
+  ],
+  "M9 imitation|olmoi_final": [
+   0.9335,
+   0.988
+  ],
+  "M9b imitation|tulu_sft->tulu_dpo": [
+   0.9215,
+   0.973
+  ],
+  "M9b imitation|tulu_dpo->tulu_sft": [
+   0.8695,
+   0.935
+  ],
+  "M9b imitation|tulu_dpo->tulu_rlvr": [
+   0.828,
+   0.936
+  ],
+  "M9b imitation|tulu_rlvr->tulu_dpo": [
+   0.8235,
+   0.9465
+  ],
+  "M9b imitation|olmoi_sft->olmoi_dpo": [
+   0.8585,
+   0.961
+  ],
+  "M9b imitation|olmoi_dpo->olmoi_sft": [
+   0.645,
+   0.892
+  ],
+  "M9b imitation|olmoi_dpo->olmoi_final": [
+   0.777,
+   0.899
+  ],
+  "M9b imitation|olmoi_final->olmoi_dpo": [
+   0.87,
+   0.9585
+  ]
+ },
+ "summary": {
+  "teacher_shift": [
+   0.004500000000000004,
+   0.133
+  ],
+  "student_mean_shift": [
+   0.01633333333333331,
+   0.09066666666666678
+  ],
+  "rewrites_void_v1": 9,
+  "rewrites_void_v2": 2,
+  "n_rewrites": 16
+ }
+}
