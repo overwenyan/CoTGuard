@@ -93,9 +93,11 @@ distances control the false-positive rate on a relative.
 
 A different question asks whether a *dataset* was trained on, rather than which model produced the traces. Maini
 et al. (2024) aggregate weak per-example signals into a dataset-level test and show that per-example membership
-inference is largely confounded by distribution shift between members and non-members. That regime needs access
-to the candidate training data itself, which a vendor auditing a third-party student does not have; we name it in
-§6.4 as the alternative for the cases our attestation does not cover.
+inference is largely confounded by distribution shift between members and non-members. Such tests need the
+candidate training data, and in our setting the owner has it: it published the traces. Retrieval against a provider's
+own past generations survives paraphrase at the text level (Krishna et al., 2023), which is why §6.4 names a content
+signal over the published traces as where a defence against imitation would have to live — and what about it is
+untested for distilled students.
 
 ---
 
