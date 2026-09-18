@@ -132,6 +132,30 @@ def acc_cost():
     return out
 
 
+def budget():
+    """Reference and query budgets (M7). Varies only T1's per-relative references (n_ref) or the probe count;
+    T0's cross-line calibration stays at 10 per teacher throughout (the distinction M13 first got wrong).
+    Reported as a table: the curves are flat, so a figure would carry nothing a table cannot."""
+    d = j(M7 / "m7_result.json")
+    mean = lambda v: sum(v) / len(v)
+    rows, nums = [], {}
+    for ds, dsn in [("gsm", "GSM8K"), ("math", "MATH")]:
+        for fam, famn in FAMS:
+            c = d[ds][fam]
+            cell = {f"nref={k}": (mean(list(v["tpr"].values())), mean(list(v["fpr_rel"].values())))
+                    for k, v in c["T1_nref"].items()}
+            cell["nref=10"] = (mean(list(c["T1"]["tpr"].values())), mean(list(c["T1"]["fpr_rel"].values())))
+            for k, v in c["T1_query_budget"].items():
+                cell[f"q={k}"] = (v["mean_tpr"], v["mean_fpr_rel"])
+            cell["q=300"] = cell["nref=10"]
+            nums[f"{ds}/{fam}"] = cell
+            order = ["nref=3", "nref=5", "nref=10", "q=25", "q=50", "q=100", "q=300"]
+            rows.append(f"| {dsn} · {famn} | " + " | ".join(f"{f2(cell[o][0])} / {f3(cell[o][1])}" for o in order) + " |")
+    head = ("| Cell | 3 refs | 5 refs | 10 refs | 25 probes | 50 probes | 100 probes | 300 probes |\n"
+            "|---|---|---|---|---|---|---|---|")
+    return head + "\n" + "\n".join(rows), nums
+
+
 def scale_7b():
     """M13: the AllenAI x GSM8K x Qwen cell with a 7B student (after correction 1). Quoted in §6.1."""
     d = j(M7 / "tulu_gsm" / "m13_result.json")
@@ -148,9 +172,10 @@ def main(tag="snapshot"):
     G.mkdir(exist_ok=True)
     t1, n1 = table1(); t2, n2 = table2(); t3, n3 = step_auc()
     (G / "s56_table1.md").write_text(t1 + "\n"); (G / "s56_table2.md").write_text(t2 + "\n"); (G / "s56_step_auc.md").write_text(t3 + "\n")
-    n4 = acc_cost(); n5 = scale_7b()
+    n4 = acc_cost(); n5 = scale_7b(); t6, n6 = budget()
+    (G / "s56_budget.md").write_text(t6 + "\n")
     (G / "s56_numbers.json").write_text(json.dumps({"table1": n1, "table2": n2, "step_auc": n3, "acc_cost": n4,
-                                                   "scale_7b": n5}, indent=1))
+                                                   "scale_7b": n5, "budget": n6}, indent=1))
     print(t3, "\n\n", t1, "\n\n", t2, "\n\n accuracy vs owner's unattacked students:", json.dumps(n4, indent=1))
 
 

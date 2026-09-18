@@ -238,7 +238,9 @@ from that run; nothing from the void run is reported as a result (Appendix X).
 
 **It is cheap.** Three reference students per relative give the same result as ten (mean relative false-positive rate
 0.008–0.083), and 25 probe queries are enough (true-positive rate ≥ 0.98, false-positive rate 0.04–0.05) [EXP-M7,
-estimation]. This matches Proposition 3: once the population ordering is right, more queries are not the bottleneck;
+estimation; Table X.3, generated]. Only T1's per-relative reference set shrinks here; T0's cross-line calibration stays at
+ten students per teacher, because below 19 calibration scores it could not reach α at all (§5.3). The curves are flat, so
+we report them as a table rather than a figure. This matches Proposition 3: once the population ordering is right, more queries are not the bottleneck;
 when it is wrong (T0), no number of queries fixes it. Pooling is also what rescues the embedding read-out, whose
 per-output AUC for RL-era neighbours is only 0.60–0.66: 300 weak outputs make a strong student-level decision.
 
