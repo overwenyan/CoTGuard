@@ -19,9 +19,15 @@ by consecutive stages of one post-training pipeline, and that change of populati
 the read-out still separates them (§5.2), while the *test* built on the read-out no longer means what it did
 (§5.3).
 
-Two contemporaneous lines share our title words without making the same claim. Rawat et al. (2026, preprint)
-detect distillation by comparing a suspect against an earlier checkpoint of the teacher, which assumes access to
-that checkpoint's weights; we assume only sampled outputs, and the vendor's own reference students. Liu et al.
+The closest contemporaneous work shares our central move, reference normalisation, and applies it to a different
+population. Rawat et al. (2026, preprint) show that identifying a student's teacher, hard in isolation, becomes
+tractable against a reference: they score each candidate teacher's outputs by the student's log-likelihood minus that
+of an earlier checkpoint of the *student's own* family, and test the margin statistically. This needs log-probabilities
+from the student and its reference, and their candidates are teachers from different vendors. What the reference
+covers is where we differ. Theirs removes what the student would have found likely anyway; ours supplies the
+candidates the owner test's null would otherwise omit, the owner's own sibling checkpoints, from sampled outputs only.
+Their leave-one-teacher-out experiment shows the failure from the other side: with the true teacher removed from the
+candidate set, another candidate is falsely detected in 4 of 6 and 1 of 6 cells. Liu et al.
 (2025, preprint) classify each *sentence* of a distilled model's reasoning as teacher-, student- or jointly originated
 by comparing the probabilities that the teacher, the original student and the distilled model assign to it; this
 needs logits from all three models, and it attributes sentences within an output rather than a model to one of
@@ -36,12 +42,14 @@ A second tradition does not read a signal out of the data but puts one in. Radio
 2020) perturbs training images so that any model trained on them is detectable; watermarking a language model's
 outputs makes downstream students radioactive in the same sense, at as little as 5% of the fine-tuning data
 (Sander et al., 2024), and ReasMark (Lv et al., 2026) carries the idea into reasoning traces specifically, binding
-the mark to target-domain inputs so that it survives black-box distillation. These are *active* marks: they
+the mark to target-domain inputs so that it survives black-box distillation. Antidistillation fingerprinting (Xu et
+al., 2026) goes further and chooses the teacher's tokens by gradient against a proxy student, so that the fingerprint
+is what fine-tuning internalises. These are *active* marks: they
 require the owner to alter what it releases, before it releases it, and they buy a guarantee our setting does not
 have — detection from a small share of the training data (§6.2 measures the passive test's opposite behaviour: it
 reports the majority contributor and offers a minority one no claim).
 
-The closest work to ours sits exactly on this line. Ma et al. (2026) protect a model against unauthorised
+The work that mirrors ours most directly sits on this line. Ma et al. (2026) protect a model against unauthorised
 distillation by **rewriting its reasoning traces before release**, so that traces stay useful to honest readers
 while a student distilled from them carries the owner's mark. That is the same operation we study, run from the
 other side of the trace: in §6.3 it is the **distiller** who rewrites the owner's traces, with a 7B instruction
