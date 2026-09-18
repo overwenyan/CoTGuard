@@ -98,3 +98,27 @@ log with the reason, in the form already used for M8, M9 and M9b.
 Student keys are namespaced `("m13", teacher, role, seed)` to avoid the M9b key-collision class of bug. The scorer
 re-checks M7's 1.5B numbers for the same cell as a sentinel (the M8 lesson: a weaker test cannot have higher power),
 and refuses to write results if the sentinel moves.
+
+---
+
+## Correction 1 (2026-09-17, after the first scoring voided the cell; before any new data)
+
+**What went wrong.** The design used 3 reference students per teacher for *both* uses of reference students:
+T1's per-relative prediction interval (where M7 showed 3 ≡ 10) **and** T0's cross-line conformal calibration. The
+second use has an attainability floor: with 3 cross-line teachers × 3 students = 9 calibration scores, the smallest
+conformal p-value is 1/10 = 0.1 > α = 0.05, so neither T0 nor T1 (which requires T0) can reject anything. The first
+scoring reported "G1 fails"; that verdict was false and is withdrawn (commit 56aa34a). The error is the author's; the
+M8 lesson (a weaker test cannot out-power a stronger one) should have prompted this check at pre-registration.
+
+**Correction, chosen by the user before any further data.** Restore M7's calibration exactly:
+- **T0 cross-line calibration:** 10 reference students per teacher, seeds `s0–s9` — `s0–s4` on the M6 corpora
+  (`data_m6/tulu_gsm/corpus_grid_<teacher>_s<k>.jsonl`, the same corpora M7's reference students used) and `s5–s9` on
+  the M7 corpora. 3 cross-line teachers × 10 = **30 scores, floor 1/31 = 0.032 < 0.05**, identical to M7.
+- **T1 per-relative reference test:** unchanged, `n_ref = 3`, seeds `s5, s6, s7`.
+- **Test students, gates G1/G2, thresholds, manipulation check, kill criteria:** unchanged.
+- **New students:** 6 teachers × 7 seeds (`s0–s4, s8, s9`) = 42, same recipe as the first 36.
+
+**How this is reported.** In the body (§6.4 or wherever the 7B sentence lands) and in the integrity appendix: the cell
+was first run with an unattainable calibration, the verdict was withdrawn, and the calibration was restored to M7's
+after the void result was seen. The post-hoc α = 0.1 description computed on the voided run (ledger) is **not** a
+result and is not cited as one; only the corrected, pre-registered gates are.
