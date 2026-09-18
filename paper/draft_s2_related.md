@@ -22,9 +22,13 @@ the read-out still separates them (§5.2), while the *test* built on the read-ou
 Two contemporaneous lines share our title words without making the same claim. Rawat et al. (2026, preprint)
 detect distillation by comparing a suspect against an earlier checkpoint of the teacher, which assumes access to
 that checkpoint's weights; we assume only sampled outputs, and the vendor's own reference students. Liu et al.
-(2025, preprint) trace which steps of a student's reasoning originated with its teacher, scoring them against the
-teacher's predictive probabilities; this attributes *spans within* an output of a known teacher rather than
-attributing a *model* to one of several candidate checkpoints.
+(2025, preprint) classify each *sentence* of a distilled model's reasoning as teacher-, student- or jointly originated
+by comparing the probabilities that the teacher, the original student and the distilled model assign to it; this
+needs logits from all three models, and it attributes sentences within an output rather than a model to one of
+several candidate checkpoints. An appendix of theirs shows the same probabilities can, to some extent, pick the true
+teacher between two candidates from different vendors, by threshold rather than by a calibrated test. Our setting
+differs on all three axes: black-box sampled outputs, candidates from the owner's own line, and a test with a
+controlled false-positive rate.
 
 ### 2.2 Marks planted before release, and the rewriting that plants them
 
@@ -101,8 +105,10 @@ to the candidate training data itself, which a vendor auditing a third-party stu
   lives here.
 - **Do not claim** priority over Wadhwa et al. (2025) for teacher identification. Our contribution is the
   within-lineage population, the calibration semantics, and the attack.
-- **To do before submission:** read Liu et al. (arXiv 2512.20908) in full — the check on 2026-09-17 was the
-  abstract page only, enough to establish it is not a competing claim, not enough to characterise it in a
-  sentence we would defend in rebuttal.
+- **Liu et al. (arXiv 2512.20908) read in full 2026-09-18.** Sentence-level provenance, white-box (logits of teacher,
+  original student and distilled model), teachers DeepSeek-R1 / QwQ-32B / GPT-OSS-120B, math and GPQA benchmarks; main
+  use is teacher-guided data selection (+1.7–2.5 points). Its App. A.4.3 weakly separates the true teacher from a
+  spurious cross-vendor one, with no statistical test. No adversarial rewriting. Not a competing claim; §2.1 now
+  characterises it at that level of detail.
 - **Venues:** ReasMark and Ma et al. are ACL 2026; DITTO is EACL 2026 (not a preprint); Rawat et al. and Liu
   et al. and Mansurov et al. are preprints and are cited as such.
