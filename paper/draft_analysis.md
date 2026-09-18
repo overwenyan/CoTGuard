@@ -169,9 +169,10 @@ them here would let the corollary be read as *predicting* the attack when it onl
   rather than a conformal rank, so its guarantee is approximate; the conformal variant (α = 0.1) gives the same
   conclusion [EXP-M7].
 - **Removing coverage for one relative (§6.2).** Withholding one relative's reference students restores its false-positive
-  rate to ≥ 0.6 in 6–8 of the 8 affected pairs per cell. A pooled rejector whose calibration includes the *other*
-  relatives rejects an unreferenced *distant* relative (0.0) but not an *adjacent* one (1.0) [EXP-M8]. The distant relative
-  is covered by teachers it resembles; the adjacent one is close only to the owner.
+  rate to ≥ 0.6 in 6–8 of the 8 affected pairs per cell [EXP-M8 A1, pre-registered]. Under one pooled rejector — one
+  read-out and one calibration set drawn from the owner's other teachers — an unreferenced *distant* relative is rejected
+  (0.0) and an unreferenced *adjacent* one is not (1.0) [EXP-M8, exploratory, GSM8K]. The distant relative is covered by
+  teachers it resembles; the adjacent one is close only to the owner.
 - **Where the lower bound bites: imitation (§6.3).** An attack that rewrites the owner's traces toward a relative moves
   the attacked students' score law Q away from P_a and toward P_b under the owner's pairwise statistic. Corollary 1b
   then leaves the test only two options on those students: miss them, or flag the relative too. All four observed

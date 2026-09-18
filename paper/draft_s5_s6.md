@@ -91,8 +91,12 @@ about a *student*, once 300 outputs are pooled.
 
 **Test T0.** The owner fits a multi-class read-out on the traces of all candidate teachers and calibrates on reference
 students of teachers **outside its own post-training line**: p_out = (1 + #{calibration scores ≥ s}) / (1 + n_cal),
-reject at α = 0.05. This is the natural open-set design — calibrate against models that are not yours — and it
-achieves exactly what it promises. Students of unrelated lines are flagged at 0.00–0.20, and the owner's own
+reject at α = 0.05. With n_cal calibration scores the smallest attainable p-value is 1/(1 + n_cal), so reaching
+α = 0.05 needs **n_cal ≥ 19**; below that the test cannot reject whatever the data, and its verdict is undefined rather
+than negative. We compute this floor for every conformal or rank gate before committing it — a check we adopted after
+failing it once (§6.1), and one we recommend because a gate under 19 calibration points is easy to write and silent when
+it cannot pass. Our T0 always has at least 30 (three or more cross-line teachers × 10 reference students; floor ≤ 0.032). This is the natural open-set
+design — calibrate against models that are not yours — and it achieves exactly what it promises. Students of unrelated lines are flagged at 0.00–0.20, and the owner's own
 students at 1.00 in every cell [EXP-M7].
 
 It fails on relatives. On fresh students, the owner flags a same-line relative's students at a false-positive rate
@@ -103,15 +107,20 @@ families) [EXP-M10 R1].
 
 **Why.** No same-line student is in the calibration set, so any relative that scores higher on the owner's class than
 every cross-line student is flagged. This is Proposition 1 applied to teachers instead of keys: T0 controls "not from
-another line", not "not from this checkpoint". The verdict is a function of the comparison population: **hold the
-students, the probes and the read-out fixed, change only which students the suspect is scored against, and the verdict
-flips.** The single-variable version of that experiment is the pooled rejector of §6.2 — one read-out, calibration
-extended to cover the owner's *other* relatives — under which an unreferenced *distant* relative is rejected at 0.0 and
-an unreferenced *adjacent* one is flagged at 1.0. T1 (§6.1) is the remedy rather than the diagnosis because it changes
-two things at once: it covers each relative *and* scores the suspect under a pairwise owner-versus-relative read-out,
-driving relative false-positive rates from 0.9–1.0 to 0.00–0.09 at unchanged true-positive rates. Either way the
-information the finer decision needs is present in the same outputs. The failure is in the null the test controls, not
-in the signal — a semantics failure, not a power failure, and no quantity of probes fixes it (Proposition 3).
+another line", not "not from this checkpoint". The verdict is a function of the comparison population, and two
+**pre-registered** results bracket that claim: without reference students for its relatives the owner test flags them
+(8 of 12 ordered pairs per cell, above; EXP-M7 H1), and withholding the references of a single relative restores the
+collapse for that relative while the others stay protected (6–8 of the 8 affected pairs per cell; §6.2, EXP-M8 A1). The
+contrast that isolates coverage itself is **exploratory** — added after a pre-registration flaw made two planned tests
+identical (Appendix X) — and on GSM8K only: under one pooled rejector (owner versus its four other teachers, one
+read-out, one calibration set drawn from those teachers' reference students), an unreferenced *distant* relative is
+rejected at 0.0 and an unreferenced *adjacent* one is flagged at 1.0 [EXP-M8, exploratory]. The test, read-out and
+calibration are identical for the two relatives; what differs is whether a calibration teacher resembles them. T1
+(§6.1) is the remedy rather than this demonstration, because it changes two things at once — it covers each relative
+*and* scores the suspect under a pairwise owner-versus-relative read-out — and drives relative false-positive rates
+from 0.9–1.0 to 0.00–0.09 at unchanged true-positive rates. Either way the information the finer decision needs is
+present in the same outputs. The failure is in the null the test controls, not in the signal — a semantics failure,
+not a power failure, and no quantity of probes fixes it (Proposition 3).
 
 This is also why the failure is invisible in the closed-set regime. Prior work identifies which of several candidate
 teachers produced a student, and succeeds (Wadhwa et al., 2025); its candidate sets are models of *different* vendors,
@@ -123,7 +132,7 @@ the only regime in which "which checkpoint?" is the question being asked.
 things make it more than a tautology. First, this *is* the published protocol: owner tests calibrate on other parties'
 models, and same-line checkpoints were never candidates, so no prior evaluation could have exposed the behaviour.
 Second, coverage is a **distance, not a membership bit**: under one and the same calibration, an unreferenced *distant*
-relative is rejected at 0.0 while an unreferenced *adjacent* one is flagged at 1.0 (§6.2) — the distant relative is
+relative is rejected at 0.0 while an unreferenced *adjacent* one is flagged at 1.0 (§6.2; the exploratory contrast above) — the distant relative is
 covered by teachers it resembles, the adjacent one is close only to the owner. A tautology would predict both to fail.
 
 The paper's first instance of this pattern is one level up, in §4: a prompt-implanted key is recovered from student
@@ -195,17 +204,23 @@ to 0.00–0.09 on average while every owner still detects its own students (0.98
 student families and three read-outs [EXP-M7 H2, EXP-M10 R2, EXP-M11 N2]. Students of unrelated lines remain rejected
 (false-positive rate 0.00–0.13).
 
-**It holds with a 7B student, in the one cell we tested** [EXP-M13, confirmatory after a correction]. We re-ran the
-AllenAI · GSM8K · Qwen cell with Qwen2.5-7B-Instruct as the student and nothing else changed — same teachers, traces,
-splits, LoRA recipe and probes. T0 collapses on 7 of 12 ordered pairs (8 with the 1.5B student), and again no SFT owner
-flags its descendants. T1 brings the relative false-positive rate to ≤ 0.2 on 11 of 12 pairs (mean 0.03, worst 0.33) at an
-owner true-positive rate of 0.94. With three test students per teacher these rates lie on a grid of thirds, and one cell is
-one cell: this removes student scale as an untested assumption for the diagnosis and the remedy, not as a general
-caveat. **The first run of this cell was void by our error**: we had reused M7's finding that three reference students
-suffice for T1's per-relative test and applied it to T0's cross-line calibration as well, where 3 teachers × 3 students
-give a smallest attainable p-value of 0.1 > α. The scorer reported a gate failure; we withdrew that verdict, restored M7's
-ten-per-teacher calibration (smallest p 0.032), trained the missing reference students and scored again under the
-unchanged, pre-registered gates (Appendix X).
+**A 7B student, one cell** [EXP-M13, confirmatory]. We re-ran the AllenAI · GSM8K · Qwen cell with
+Qwen2.5-7B-Instruct as the student and nothing else changed — same teachers, traces, splits, LoRA recipe and probes. The
+remedy is strong: T1 brings the relative false-positive rate to ≤ 0.2 on 11 of 12 pairs (mean 0.03, worst 0.33) at an
+owner true-positive rate of 0.94. The collapse is present but marginal: T0 flags the relative on 7 of 12 ordered pairs
+against a pre-registered gate of 6 (8 with the 1.5B student), and again no SFT owner flags its descendants. This is the
+third time the paper sees the same pattern — across read-outs and datasets (§5.4), across vendors (Table 1) and now
+across student size: how badly the standard test fails varies, and the fix does not. With three test students per teacher these rates lie on a grid of thirds, and the 7B student is still LoRA-tuned,
+so the cell shows that the diagnosis and the remedy are **not a small-student artefact in the cell tested** — not that
+they are independent of scale.
+
+*The first run of this cell could not have passed.* With 3 cross-line teachers × 3 reference students, T0 had 9
+calibration scores, so its smallest attainable p-value was 1/10 = 0.10 > α = 0.05: the gate was unattainable regardless of
+the data. We had carried over M7's finding that three references suffice for T1's per-relative test to T0's calibration,
+where it does not hold. The scorer nonetheless reported a gate failure; we noticed the error when the owner's own students
+were detected at 0.00, withdrew that verdict, restored M7's pre-registered calibration of ten reference students per
+teacher (floor 0.032), trained the 42 missing students and scored again under the unchanged gates. The numbers above are
+from that run; nothing from the void run is reported as a result (Appendix X).
 
 **It is cheap.** Three reference students per relative give the same result as ten (mean relative false-positive rate
 0.008–0.083), and 25 probe queries are enough (true-positive rate ≥ 0.98, false-positive rate 0.04–0.05) [EXP-M7,
@@ -364,15 +379,30 @@ another paper.
    and reached with a weaker adversary than the theory needs — an off-the-shelf 7B model, no knowledge of the test, no
    accuracy cost.
 3. **Where a defence would have to live.** Style tests fail to imitation, because rewriting changes the style that
-   carries the signal. Content-membership tests — retrieval, dataset inference (Maini et al., 2024) — fail to
-   paraphrase but *not* to imitation, because rewriting the style of a trace does not change which problems and
-   solutions the student was trained on. The two failure modes are complementary, so a test that survives both would
-   have to combine a style signal with a membership signal over the same probes. We know of no such test, and
-   constructing one needs the membership side to work at the 1,500-trace scale, which §6.2's dilution result suggests
-   is the hard part.
+   carries the signal. A content signal does not have that weakness: imitation changes how a trace is laid out, not
+   which problems it solves or how. And in this setting the content signal is unusually available, because the owner
+   *published* the traces — it already holds the database that retrieval-based detection needs. Krishna et al. (2023)
+   show that retrieving a candidate text against a provider's own past generations survives the paraphrase that evades
+   the other detectors they test, watermarking included. The concrete next step is therefore to query a suspect on the *published*
+   problems and retrieve its answers against the owner's traces. Two things are untested and we flag them rather than
+   assume them: whether retrieval survives distillation, where the student's outputs are generated rather than copied;
+   and whether it can name a checkpoint, since sibling checkpoints answer the same problems. It also gives up the
+   held-out-probe design this paper relies on, which is why we report it as the direction and not as a result.
 
 A third-party auditor who cannot enumerate a lineage still gets no attestation from passive output analysis; that case
 needs active marks planted before release (Lv et al., 2026; Sander et al., 2024).
+
+**Limitations.**
+- **Student scale.** One 7B cell (GSM8K, TF-IDF, Qwen family, LoRA) shows the diagnosis and the remedy are not a
+  small-student artefact there; the collapse passed its gate narrowly (7 of 12 against 6). Other cells at 7B, larger
+  students and full fine-tuning are untested.
+- **The attacker does not see the test.** Our rewriter has no access to the owner's read-out. A classifier-aware
+  attacker who optimises against it could only do better, so our attack results are a lower bound on what an adaptive
+  distiller achieves; since the passive test is already defeated without that access, we did not run it.
+- **Mathematical reasoning only.** All teachers answer GSM8K and MATH. Whether step-structured reasoning in other
+  domains carries the same checkpoint signal — and the same scaffold-heavy signal the attacks move — is untested; the
+  paper's claims are scoped to mathematical reasoning traces.
+- **The access model is first-party.** The tester is the vendor, with reference students for every relative (§6.4).
 
 ---
 

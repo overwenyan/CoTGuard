@@ -58,8 +58,9 @@ version of "which model?" is not a competitor but its own adjacent checkpoint. �
   (M3S0 D1).
 - **Deliberately not claimed:**
   - M3B's "empirical FPR 0.016" — near-tautological by construction of the rank (ledger correction, 2026-09-12).
-  - G-R3 (ARC, 14/16) — the per-arm length rule was adopted after seeing the output; **reporting it as a pass is still
-    an open decision for the user.** Until decided, ARC appears only in Appendix Y with both readings.
+  - G-R3 (ARC, 14/16) — **decided 2026-09-18: appendix only, both readings, and the pre-registered reading is the
+    verdict** (void under the length check as run). The per-arm length rule was adopted after seeing the output, and it
+    decides the outcome directly, so it cannot produce a pass. Same discipline as M13: post-hoc numbers are not results.
   - Any mechanism for which keys survive paraphrase (the "propositional content" story in the ledger is post hoc).
   - Any utility magnitude in the body: the pre-correction figures (e.g. Qwen −12 points, Llama "not detected") are
     superseded; Appendix X reports both extractors.
