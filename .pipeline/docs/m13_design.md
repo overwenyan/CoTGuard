@@ -27,8 +27,17 @@ Exactly the AllenAI · GSM8K · Qwen cell of Table 1, with the student scaled up
 | Read-out | TF-IDF 1–2 gram + LR (C = 4) | same, primary and only gating read-out |
 
 Total **36 students** (6 teachers × [3 reference + 3 test]). Teacher traces, splits, prompts, LoRA config (r = 32,
-α = 64, 3 epochs, loss on trace tokens) and the 300 probe problems are **reused unchanged** from M7, so the only
-changed variable is student size. Reference and test students keep M7's disjoint problems and disjoint traces.
+α = 64, 3 epochs, batch 4, seq ≤ 1,024, loss on trace tokens) and the 300 probe problems are **reused unchanged** from
+M7, so the only changed variable is student size. Reference and test students keep M7's disjoint problems and disjoint
+traces.
+
+**Exact seeds** (fixed here, before any run; GSM8K reference seeds are 5–9 because s0–4 are the M6 students):
+reference = `s5, s6, s7`, test = `s10, s11, s12`, on the existing corpora
+`data_m7/tulu_gsm/corpus_grid_<teacher>_s<seed>.jsonl`. Student directories are
+`student_qwen7b_grid_<teacher>_s<seed>`, which is the M9b-collision-proof namespace for this round.
+
+**One recipe deviation, declared now:** 7B LoRA training enables gradient checkpointing
+(`M3C_GRADCKPT=1`). It changes memory and speed, not the objective or the optimiser. Batch size stays 4.
 
 **Resolution caveat, stated in advance.** With 3 test students, every false-positive rate lives on {0, ⅓, ⅔, 1}. The
 gates below are written against that grid, and no claim finer than it may be made from this cell.

@@ -40,7 +40,8 @@ SETTINGS = {
     "tulu_arc": ("allenai/Llama-3.1-Tulu-3-8B", "arc"),
     "tulu_math": ("allenai/Llama-3.1-Tulu-3-8B", "math"),   # m7: MATH students
 }
-STUDENTS = {"qwen15": "Qwen/Qwen2.5-1.5B-Instruct", "llama1b": "unsloth/Llama-3.2-1B-Instruct"}
+STUDENTS = {"qwen15": "Qwen/Qwen2.5-1.5B-Instruct", "llama1b": "unsloth/Llama-3.2-1B-Instruct",
+            "qwen7b": "Qwen/Qwen2.5-7B-Instruct"}   # m13: student scale, same cell as M7 AllenAI/GSM8K/Qwen
 REWRITERS = {"attacker": "Qwen/Qwen2.5-7B-Instruct", "owner": "unsloth/Llama-3.1-8B-Instruct"}
 REWRITE_PROMPTS = {
     "para": ("Rewrite the following step-by-step solution in your own words. Keep every calculation, "
@@ -208,6 +209,9 @@ def cmd_sft(a):
             model = get_peft_model(model, LoraConfig(r=32, lora_alpha=64, lora_dropout=0.05, task_type="CAUSAL_LM",
                                                      target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
                                                                      "gate_proj", "up_proj", "down_proj"]))
+            if os.environ.get("M3C_GRADCKPT") == "1":   # m13: 7B students need it; recipe otherwise unchanged
+                model.enable_input_require_grads()
+                model.gradient_checkpointing_enable()
         model.train()
         exs = []
         for r in rows:
@@ -220,7 +224,7 @@ def cmd_sft(a):
             L = int(os.environ.get("M3C_MAXLEN", 1024))     # m6: long traces need a larger cap
             exs.append(((pi + ti)[:L], ([-100] * len(pi) + ti)[:L]))
         opt = torch.optim.AdamW([q for q in model.parameters() if q.requires_grad], lr=1e-5 if a.full else 1e-4)
-        rng, bs, t0 = np.random.default_rng(a.seed), 4, time.time()
+        rng, bs, t0 = np.random.default_rng(a.seed), int(os.environ.get("M3C_BS", 4)), time.time()
         for ep in range(a.epochs):
             rng.shuffle(exs)
             tot = n = 0

@@ -35,7 +35,8 @@ if os.environ.get("M10_ZEPHYR") == "1":       # m10: cross-vendor ladder, same p
     ORDER = list(TEACHERS)
     LINES["zephyr"] = ORDER[6:]
     LINE_OF = {t: l for l, ts in LINES.items() for t in ts}
-STUDENTS = {"qwen15": "Qwen/Qwen2.5-1.5B-Instruct", "llama1b": "unsloth/Llama-3.2-1B-Instruct"}
+STUDENTS = {"qwen15": "Qwen/Qwen2.5-1.5B-Instruct", "llama1b": "unsloth/Llama-3.2-1B-Instruct",
+            "qwen7b": "Qwen/Qwen2.5-7B-Instruct"}   # m13: student scale, same cell as M7 AllenAI/GSM8K/Qwen
 SETTING = {"gsm": "tulu_gsm", "math": "tulu_math"}
 PROMPT = {"gsm": "Solve the problem. Think step by step, one step per line.",
           "math": "Solve the problem. Think step by step, one step per line, and put the final answer in \\boxed{}."}
