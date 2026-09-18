@@ -143,19 +143,17 @@ test's own statistic*:
 This is a corollary of standard results, and we claim no novelty for it. Its role is to state precisely which quantity
 the experiments of §5–§6 move.
 
-**Corollary 1b (the same two lines applied to an attacked student).** In §6.3 the distiller rewrites the owner's traces,
-so the students under test have their own score law, Q. Corollary 1 has P_b on both sides; replacing P_b by Q gives two
-statements that hold separately, each under the statistic of the party making the claim:
+**Corollary 1b (the bound holds for any suspect population, including one an adversary produced).** Nothing in the proof
+used the suspect's law, so replacing P_b by an arbitrary law Q gives, for each party separately and under that party's
+own statistic,
 
-  owner's detection rate on Q  ≥  TPR_a − TV(P_a, Q)  (under the owner's statistic),
-  relative b's claim rate on Q  ≥  TPR_b − TV(P_b, Q)  (under b's).
+  owner's detection rate on Q  ≥  TPR_a − TV(P_a, Q),
+  relative b's claim rate on Q  ≥  TPR_b − TV(P_b, Q).
 
-Each of the four outcomes observed in §6.3 is a position of Q relative to those two laws, and we use the same four words
-on both sides: to **evade**, Q must be far from P_a under the owner's statistic; to **frame** b, Q must be close to P_b
-under b's; a **joint claim** is close to both; **laundering** is far from both. This says what each outcome *is* in score space, not why a given rewriter lands there,
-so it leaves the mechanism question (§6.3, "when the attack succeeds, we cannot say") exactly where the experiments
-leave it. It does make one thing unsurprising that would otherwise look odd: two rewrites can evade on disjoint sets of
-attacks, because they move Q in different directions and which direction increases TV(P_a, Q) depends on the owner.
+In §6.3 the distiller rewrites the owner's traces before training on them, so the attacked students are such a Q, and
+the outcomes of that attack are positions of Q relative to the two laws. We name those positions in §6.3, beside the
+table that reports them, rather than here: they are names for regions of score space, not theorem content, and stating
+them here would let the corollary be read as *predicting* the attack when it only locates it.
 
 **Evidence.**
 - **An uncovered relative (§5.3).** T0 calibrates on cross-line students only, whose scores lie far below the relative's,

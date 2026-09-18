@@ -142,19 +142,17 @@ test's own statistic*:
 This is a corollary of standard results, and we claim no novelty for it. Its role is to state precisely which quantity
 the experiments of §5–§6 move.
 
-**Corollary 1b (the same two lines applied to an attacked student).** In §6.3 the distiller rewrites the owner's traces,
-so the students under test have their own score law, Q. Corollary 1 has P_b on both sides; replacing P_b by Q gives two
-statements that hold separately, each under the statistic of the party making the claim:
+**Corollary 1b (the bound holds for any suspect population, including one an adversary produced).** Nothing in the proof
+used the suspect's law, so replacing P_b by an arbitrary law Q gives, for each party separately and under that party's
+own statistic,
 
-  owner's detection rate on Q  ≥  TPR_a − TV(P_a, Q)  (under the owner's statistic),
-  relative b's claim rate on Q  ≥  TPR_b − TV(P_b, Q)  (under b's).
+  owner's detection rate on Q  ≥  TPR_a − TV(P_a, Q),
+  relative b's claim rate on Q  ≥  TPR_b − TV(P_b, Q).
 
-Each of the four outcomes observed in §6.3 is a position of Q relative to those two laws, and we use the same four words
-on both sides: to **evade**, Q must be far from P_a under the owner's statistic; to **frame** b, Q must be close to P_b
-under b's; a **joint claim** is close to both; **laundering** is far from both. This says what each outcome *is* in score space, not why a given rewriter lands there,
-so it leaves the mechanism question (§6.3, "when the attack succeeds, we cannot say") exactly where the experiments
-leave it. It does make one thing unsurprising that would otherwise look odd: two rewrites can evade on disjoint sets of
-attacks, because they move Q in different directions and which direction increases TV(P_a, Q) depends on the owner.
+In §6.3 the distiller rewrites the owner's traces before training on them, so the attacked students are such a Q, and
+the outcomes of that attack are positions of Q relative to the two laws. We name those positions in §6.3, beside the
+table that reports them, rather than here: they are names for regions of score space, not theorem content, and stating
+them here would let the corollary be read as *predicting* the attack when it only locates it.
 
 **Evidence.**
 - **An uncovered relative (§5.3).** T0 calibrates on cross-line students only, whose scores lie far below the relative's,
@@ -231,10 +229,12 @@ final answer [EXP-M9, EXP-M9b].
 
 _Valid attacks that evade the owner (family-mean detection ≤ 0.34): imitation 2, scaffold-only 3, either 5 of 8 attack directions._
 
-The outcome column is Corollary 1b read off the table: writing Q for the score law of the attacked students, to **evade** is
-for Q to be far from the owner's own students under the owner's statistic, to **frame** is for Q to be close to the imitated relative's under the
-relative's, a joint claim is close to both and laundering is far from both. That is a description of where the attack
-lands, not of how the rewriter gets there.
+**What the outcome column means.** Corollary 1b covers the attacked students, whose score law we write Q, and the four
+labels are positions of Q under the two statistics involved: to **evade** is for Q to be far from the owner's own
+students under the owner's statistic; to **frame** the imitated relative is for Q to be close to that relative's
+students under *its* statistic; a **joint claim** is close to both; **laundering** is close to neither. This says where
+an attack landed, not how the rewriter got it there, and it is why two rewrites can evade on disjoint sets of attacks
+(below): they move Q in different directions, and which direction carries it away from the owner depends on the owner.
 
 The attack produces three distinct failures beyond "no effect", which map onto established categories:
 - **Evade and frame** is Brennan et al.'s (2012) obfuscation plus imitation, or scrubbing plus spoofing in the
@@ -247,8 +247,12 @@ The attack produces three distinct failures beyond "no effect", which map onto e
 For an auditor, laundering is the most damaging of the three because it is silent: a false claim can be contested, but
 an absent one raises no flag.
 
-**No accuracy cost was apparent.** Attacked students scored within −0.03 to +0.04 of the owner's unattacked students on
-GSM8K (corrected extractor; descriptive, not tested).
+**No accuracy cost was apparent.** The baseline is the owner's **own unattacked students** — the same owner's §6.1 test
+students, same family, same probes, corrected extractor. Against it, attacked students fall within −0.028 to +0.030
+(imitation) and −0.027 to +0.023 (scaffold-only), over 12 valid attack × family cells each, with mean shifts of +0.004
+and +0.000 (descriptive, not tested). We name the baseline because an earlier round of this work compared attacked
+students against *paraphrase-only* students, which are themselves 2–6 points below the unattacked ones, and against
+that easier baseline the attack appears to *improve* accuracy.
 
 **When the attack succeeds, we cannot say.** We pre-registered two accounts of which attacks would succeed: how close
 owner and relative already are, and how narrow the relative's output distribution is. Both correlations came out with

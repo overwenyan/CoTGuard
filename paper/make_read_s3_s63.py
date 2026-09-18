@@ -36,13 +36,21 @@ def slice_between(path: Path, start: str, end: str) -> str:
 def main() -> None:
     parts = {k: slice_between(*v) for k, v in SOURCES.items()}
 
-    # Consistency check: every outcome word used by the corollary must appear in §6.3, and vice versa.
-    cor, s63 = parts["cor"].lower(), parts["s63"].lower()
-    missing = [w for w in OUTCOME_WORDS if w not in cor or w not in s63]
+    # Consistency check. The vocabulary lives in §6.3 beside Table 2, not in §3: the corollary is a
+    # bound on an arbitrary suspect law, and naming regions of score space there would read as a
+    # prediction of the attack. So the coupling to enforce is §6.3's remark against Table 2's rows.
+    s63 = parts["s63"].lower()
+    table2 = (ROOT / "generated" / "s56_table2.md")
+    if not table2.exists():
+        sys.exit("paper/generated/s56_table2.md missing — run make_tables_s56.py first")
+    t2 = table2.read_text().lower()
+    missing = [w for w in OUTCOME_WORDS if w not in s63 or w not in t2]
     if missing:
-        sys.exit(f"outcome vocabulary out of sync between Corollary 1b and §6.3: {missing}")
+        sys.exit(f"outcome vocabulary out of sync between §6.3's remark and Table 2: {missing}")
     if "corollary 1b" not in s63:
         sys.exit("§6.3 no longer cites Corollary 1b")
+    if "corollary 1b" not in parts["cor"].lower():
+        sys.exit("Corollary 1b is no longer stated in §3")
 
     # Propositions cited in §3 must still exist in the analysis draft.
     for prop in re.findall(r"Proposition \d", parts["s3"]):

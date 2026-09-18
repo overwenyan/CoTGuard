@@ -113,12 +113,32 @@ def step_auc():
     return ("| Step | Tulu-3 | OLMo-3-Instruct | OLMo-3-Think | Zephyr |\n|---|---|---|---|---|\n" + "\n".join(rows)), nums
 
 
+def acc_cost():
+    """Attacked-student accuracy against the owner's OWN unattacked students.
+
+    The baseline matters and has to be named in the draft: an earlier round compared attacked
+    students against paraphrase-only students, which are themselves below the unattacked ones, so
+    that comparison flatters the attack. Baseline here = the same owner's M7 test students, same
+    family, same probes, corrected (v2) extractor.
+    """
+    base = j(M7 / "unattacked_acc_v2.json")
+    out = {}
+    for f, label in [("m9b_result.json", "imitation"), ("m12b_result.json", "scaffold-only")]:
+        d = j(M7 / "tulu_gsm" / f)
+        deltas = [r["acc"] - base[f"{fam}|{r['owner']}"]
+                  for fam, v in d["families"].items() for r in v["rows"] if not r["void"]]
+        out[label] = {"n": len(deltas), "min": min(deltas), "max": max(deltas),
+                      "mean": sum(deltas) / len(deltas)}
+    return out
+
+
 def main(tag="snapshot"):
     G.mkdir(exist_ok=True)
     t1, n1 = table1(); t2, n2 = table2(); t3, n3 = step_auc()
     (G / "s56_table1.md").write_text(t1 + "\n"); (G / "s56_table2.md").write_text(t2 + "\n"); (G / "s56_step_auc.md").write_text(t3 + "\n")
-    (G / "s56_numbers.json").write_text(json.dumps({"table1": n1, "table2": n2, "step_auc": n3}, indent=1))
-    print(t3, "\n\n", t1, "\n\n", t2)
+    n4 = acc_cost()
+    (G / "s56_numbers.json").write_text(json.dumps({"table1": n1, "table2": n2, "step_auc": n3, "acc_cost": n4}, indent=1))
+    print(t3, "\n\n", t1, "\n\n", t2, "\n\n accuracy vs owner's unattacked students:", json.dumps(n4, indent=1))
 
 
 if __name__ == "__main__":

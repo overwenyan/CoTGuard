@@ -428,3 +428,28 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   to for third-party auditing.
 - The remaining classic references (Craver, Brennan, Jovanović, Zhang, T-norm, impostors, Scheirer, Bates, Barber, Vovk,
   Tsybakov, Maini, Sablayrolles, Sander, Wadhwa, Mansurov, Rohrer) are listed for the same check before related work.
+
+## 2026-09-17（顾问第 10 轮，reviewer 视角）——三个写作决定 + 两处更正
+1. **§5.3 的诊断句必须单变量成立。** 顾问建议写「同一读出、同一学生、同一探针，只换校准集，判决翻转」。
+   **按我们的设计这句话不成立**：T1 同时换了两样东西——覆盖亲属 *并且* 改用所有者 vs 亲属的两两读出。
+   真正单变量的实验是 §6.2 的 pooled rejector（同一读出，只扩展校准集：远亲 0.0、近亲 1.0）。
+   §5.3 已按此改写，T1 定位为「补救」而非「诊断」。已回告顾问。
+2. **Wadhwa et al. (2025) 是我们的闭集极限**，不只是相关工作里的区分句：他们的候选集里没有同线检查点，
+   所以那个失败在他们的设置里不可能出现。§5.3 显式这么写。同时预先回应「没校准过当然拒不掉」：
+   (a) 这就是已发表的协议；(b) M8 证明覆盖是**距离不是布尔量**（同一校准下远亲 0.0、近亲 1.0）。
+   §4（M3）被指认为同一模式的第一个实例：同样的输出、不同的零假设、不同的答案。
+3. **Corollary 1b 拆分。** 定理内容（bound 对任意可疑总体 Q 成立）留在 §3；四个结果词
+   （evade / frame / joint claim / laundering）移到 §6.3 表 2 旁边——它们是分数空间区域的命名，不是定理内容，
+   放在 §3 会让审稿人把理论读成「预测了攻击」。`make_read_s3_s63.py` 的检查随之改为：
+   **§6.3 的 remark 与生成的表 2 必须用同样的四个词**，且 §3 仍须陈述 1b。
+4. **checksum 类比加限定。** checksum 是 tamper-evident，我们的检验不是——洗白正是「被篡改却无任何异常」的情形。
+   §6.4 改为「像发布 checksum，除了最关键的一点：它不检测篡改」。
+5. **§6.4 增加「防御会长在哪里」**：风格检验败给模仿；内容成员检验（检索、dataset inference）败给转述但**不**败给模仿，
+   因为改写风格不改变训练用过哪些题。两者失效模式互补 → 能同时扛住的检验必须把风格信号和成员信号合起来，
+   目前不存在。这是带理由的 future work，而不是「我们没有防御」。
+6. **准确率基线更正（我的错）。** 草稿写「−0.03 到 +0.04，相对所有者未受攻击的学生」，但早期一轮实际比较的是
+   **只转述（AD1）的学生**，后者本身比未受攻击学生低 2–6 个点，那个基线会让攻击显得**提高**准确率。
+   重算（v2 抽取器，同家族同探针，仅有效语料 12 个 attack × family 格）：模仿 −0.028…+0.030（均值 +0.004），
+   只改脚手架 −0.027…+0.023（均值 +0.000）。数字改由 `make_tables_s56.py` 的 `acc_cost` 生成，基线在正文点名。
+7. **保留项优先级**：读出泛化与厂商泛化已关闭 → 审稿人下一个会问的是**学生规模**。若重开，只开一格 7B，
+   且只跑 T0 坍缩 / T1 修复这一核心，目的是删掉一句 limitation，不是改结论。**预算决定权在用户。**

@@ -101,11 +101,34 @@ every other stage of their line. On the Zephyr ladder it is complete in both dir
 families) [EXP-M10 R1].
 
 **Why.** No same-line student is in the calibration set, so any relative that scores higher on the owner's class than
-every cross-line student is flagged. This is Proposition 1 applied to teachers instead of keys: T0
-controls "not from another line", not "not from this checkpoint". The information needed for the finer decision is
-present in the same outputs — §6.1 shows that the same students are told apart once the comparison includes the
-relative — so the failure is a property of
-the null the test controls, not of the signal.
+every cross-line student is flagged. This is Proposition 1 applied to teachers instead of keys: T0 controls "not from
+another line", not "not from this checkpoint". The verdict is a function of the comparison population: **hold the
+students, the probes and the read-out fixed, change only which students the suspect is scored against, and the verdict
+flips.** The single-variable version of that experiment is the pooled rejector of §6.2 — one read-out, calibration
+extended to cover the owner's *other* relatives — under which an unreferenced *distant* relative is rejected at 0.0 and
+an unreferenced *adjacent* one is flagged at 1.0. T1 (§6.1) is the remedy rather than the diagnosis because it changes
+two things at once: it covers each relative *and* scores the suspect under a pairwise owner-versus-relative read-out,
+driving relative false-positive rates from 0.9–1.0 to 0.00–0.09 at unchanged true-positive rates. Either way the
+information the finer decision needs is present in the same outputs. The failure is in the null the test controls, not
+in the signal — a semantics failure, not a power failure, and no quantity of probes fixes it (Proposition 3).
+
+This is also why the failure is invisible in the closed-set regime. Prior work identifies which of several candidate
+teachers produced a student, and succeeds (Wadhwa et al., 2025); its candidate sets are models of *different* vendors,
+which a cross-line calibration covers. That result is the limit of ours in which the failure cannot occur. The failure
+appears exactly when the candidate set contains checkpoints of the tester's **own** line — the first-party regime, and
+the only regime in which "which checkpoint?" is the question being asked.
+
+**"You cannot reject what you did not calibrate on."** True, and it is the objection to answer, not to avoid. Two
+things make it more than a tautology. First, this *is* the published protocol: owner tests calibrate on other parties'
+models, and same-line checkpoints were never candidates, so no prior evaluation could have exposed the behaviour.
+Second, coverage is a **distance, not a membership bit**: under one and the same calibration, an unreferenced *distant*
+relative is rejected at 0.0 while an unreferenced *adjacent* one is flagged at 1.0 (§6.2) — the distant relative is
+covered by teachers it resembles, the adjacent one is close only to the owner. A tautology would predict both to fail.
+
+The paper's first instance of this pattern is one level up, in §4: a prompt-implanted key is recovered from student
+outputs, yet an independent teacher given the same instruction is flagged in 8 of 8 cases, while a teacher-identity
+read-out separates the two sources at AUC 1.00 from *the same outputs*. Same outputs, different null, different answer.
+§5.3 is that pattern at the checkpoint level, and §6.1 is the remedy for it.
 
 ### 5.4 How badly the standard test fails depends on the read-out [confirmatory + exploratory]
 
@@ -241,10 +264,12 @@ final answer [EXP-M9, EXP-M9b].
 
 _Valid attacks that evade the owner (family-mean detection ≤ 0.34): imitation 2, scaffold-only 3, either 5 of 8 attack directions._
 
-The outcome column is Corollary 1b read off the table: writing Q for the score law of the attacked students, to **evade** is
-for Q to be far from the owner's own students under the owner's statistic, to **frame** is for Q to be close to the imitated relative's under the
-relative's, a joint claim is close to both and laundering is far from both. That is a description of where the attack
-lands, not of how the rewriter gets there.
+**What the outcome column means.** Corollary 1b covers the attacked students, whose score law we write Q, and the four
+labels are positions of Q under the two statistics involved: to **evade** is for Q to be far from the owner's own
+students under the owner's statistic; to **frame** the imitated relative is for Q to be close to that relative's
+students under *its* statistic; a **joint claim** is close to both; **laundering** is close to neither. This says where
+an attack landed, not how the rewriter got it there, and it is why two rewrites can evade on disjoint sets of attacks
+(below): they move Q in different directions, and which direction carries it away from the owner depends on the owner.
 
 The attack produces three distinct failures beyond "no effect", which map onto established categories:
 - **Evade and frame** is Brennan et al.'s (2012) obfuscation plus imitation, or scrubbing plus spoofing in the
@@ -257,8 +282,12 @@ The attack produces three distinct failures beyond "no effect", which map onto e
 For an auditor, laundering is the most damaging of the three because it is silent: a false claim can be contested, but
 an absent one raises no flag.
 
-**No accuracy cost was apparent.** Attacked students scored within −0.03 to +0.04 of the owner's unattacked students on
-GSM8K (corrected extractor; descriptive, not tested).
+**No accuracy cost was apparent.** The baseline is the owner's **own unattacked students** — the same owner's §6.1 test
+students, same family, same probes, corrected extractor. Against it, attacked students fall within −0.028 to +0.030
+(imitation) and −0.027 to +0.023 (scaffold-only), over 12 valid attack × family cells each, with mean shifts of +0.004
+and +0.000 (descriptive, not tested). We name the baseline because an earlier round of this work compared attacked
+students against *paraphrase-only* students, which are themselves 2–6 points below the unattacked ones, and against
+that easier baseline the attack appears to *improve* accuracy.
 
 **When the attack succeeds, we cannot say.** We pre-registered two accounts of which attacks would succeed: how close
 owner and relative already are, and how narrow the relative's output distribution is. Both correlations came out with
@@ -308,10 +337,29 @@ Reference-aware testing names the checkpoint a student was distilled from when f
 
 Each condition was removed experimentally, and each removal has a measured cost (§6.2–§6.3). Under these conditions the
 test is a first-party lineage attestation that a vendor can pre-compute at release for a few LoRA fine-tunes per
-checkpoint. It resembles publishing a checksum, not a guarantee against an adaptive adversary. A third-party auditor who
-cannot enumerate a lineage, or a vendor facing a distiller that imitates its sibling checkpoints, gets no such
-attestation from passive output analysis. That regime needs active marks planted before release or tests of data
-membership rather than style (Maini et al., 2024).
+checkpoint. It is like publishing a checksum **except in the one way that matters here**: a checksum is tamper-evident,
+and this is not. Laundering (§6.3) is exactly the case where the signal is destroyed and the test reports nothing
+unusual, so the attestation is informative when it fires and silent when it has been defeated.
+
+**Why we report a bounded test rather than a defence.** Three things, and the third is the one we would want from
+another paper.
+1. **The regime the remedy serves is the common one.** Compliance checks and non-adaptive distillation are where most
+   provenance disputes live, and a distiller who rewrites traces toward a sibling checkpoint has taken a step that is
+   itself evidence of intent: the attack is cheap in compute but not free in deniability.
+2. **A style-level defence against a quality-preserving rewriter is known not to exist.** Zhang et al. (2024) prove it
+   for strong watermarking; §6.3 is the passive-provenance instance of the same statement, measured rather than assumed,
+   and reached with a weaker adversary than the theory needs — an off-the-shelf 7B model, no knowledge of the test, no
+   accuracy cost.
+3. **Where a defence would have to live.** Style tests fail to imitation, because rewriting changes the style that
+   carries the signal. Content-membership tests — retrieval, dataset inference (Maini et al., 2024) — fail to
+   paraphrase but *not* to imitation, because rewriting the style of a trace does not change which problems and
+   solutions the student was trained on. The two failure modes are complementary, so a test that survives both would
+   have to combine a style signal with a membership signal over the same probes. We know of no such test, and
+   constructing one needs the membership side to work at the 1,500-trace scale, which §6.2's dilution result suggests
+   is the hard part.
+
+A third-party auditor who cannot enumerate a lineage still gets no attestation from passive output analysis; that case
+needs active marks planted before release (Lv et al., 2026; Sander et al., 2024).
 
 ---
 
@@ -333,7 +381,10 @@ membership rather than style (Maini et al., 2024).
   - M8 pre-registration flaw (two tests identical in a three-stage line);
   - M9b key collision with mixture students;
   - voided rewrites;
-  - Tulu-3 checkpoint mislabel.
+  - Tulu-3 checkpoint mislabel;
+  - **accuracy baseline for the attack**: an earlier round compared attacked students with paraphrase-only students,
+    which are themselves 2–6 points below unattacked ones; §6.3 now compares with the owner's unattacked students and
+    the range is generated by `make_tables_s56.py` (`acc_cost` in `s56_numbers.json`).
 - **Citations:** ReasMark (ACL 2026), trace rewriting (ACL 2026) and DITTO (EACL 2026) verified against the Anthology
   (`.pipeline/docs/citations_verified.md`); RefDistDet is a preprint. The seventeen standing references are verified in
   the same file. **Ma et al. positioning is now §2.2** (owner-side rewriting plants, distiller-side rewriting scrubs and
