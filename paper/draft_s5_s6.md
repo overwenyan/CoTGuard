@@ -205,8 +205,13 @@ Fresh test students, 10 per teacher._
 | Zephyr · GSM8K · Qwen | 2 · 2 · 2 | 1.00 / 2 / 0.050 | 1.00 / 2 / 0.050 | 1.00 / 2 / 0.000 |
 | Zephyr · GSM8K · Llama | 2 · 2 · 2 | 1.00 / 2 / 0.050 | 1.00 / 2 / 0.000 | 1.00 / 2 / 0.000 |
 
-_Figure 2 (planned): TF-IDF only, paired bars of false-positive rate on relatives without (T0) and with (T1) references,
-per cell; POS and EMB as a robustness panel._
+**Figure 2** (`paper/generated/fig2.pdf`, from `make_fig2.py`) — _False-positive rate on same-line relatives without
+reference students for the relatives (T0, orange circles) and with a reference set for each relative (T1, blue squares),
+under each read-out. Bars are means over ordered same-line pairs; each dot is one ordered pair (12 per AllenAI cell, 2 per
+Zephyr cell). GSM = GSM8K; Zeph = the Zephyr ladder on GSM8K; Qwen and Llama are the 1–1.5B student families; the
+separated column is the 7B cell (three test students per teacher, so its rates are in thirds). Dashed: the pre-registered
+bound for T1. How often T0 fails depends on the read-out and the dataset; T1's mean false-positive rate stays at or
+below 0.09 in every cell, though a few individual pairs exceed the bound (Table 1 counts them)._
 
 The failure varies across read-outs and datasets; the fix does not. With references, relative false-positive rates fall
 to 0.00–0.09 on average while every owner still detects its own students (0.98–1.00), on two vendors, two datasets, two
