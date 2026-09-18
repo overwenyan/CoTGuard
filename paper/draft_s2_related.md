@@ -26,8 +26,9 @@ of an earlier checkpoint of the *student's own* family, and test the margin stat
 from the student and its reference, and their candidates are teachers from different vendors. What the reference
 covers is where we differ. Theirs removes what the student would have found likely anyway; ours supplies the
 candidates the owner test's null would otherwise omit, the owner's own sibling checkpoints, from sampled outputs only.
-Their leave-one-teacher-out experiment shows the failure from the other side: with the true teacher removed from the
-candidate set, another candidate is falsely detected in 4 of 6 and 1 of 6 cells. Liu et al.
+Their cross-validation shows the same failure we isolate, in a different test (§5.3): calibrating their detection
+threshold without one teacher's students produces false detections on that teacher's cells, while calibrating with
+every teacher represented produces none. Liu et al.
 (2025, preprint) classify each *sentence* of a distilled model's reasoning as teacher-, student- or jointly originated
 by comparing the probabilities that the teacher, the original student and the distilled model assign to it; this
 needs logits from all three models, and it attributes sentences within an output rather than a model to one of

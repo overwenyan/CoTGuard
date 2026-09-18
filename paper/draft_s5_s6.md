@@ -135,6 +135,15 @@ Second, coverage is a **distance, not a membership bit**: under one and the same
 relative is rejected at 0.0 while an unreferenced *adjacent* one is flagged at 1.0 (§6.2; the exploratory contrast above) — the distant relative is
 covered by teachers it resembles, the adjacent one is close only to the owner. A tautology would predict both to fail.
 
+**The same failure, found independently.** Rawat et al. (2026) test a different statistic — a student's log-likelihood
+margin on each candidate teacher's outputs, normalised by an earlier checkpoint of the student's family — and report the
+same dependence in their cross-validation. With the detection threshold calibrated on every teacher's students, no held-out
+student is falsely detected; with one teacher's students left out of calibration, cells where that teacher is not among
+the candidates are falsely detected in 4 of 6 and 1 of 6 cases for the two reasoning teachers, "because the unseen
+teacher's regime mis-sets τ". Same cells, same statistic; only whether calibration covers the teacher changes. Their
+cells are cross-vendor, so the uncovered teacher is an outsider rather than a sibling, but the mechanism is the one
+Corollary 1 names: specificity holds where calibration covers the suspect's source and fails where it does not.
+
 The paper's first instance of this pattern is one level up, in §4: a prompt-implanted key is recovered from student
 outputs, yet an independent teacher given the same instruction is flagged in 8 of 8 cases, while a teacher-identity
 read-out separates the two sources at AUC 1.00 from *the same outputs*. Same outputs, different null, different answer.

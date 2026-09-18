@@ -491,3 +491,19 @@ Next: write-up plus robustness (paraphrase/filter attacks, more teachers, non-ma
   OpenReview 对脚本访问返回验证页。按规则**暂按预印本引用**，需人工在浏览器确认 OpenReview Eem0IYVORm。
 - **Antidistillation Fingerprinting (2602.03812)**：arXiv 页标 ICML 2026，加入 §2.2 主动标记一段（未标会议，待 PMLR 确认）。
 - 报告中关于后续论文的建议（D1+D3、D10、D7、D5）**不影响当前论文的范围**；记录供投稿后规划。
+
+## 2026-09-18 顾问第 12 轮：会议核查结果 + Rawat 作为独立佐证
+- **ADFP (2602.03812)**：ICML 2026 poster，已由用户在会议官方记录确认（icml.cc/virtual/2026/poster/63624）。PMLR 卷页待索引后补。
+- **Liu et al. (2512.20908)**：用户同样被 OpenReview 拦截；按预印本引用，除非 forum Eem0IYVORm 显示录用决定。
+- **Rawat 佐证进入 §5.3**（不只在 §2.1 作区分）。**我核对原文时又发现一处偏差**：他们的 leave-one-teacher-out 变的是
+  **校准集**（"leaving that teacher absent during calibration" of τ），不是候选集。原文："leaving a student out produces no
+  false detections, whereas leaving a teacher out produces false detections on the reasoning teachers' teacher-removed cells
+  (4/6 and 1/6), because the unseen teacher's regime mis-sets τ"。这比「候选集缺席」更直接：同样的单元、同样的统计量，
+  只有校准是否覆盖该教师不同 → 与我们的诊断一致。§2.1、§5.3、引用表均按原文写；我此前与顾问的转述都不精确。
+- **投稿后的后续计划（不影响当前论文）**：
+  - D1（先风格后能力）：Think 线截断到 400 token 后 AUC 0.75–0.78 **而非随机**，所以真正的问题是**长度匹配后的残差**；
+    检查必须先预注册「存活」的定义与预测，再看数据。学生规模排序不在现有数据里（报告的「无需新训练」对这一半是错的）。
+  - D10（发布基准）：先做许可证表——Tulu-3 为 Llama-3.1 衍生、Llama 学生为 Llama-3.2 衍生，都受 Meta 社区许可
+    （可再分发，但有命名与声明要求）；Qwen2.5-1.5B/7B 适配器按模型卡核对（预期 Apache，需以模型卡为准）。
+  - D5 等投稿结果出来再说（同数据、同框架、同时在审 = 并行投稿问题）。D8 无共享底座对，需新训练，不在预算内。
+  - 顺序：投稿后 D7 先行、D3 并行，D1 仅在长度匹配检查通过后。
