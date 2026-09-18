@@ -91,6 +91,21 @@ def main():
 
     out = {"void": sorted(void), "manipulation": minfo, "sentinel": {k: sent[k] for k in SENTINEL},
            "inconclusive": inconclusive}
+
+    # Attainability guard (added 2026-09-17 AFTER the first scoring, which issued a false "G1 fails" verdict):
+    # a conformal test with n calibration scores cannot reject below 1/(1+n). If that floor is above alpha the
+    # gates are undefined, not failed. The pre-registration used 3 references per teacher for T0's cross-line
+    # calibration as well as for T1's per-relative test; 3 teachers x 3 = 9 scores -> floor 0.1 > 0.05.
+    n_cal = min(len([k for t in cell.avail if LINE_OF[t] != LINE_OF[a] for k in cell.keys(t, REF)]) for a in cell.avail)
+    floor = 1 / (1 + n_cal)
+    out["n_cal_min"], out["p_floor"] = n_cal, floor
+    if floor > score_m7.ALPHA:
+        out["verdict"] = (f"VOID by construction: T0 calibration has {n_cal} scores, minimum attainable p = "
+                          f"{floor:.3f} > alpha = {score_m7.ALPHA}. G1 and G2 are undefined, not failed.")
+        print(f"[m13] {out['verdict']}", flush=True)
+        (D("gsm") / "m13_result.json").write_text(json.dumps(out, indent=1, default=float))
+        return
+
     if not inconclusive:
         r = collapse_and_repair(cell, n_ref=N_REF)
         g1 = r["n_T0_ge_0.6"] >= G1_NEED
