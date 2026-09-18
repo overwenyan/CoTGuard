@@ -1,8 +1,9 @@
 """M13 scoring (.pipeline/docs/m13_design.md, pre-registered 68cfc6a): does the 1.5B cell's result hold at 7B?
 
-Same code path as M7 — score_m7.Cell builds the read-outs and runs T0/T1 — with three changes, all of them
-pre-registered: the student family is qwen7b, the reference seeds are 5-7 and the test seeds 10-12 (3 each,
-justified by M7's reference-budget result), and n_ref = 3.
+Same code path as M7 — score_m7.Cell builds the read-outs and runs T0/T1 — with these changes: the student
+family is qwen7b; test seeds 10-12; T1's per-relative test uses n_ref = 3 (s5-s7, pre-registered); and, after
+correction 1 (the first run's 9-score calibration could not reach alpha), T0 calibrates on all 10 reference
+seeds as in M7.
 
 Refuses to write results if the M7 sentinel moves (the M8 lesson: a scorer bug is invisible unless something
 known is recomputed alongside).
@@ -23,7 +24,10 @@ from run_m7 import D, LINES, LINE_OF, ORDER, jl  # noqa: E402
 from answer_v2 import correct_v2  # noqa: E402
 
 FAM = "qwen7b"
-REF, TEST = [5, 6, 7], [10, 11, 12]
+# Correction 1 (m13_design.md, 744a6a2): T0's cross-line calibration uses all 10 reference seeds, as in M7
+# (floor 1/31 = 0.032). T1's per-relative test keeps n_ref = 3; Cell takes keys(b, REF)[:n_ref], so the
+# pre-registered s5-s7 are listed first and are exactly the three T1 uses.
+REF, TEST = [5, 6, 7, 0, 1, 2, 3, 4, 8, 9], [10, 11, 12]
 N_REF = 3
 COLLAPSE = 0.6          # a pair collapses when the owner flags the relative's students at >= 2 of 3
 G1_NEED, G2_NEED, G2_TPR = 6, 10, 0.9
@@ -61,7 +65,7 @@ def manipulation(cell):
     void, info = set(), {"base_acc": b_acc, "base_len": b_len}
     for t in ORDER:
         rows = [cell.P[(t, s)] for s in REF + TEST if (t, s) in cell.P]
-        if len(rows) < 6:
+        if len(rows) < len(REF) + len(TEST):
             void.add(t); info[t] = {"n_students": len(rows), "missing": True}; continue
         accs = [float(np.mean([correct_v2(r["text"], r["gold"]) for r in st])) for st in rows]
         lens = [float(np.mean([len(r["text"]) for r in st])) for st in rows]
@@ -80,7 +84,7 @@ def main():
     print(f"[m13] sentinel ok: M7 gsm/qwen15 collapse {sent['n_T0_ge_0.6']}/12, T1 repair {sent['n_T1_le_0.2']}/12",
           flush=True)
 
-    score_m7.REF_SEEDS = {"gsm": REF, "math": REF}      # pre-registered: 3 references, seeds 5-7
+    score_m7.REF_SEEDS = {"gsm": REF, "math": REF}      # T0 calibration: all 10; T1 references: first 3 (s5-s7)
     score_m7.TEST_SEEDS = TEST                          # pre-registered: 3 test students, seeds 10-12
     cell = Cell("gsm", FAM)
 
