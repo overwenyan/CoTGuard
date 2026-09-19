@@ -221,7 +221,7 @@ student families and three read-outs [EXP-M7 H2, EXP-M10 R2, EXP-M11 N2]. Studen
 **A 7B student, one cell** [EXP-M13, confirmatory]. We re-ran the AllenAI · GSM8K · Qwen cell with
 Qwen2.5-7B-Instruct as the student and nothing else changed — same teachers, traces, splits, LoRA recipe and probes. The
 remedy is strong: T1 brings the relative false-positive rate to ≤ 0.2 on 11 of 12 pairs (mean 0.03, worst 0.33) at an
-owner true-positive rate of 0.94. The collapse is present but marginal: T0 flags the relative on 7 of 12 ordered pairs
+owner true-positive rate of 0.94. The collapse is present but narrow: T0 flags the relative on 7 of 12 ordered pairs
 against a pre-registered gate of 6 (8 with the 1.5B student), and again no SFT owner flags its descendants. This is the
 third time the paper sees the same pattern — across read-outs and datasets (§5.4), across vendors (Table 1) and now
 across student size: how badly the standard test fails varies, and the fix does not. With three test students per teacher these rates lie on a grid of thirds, and the 7B student is still LoRA-tuned,
@@ -409,8 +409,9 @@ A third-party auditor who cannot enumerate a lineage still gets no attestation f
 needs active marks planted before release (Lv et al., 2026; Sander et al., 2024).
 
 **Limitations.**
-- **Student scale.** One 7B cell (GSM8K, TF-IDF, Qwen family, LoRA) shows the diagnosis and the remedy are not a
-  small-student artefact there; the collapse passed its gate narrowly (7 of 12 against 6). Other cells at 7B, larger
+- **Student scale.** In one 7B cell (GSM8K, TF-IDF, Qwen family, LoRA) the remedy is strong — owner true-positive rate
+  0.94, mean false-positive rate on siblings 0.03 — and the standard test's collapse is present but narrow (7 of 12 pairs
+  against a gate of 6). That shows neither is a small-student artefact in the cell tested. Other cells at 7B, larger
   students and full fine-tuning are untested.
 - **The attacker does not see the test.** Our rewriter has no access to the owner's read-out. A classifier-aware
   attacker who optimises against it could only do better, so our attack results are a lower bound on what an adaptive
