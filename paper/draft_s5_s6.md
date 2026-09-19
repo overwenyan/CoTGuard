@@ -219,7 +219,9 @@ student families and three read-outs [EXP-M7 H2, EXP-M10 R2, EXP-M11 N2]. Studen
 (false-positive rate 0.00–0.13).
 
 **A 7B student, one cell** [EXP-M13, confirmatory]. We re-ran the AllenAI · GSM8K · Qwen cell with
-Qwen2.5-7B-Instruct as the student and nothing else changed — same teachers, traces, splits, LoRA recipe and probes. The
+Qwen2.5-7B-Instruct as the student — same teachers, traces, splits, probes and LoRA settings, with one difference we
+found afterwards: training sequences were capped at 1,024 tokens rather than the 4,608 used for the 1–1.5B students, which
+cuts off the end of 0.9% of the GSM8K training examples (Appendix X). The
 remedy is strong: T1 brings the relative false-positive rate to ≤ 0.2 on 11 of 12 pairs (mean 0.03, worst 0.33) at an
 owner true-positive rate of 0.94. The collapse is present but narrow: T0 flags the relative on 7 of 12 ordered pairs
 against a pre-registered gate of 6 (8 with the 1.5B student), and again no SFT owner flags its descendants. This is the

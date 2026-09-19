@@ -53,6 +53,13 @@ run at α = 0.10 suggested 8 of 12 collapsed pairs; the correct test gives 7. We
 to show why a post-hoc number is not a result. The scorer now refuses to issue a verdict when the floor exceeds α, and
 §5.3 states the floor rule (n_cal ≥ 19 for α = 0.05) as method.
 
+**A second deviation in the same cell, found later.** While preparing a second 7B cell we found that the 7B students were
+trained with sequences capped at 1,024 tokens, whereas every 1–1.5B student in §5–§6 was trained with a cap of 4,608; the
+cell's design document had wrongly recorded 1,024 as the earlier recipe. We measured the consequence rather than assume
+it: 1,075 of the 117,000 GSM8K training examples (0.92%) exceed 1,024 tokens and lose their ends, against 73 (0.06%) that
+exceed 4,608. We did not retrain the cell; §6.1 states the difference. The second 7B cell, on MATH, where 16.3% of
+examples exceed 1,024 tokens, uses 4,608.
+
 ### X.3  Robustness round: inverted class order in the scorer (§6.2)
 
 **What.** The pairwise scorer returned the probability of the relative instead of the owner, so every test in its first

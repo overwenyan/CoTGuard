@@ -122,3 +122,13 @@ M8 lesson (a weaker test cannot out-power a stronger one) should have prompted t
 was first run with an unattainable calibration, the verdict was withdrawn, and the calibration was restored to M7's
 after the void result was seen. The post-hoc α = 0.1 description computed on the voided run (ledger) is **not** a
 result and is not cited as one; only the corrected, pre-registered gates are.
+
+---
+
+## Correction 2 (2026-09-19, after both runs; found while preparing M14)
+
+The table above says the LoRA recipe, including "seq ≤ 1,024", was reused unchanged from M7. **That is false.** M7's
+training jobs set `M3C_MAXLEN=4608`; M13's set 1,024. Measured on the GSM8K corpora used here (Qwen2.5 tokenizer, chat
+prompt + trace): 1,075 of 117,000 examples (0.92%) exceed 1,024 tokens and were truncated at their ends; 73 (0.06%) exceed
+4,608. The cell was not retrained. The difference is stated in §6.1 and Appendix X; M14 (MATH, where 16.3% exceed 1,024)
+uses 4,608.
