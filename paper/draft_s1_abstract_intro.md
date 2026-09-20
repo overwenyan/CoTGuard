@@ -7,11 +7,11 @@ _Working draft (2026-09-18), written last, as planned. Every number is quoted fr
 
 ## Abstract
 
-A model vendor that publishes reasoning traces may want to show that a student model was distilled from them — and,
-since vendors release several checkpoints of one model, from which one. In pre-registered experiments with about 780
+A model vendor that publishes reasoning traces may want to show that a student was distilled from them — and,
+since vendors release several checkpoints, from which one. In pre-registered experiments with about 780
 distilled students, a standard owner test calibrated against other vendors' models detects its own students but cannot
-reject the vendor's own earlier or later checkpoints: its calibration set never contains them, so the failure lies in
-what its null hypothesis covers, not in the signal, and more queries do not fix it. Adding reference students for each
+reject the vendor's own earlier or later checkpoints: its calibration set never contains them: the failure lies in
+what its null covers, not in the signal, and more queries do not fix it. Adding reference students for each
 sibling checkpoint repairs it in every cell we test — two vendors, two datasets, three read-outs and a 7B student —
 while how badly the standard test fails varies with the read-out. The repair is bounded: it protects only referenced
 checkpoints, needs the cross-vendor calibration, and attributes a mixture to its majority contributor. A distiller who
@@ -19,7 +19,7 @@ rewrites the traces toward a sibling, with no measurable accuracy cost, makes th
 sibling, or attribute it to no one. Passive attribution is thus a first-party lineage attestation: informative when it
 fires, silent when defeated. We report every error we found, including a gate that could not have passed.
 
-_(206 words.)_
+_(200 words.)_
 
 ---
 
