@@ -230,6 +230,11 @@ across student size: how badly the standard test fails varies, and the fix does 
 so the cell shows that the diagnosis and the remedy are **not a small-student artefact in the cell tested** — not that
 they are independent of scale.
 
+The second 7B cell uses a stricter check that this one did not have to meet — students must separate from the untuned
+base model under a teacher-vs-base read-out — so we applied it here afterwards as a **diagnostic, never a gate**: all six
+teachers pass it (per-output AUC 0.96–1.00 separating their students' outputs from the base model's), so the two cells
+are comparable on that criterion [EXP-M13, reported].
+
 *The first run of this cell could not have passed.* With 3 cross-line teachers × 3 reference students, T0 had 9
 calibration scores, so its smallest attainable p-value was 1/10 = 0.10 > α = 0.05: the gate was unattainable regardless of
 the data. We had carried over M7's finding that three references suffice for T1's per-relative test to T0's calibration,

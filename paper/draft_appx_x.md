@@ -60,6 +60,13 @@ it: 1,075 of the 117,000 GSM8K training examples (0.92%) exceed 1,024 tokens and
 exceed 4,608. We did not retrain the cell; §6.1 states the difference. The second 7B cell, on MATH, where 16.3% of
 examples exceed 1,024 tokens, uses 4,608.
 
+**A check applied afterwards, as a diagnostic.** The second 7B cell (in preparation) replaces the accuracy-or-length
+manipulation check with absorption — a teacher's students must separate from the untuned base model under a
+teacher-vs-base read-out at AUC ≥ 0.90 — because on MATH at 7B the base model plausibly outscores every teacher, so a
+perfectly absorbed student would fail an accuracy clause. This cell passed the older check partly through its length
+clause, so we ran the new one here retroactively **as a reported diagnostic, not a gate**: it cannot change this cell's
+verdict, and all six teachers pass it (AUC 0.96–1.00). The two 7B cells are therefore comparable on that criterion.
+
 ### X.3  Robustness round: inverted class order in the scorer (§6.2)
 
 **What.** The pairwise scorer returned the probability of the relative instead of the owner, so every test in its first

@@ -126,6 +126,12 @@ ck("X.1 voids 2 of 16 under v2, 9 under v1", has("2 of 16 rewritten corpora are 
 m12a = j(M7 / "m12a_result.json")
 ck("X.9/§5.4 ratio range 1.04–1.15 on the four exceptions", has("1.04–1.15"), "see m12a_result.json")
 
+# ---------------------------------------------------------------- M13 absorption diagnostic (reported, not a gate)
+ab = j(M7 / "tulu_gsm" / "m13_absorption.json")
+aucs = [v["auc_students_vs_base"] for v in ab["teachers"].values()]
+ck("§6.1/X.2 absorption diagnostic: all 6 teachers ≥ 0.90, AUC 0.96–1.00",
+   has("AUC 0.96–1.00") and len(aucs) == 6 and min(aucs) >= 0.90, f"{min(aucs):.3f}–{max(aucs):.3f}")
+
 # ---------------------------------------------------------------- figure caption
 f2 = j(G / "fig2_values.json")
 mx = max(r[2] for k in f2 for r in f2[k])
