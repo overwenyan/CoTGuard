@@ -35,9 +35,31 @@ sibling did not write, which is why it should have the specificity M4 lacked.
 4. *Limits outcome, named in advance:* if a cheap content rewrite defeats both channels at no measurable accuracy cost,
    the paper is a limits result.
 
-**Open design choices to settle in the pre-registration:** sim() (embedding cosine vs step-aligned edit distance vs
-answer-path overlap); how to aggregate d_x over problems (mean with a t interval, as T1; or a sign test); how many
-published problems per suspect; the floor for any rank/conformal gate (n_cal ≥ 19 at α = 0.05).
+**Similarity (settled, advisor round 14).** sim() must measure what imitation cannot change — the solution path, not
+the wording. Two functions, both pre-registered:
+- **Baseline: dense cosine** (gte-base). Standard retrieval choice, survives paraphrase, but on a solved problem
+  siblings sit almost on top of each other; expect M11's 0.60–0.66.
+- **Content channel proper: numeric-step alignment.** Extract the ordered sequence of intermediate quantities (numbers
+  and equations the trace computes) with the unit-tested extractor's machinery; score by longest common subsequence over
+  that sequence, with Jaccard over intermediate values as the cheaper variant. Wording-invariant by construction — and
+  both attacked corpora preserved it, which is why those attacks were free.
+- **Prediction:** the second separates siblings under imitation; the first mostly does not.
+
+**Aggregation (settled).** Keep T1's shape so the two channels are one test: per suspect, S = mean over published
+problems of d_x, then the one-sided t prediction interval against b's reference students' S computed with the *same*
+trace pair. A **sign test over d_x** is the per-instance alternative whose power grows with N; report it as the budget
+curve — this is where "power grows with queries" finally has a home (contrast Proposition 3, where it does not).
+
+**N (settled: set from data, not convention).** Compute d_x on the **reference students only**, estimate the per-problem
+effect size and variance, and size N for 90% power at the sign test. If that lands near 300, keep 300 for comparability
+with the rest of the paper; if it lands at 1,000, that is a finding about the channel's cost and belongs in the paper.
+
+**New data, no training.** Suspects must be queried on the **published** problems; our 300 probes are held-out. D7 needs
+a generation pass (cheap on the L40S node) but it is new data, and the pre-registration must order the gates so that
+**gate 1 is whether retrieval survives distillation at all** — unattacked owner students separating from b's reference
+students — *before* any attack is run.
+
+**Still open:** the floor for any rank/conformal gate in this design (n_cal ≥ 19 at α = 0.05).
 
 ---
 
@@ -54,10 +76,15 @@ removes late content, so its AUC (0.75–0.78) is uninterpretable as a residual.
   matched sets only.
 - *Stripped-and-matched:* additionally remove think tags, "Step N:", `\boxed{}` and answer lines before matching.
 
-**Threshold relative to the confound.** Train a length-only baseline (token count, sentence count, mean sentence length)
-on the *unmatched* data — the AUC length alone buys. **Style survives** iff, in the matched condition, the full read-out
-exceeds the length-only baseline by **≥ 0.10 AUC** *and* clears a permutation null for AUC at the 95th percentile, in
-**≥ 3 of 4** family × stage units.
+**Threshold (revised, advisor round 14 — the earlier version compared across conditions and was not clean).** Two steps,
+both inside the matched condition:
+1. **Validation gate.** The length-only baseline must be near chance on the matched sets: **AUC ≤ 0.55**. Otherwise
+   matching failed and that unit is **void**. Restrict the baseline to length-derived features only — token, character,
+   line and sentence counts, and sentence-length moments. Step counts and scaffold phrases are *style*; putting them in
+   the control would leak the very thing the test isolates.
+2. **Survival, absolute.** Full read-out matched **AUC ≥ 0.65** with a bootstrap 95% CI over outputs excluding 0.50, in
+   **≥ 3 of 4** family × stage units. No margin over the baseline is subtracted: once matching is validated, length
+   carries no information and there is nothing meaningful to subtract.
 
 **Capability gate (separate):** accuracy ≤ base − 0.03 on the same probes, with the unit-tested extractor (v2; boxed
 extraction for MATH).

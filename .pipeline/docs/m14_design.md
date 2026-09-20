@@ -41,13 +41,32 @@ floor; its p-value is continuous). The scorer checks the floor again and refuses
 
 **Resolution.** Three test students per teacher: every false-positive rate lies in {0, ⅓, ⅔, 1}; no claim finer than that.
 
-## Manipulation check (M6/M7 rule, applied first)
+## Manipulation check — **amended 2026-09-19, before any M14 code or data** (advisor round 14)
 
-A teacher is voided if fewer than 70% of its traces contain a `\boxed{}` answer, or if more than 20% of its students
-neither stay within three accuracy points of the untuned Qwen2.5-7B-Instruct base (MATH probes, `math_check`
-equivalence) nor stay within a factor of two of the teacher's output length. **Fewer than 4 teachers, or fewer than 2 in
-either line → inconclusive; no gate is evaluated.** Note in advance: at 1.5B, MATH distillation lowered Qwen accuracy
-below base (0.34–0.50 vs 0.60), so the length clause may be what keeps teachers in; that is the rule as written in M6/M7.
+**Why the M6/M7 rule is wrong here.** That rule voids a teacher unless its students stay within three accuracy points of
+the untuned base *or* within a factor of two of the teacher's trace length. On MATH at 7B the accuracy clause measures
+the wrong thing: Qwen2.5-7B-Instruct's base MATH accuracy is plausibly above every teacher on our ladders, so a student
+that absorbed the traces *perfectly* would lose accuracy and fail that clause, leaving the length clause as the only
+route to a pass — a weak proxy for "shaped by the teacher". At 1.5B this did not bite the same way (students scored
+0.34–0.50 against base 0.60), but we should not carry a check that passes for the wrong reason.
+
+**Amended primary check — absorption, measured directly.** A teacher's students must separate from the **untuned base
+model's** outputs on the same 300 MATH probes under a teacher-vs-base read-out (TF-IDF 1–2 gram + LR, fitted on the
+teacher's traces vs the base model's probe outputs): **AUC ≥ 0.90**, per teacher, over its 13 students. A teacher whose
+students fall below that is voided. **Fewer than 4 teachers, or fewer than 2 in either line → inconclusive; no gate is
+evaluated.**
+
+**Accuracy and length become reported diagnostics, not gates:** student accuracy against the 7B base (`math_check`
+equivalence), and the student/teacher output-length ratio, are reported per teacher either way.
+
+**Two cautions, recorded now.**
+1. *It is not circular with what M14 tests.* The check is owner-vs-**base**; the gates are owner-vs-**sibling**. Passing
+   it says a student was shaped by *some* teacher on this ladder, which is a precondition for asking which one, and
+   nothing about whether siblings are separable.
+2. *It is not the retracted dissociation.* "Absorption, not accuracy" is a statement about whether the treatment took,
+   not a claim that capability and identity dissociate (a claim this project retracted after the extractor correction,
+   Appendix X.1). The design doc says so here so the distinction is on record before the run, and the paper must repeat
+   it wherever the check is described.
 
 ## Gates (identical to M13)
 
@@ -55,14 +74,15 @@ below base (0.34–0.50 vs 0.60), so the length clause may be what keeps teacher
   pairs. (1.5B MATH·Qwen: 8 of 12.)
 - **G2 — remedy.** T1 relative false-positive rate **≤ 0.2 in ≥ 10 of 12** pairs **and** mean owner true-positive rate
   **≥ 0.9**. (1.5B: TPR 1.00, 10 of 12, mean 0.092.)
-- **Reported, not gating:** per-pair T0/T1 rates; cross-line FPR; accuracy vs base; POS and EMB re-scores (CPU only).
+- **Reported, not gating:** per-pair T0/T1 rates; cross-line FPR; accuracy vs base and length ratios (the former
+  manipulation-check clauses); POS and EMB re-scores (CPU only).
 
 ## Wording, fixed now
 
 | Outcome | Sentence in §6.1 / §6.4 |
 |---|---|
 | G1 and G2 pass | "In two 7B cells (GSM8K and MATH, Qwen family, LoRA) the remedy holds and the standard test's collapse is present." Report both TPR/FPR pairs first, then both collapse counts. |
-| **G1 fails, G2 passes** | "**The remedy holds at 7B in both cells; the standard test's collapse is present in one and weaker in the other.**" This is not a retreat: *failure severity varies, the fix does not* is already the paper's pattern, and a weaker 7B collapse on MATH is its fourth instance (after read-out, dataset, vendor). Lead with the remedy numbers. |
+| **G1 fails, G2 passes** | "**The remedy holds at 7B in both cells; the standard test's collapse is present in one and weaker in the other.**" This is not a retreat: *failure severity varies, the fix does not* is already the paper's pattern, and a weaker 7B collapse on MATH is its fourth instance (after read-out, dataset, vendor). Lead with the remedy numbers. **The sentence must also say that the two 7B cells differ in two ways, not one:** dataset (GSM8K vs MATH) *and* training sequence cap (1,024 in M13, 4,608 here; M13 correction 2). |
 | G2 fails | The remedy does not carry to 7B on MATH. §6.1's 7B paragraph says so in its first sentence, and the scale limitation is restated as a failure of the remedy in that cell. |
 | Inconclusive | Report the void reasons; the one-cell wording stays; the attempt goes into Appendix X. |
 
@@ -84,3 +104,14 @@ below base (0.34–0.50 vs 0.60), so the length clause may be what keeps teacher
   refuses to write results if it moves.
 - **Floor guard:** as in M13 after correction 1.
 - The scorer and sbatch files are committed before submission of the first job; their commit id goes into the ledger.
+
+---
+
+## Amendment 1 (2026-09-19, before any M14 code or data)
+
+Changes, all made while no M14 artefact exists, so this remains a pre-registration: (i) the manipulation check is now
+absorption (teacher-vs-base read-out, AUC ≥ 0.90) rather than accuracy-or-length, with the rationale and the two
+cautions above; (ii) accuracy and length become reported diagnostics; (iii) the fixed wording for "G1 fails, G2 passes"
+must state that the two 7B cells differ in dataset **and** sequence cap. Requires one extra generation pass: the base
+model's outputs on the 300 MATH probes (`probe_qwen7b_base.jsonl` under `data_m7/tulu_math`), which the probe job
+produces alongside the students.
