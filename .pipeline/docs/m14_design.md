@@ -70,10 +70,18 @@ equivalence), and the student/teacher output-length ratio, are reported per teac
 
 ## Gates (identical to M13)
 
-- **G1 — collapse.** T0 flags a same-line relative's test students at false-positive rate ≥ ⅔ in **≥ 6 of 12** ordered
-  pairs. (1.5B MATH·Qwen: 8 of 12.)
-- **G2 — remedy.** T1 relative false-positive rate **≤ 0.2 in ≥ 10 of 12** pairs **and** mean owner true-positive rate
-  **≥ 0.9**. (1.5B: TPR 1.00, 10 of 12, mean 0.092.)
+Gates are **proportions of valid ordered pairs**, so that voiding a teacher does not silently change the bar (amendment
+2). A teacher voided by the absorption check takes its line from three stages to two, i.e. from six ordered pairs to two,
+so the cell falls from 12 pairs to 8.
+
+- **G1 — collapse.** T0 flags a same-line relative's test students at false-positive rate ≥ ⅔ in **≥ 50% of valid ordered
+  pairs** (6 of 12 when all are valid; 4 of 8 with one teacher voided). (1.5B MATH·Qwen: 8 of 12.)
+- **G2 — remedy.** T1 relative false-positive rate ≤ 0.2 in **≥ 83% of valid ordered pairs** (10 of 12; 7 of 8) **and**
+  mean owner true-positive rate **≥ 0.9**. (1.5B: TPR 1.00, 10 of 12, mean 0.092.)
+- **Floor for any verdict: ≥ 8 valid ordered pairs.** Below that the cell is reported descriptively and carries no gate
+  verdict (third wording branch below).
+- **A line reduced to two stages still counts as a line** for the "remedy holds in both cells" sentence **iff both of its
+  ordered directions are valid**, because every claim in this paper is per-pair.
 - **Reported, not gating:** per-pair T0/T1 rates; cross-line FPR; accuracy vs base and length ratios (the former
   manipulation-check clauses); POS and EMB re-scores (CPU only).
 
@@ -84,7 +92,8 @@ equivalence), and the student/teacher output-length ratio, are reported per teac
 | G1 and G2 pass | "In two 7B cells (GSM8K and MATH, Qwen family, LoRA) the remedy holds and the standard test's collapse is present." Report both TPR/FPR pairs first, then both collapse counts. |
 | **G1 fails, G2 passes** | "**The remedy holds at 7B in both cells; the standard test's collapse is present in one and weaker in the other.**" This is not a retreat: *failure severity varies, the fix does not* is already the paper's pattern, and a weaker 7B collapse on MATH is its fourth instance (after read-out, dataset, vendor). Lead with the remedy numbers. **The sentence must also say that the two 7B cells differ in two ways, not one:** dataset (GSM8K vs MATH) *and* training sequence cap (1,024 in M13, 4,608 here; M13 correction 2). |
 | G2 fails | The remedy does not carry to 7B on MATH. §6.1's 7B paragraph says so in its first sentence, and the scale limitation is restated as a failure of the remedy in that cell. |
-| Inconclusive | Report the void reasons; the one-cell wording stays; the attempt goes into Appendix X. |
+| **Partial (< 8 valid pairs)** | "**The second cell was partial, k of 12 pairs valid, and carries no gate verdict.**" Report the per-pair numbers descriptively and the void reasons; the one-cell wording of §6.1 stays. |
+| Inconclusive (manipulation check leaves < 4 teachers, or < 2 in a line) | Report the void reasons; the one-cell wording stays; the attempt goes into Appendix X. |
 
 **No post-hoc gate changes.** Any deviation after data is a correction, logged in the form used for M8, M9b and M13.
 
@@ -115,3 +124,15 @@ cautions above; (ii) accuracy and length become reported diagnostics; (iii) the 
 must state that the two 7B cells differ in dataset **and** sequence cap. Requires one extra generation pass: the base
 model's outputs on the 300 MATH probes (`probe_qwen7b_base.jsonl` under `data_m7/tulu_math`), which the probe job
 produces alongside the students.
+
+---
+
+## Amendment 2 (2026-09-20, before any M14 code or data) — advisor round 15
+
+1. **Gates are proportions of valid pairs** (G1 ≥ 50%, G2 ≥ 83%, matching 6/12 and 10/12), with a **floor of 8 valid
+   ordered pairs** for any verdict; below it the cell is *partial* and gets the third wording branch.
+2. **A two-stage line still counts as a line** for the cross-cell sentence iff both its directions are valid.
+3. **M13's teachers get the absorption check retroactively, as a reported diagnostic, not a gate** — M13 passed its
+   manipulation check under the length clause, and the two cells must not be compared on different checks without
+   knowing whether M13 would have passed the new one. Running it retroactively as a *diagnostic* does not violate the
+   no-retroactive-gates rule: it cannot change M13's verdict, and the paper says so where it is reported.

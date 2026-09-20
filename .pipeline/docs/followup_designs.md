@@ -45,14 +45,26 @@ the wording. Two functions, both pre-registered:
   both attacked corpora preserved it, which is why those attacks were free.
 - **Prediction:** the second separates siblings under imitation; the first mostly does not.
 
-**Aggregation (settled).** Keep T1's shape so the two channels are one test: per suspect, S = mean over published
-problems of d_x, then the one-sided t prediction interval against b's reference students' S computed with the *same*
-trace pair. A **sign test over d_x** is the per-instance alternative whose power grows with N; report it as the budget
-curve — this is where "power grows with queries" finally has a home (contrast Proposition 3, where it does not).
+**Aggregation (settled, corrected in round 15).** The **t prediction interval is the test**: per suspect,
+S = mean over published problems of d_x, tested one-sided against b's reference students' S computed with the *same*
+trace pair. **The sign test cannot be the headline**, and the reason is the paper's own subject: its null p = 0.5 assumes
+a student trained on b aligns with a's and b's traces equally often, which nothing guarantees — if a's traces are shorter
+or use fewer intermediate quantities, LCS against a's trace is higher for *every* student, b's included, and the
+uncalibrated sign test flags b's students as a's. That is the uncovered-sibling failure in a new statistic. Calibrating
+its null proportion on b's references would make it a discretized version of the t interval, so we drop it. **Budget
+curve:** the t interval's TPR and FPR at N ∈ {25, 100, 300, N*}, as in M7.
 
-**N (settled: set from data, not convention).** Compute d_x on the **reference students only**, estimate the per-problem
-effect size and variance, and size N for 90% power at the sign test. If that lands near 300, keep 300 for comparability
-with the rest of the paper; if it lands at 1,000, that is a finding about the channel's cost and belongs in the paper.
+**Relation to Proposition 3 (corrected).** An earlier note said this is where "power grows with queries, unlike
+Proposition 3". Wrong: it is the case Proposition 3 *permits*. More queries help only when the population ordering is
+right. Under imitation the **style** ordering is wrong — the owner's attacked students sit on b's side — so M9's extra
+probes could not help; the **content** ordering stays right because the attack preserves content, so N sharpens S and
+power grows. Written this way, the follow-up is the paper's theory predicting where its own remedy can be rescued.
+
+**N (settled).** Size from the reference students' d_x as planned, but note what that sizes: power for the **unattacked**
+separation, which M11 suggests is weak but present. **Attacked power at that N is a result, not a design input** — do not
+size from the M9b students. Pre-register **300 as primary** (it matches every other probe count in the paper), with
+**1,000 as a pre-committed escalation** if gate 1 passes and attacked power is below 0.8, and report the sized N* as a
+check on both. The published corpus caps N at 1,500.
 
 **New data, no training.** Suspects must be queried on the **published** problems; our 300 probes are held-out. D7 needs
 a generation pass (cheap on the L40S node) but it is new data, and the pre-registration must order the gates so that
@@ -84,7 +96,12 @@ both inside the matched condition:
    the control would leak the very thing the test isolates.
 2. **Survival, absolute.** Full read-out matched **AUC ≥ 0.65** with a bootstrap 95% CI over outputs excluding 0.50, in
    **≥ 3 of 4** family × stage units. No margin over the baseline is subtracted: once matching is validated, length
-   carries no information and there is nothing meaningful to subtract.
+   carries no information and there is nothing meaningful to subtract. **The threshold is not derived from the
+   baseline's bootstrap spread**, which shrinks with sample size and would put "survives" near 0.51 on large matched
+   sets — an effect nobody would call style. The CI answers significance; 0.65 answers magnitude.
+3. **Stripped-and-matched is primary; matched-only is secondary.** If matched passes and stripped fails, the residual is
+   **scaffold** — the paper's existing finding — and must be reported as that, not as non-length style.
+4. **Named near miss, fixed in advance:** AUC in **0.60–0.65** is "weak residual, not survival".
 
 **Capability gate (separate):** accuracy ≤ base − 0.03 on the same probes, with the unit-tested extractor (v2; boxed
 extraction for MATH).
